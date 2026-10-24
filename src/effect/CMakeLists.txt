@@ -13,6 +13,7 @@ set(infinitdesktop_SOURCES
     statestore.cpp
     dbusinterface.cpp
     launcherpositioner.cpp
+    organizer.cpp
 )
 
 ecm_qt_declare_logging_category(infinitdesktop_SOURCES

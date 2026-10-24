@@ -348,6 +348,68 @@
             <default>WhileNavigating</default>
         </entry>
 
+        <!-- ===================== Notes, groups, areas and the map ===================== -->
+        <entry name="NotesEnabled" type="Bool">
+            <label>Notes on the canvas</label>
+            <whatsthis>Notes are small windows with Markdown text that lie on the canvas like other windows and are saved automatically. Create one with Meta+Alt+N, from the canvas menu (right click on the empty canvas while zoomed out, Meta + right click at 100 %) or from the notes icon in the system tray. Pin a note to keep it on the screen while the canvas moves.</whatsthis>
+            <default>true</default>
+        </entry>
+        <entry name="NoteColor" type="Enum">
+            <label>Color of new notes</label>
+            <whatsthis>The paper color a new note gets. Every note can get another color from its menu.</whatsthis>
+            <choices>
+                <choice name="Yellow"><label>Yellow</label></choice>
+                <choice name="Blue"><label>Blue</label></choice>
+                <choice name="Green"><label>Green</label></choice>
+                <choice name="Pink"><label>Pink</label></choice>
+                <choice name="Gray"><label>Gray</label></choice>
+            </choices>
+            <default>Yellow</default>
+        </entry>
+        <entry name="GroupLayoutMode" type="Enum">
+            <label>Arrangement of new groups is saved</label>
+            <whatsthis>A group remembers how its windows are arranged and always opens like that. Either the arrangement only changes when you save it (Meta+Alt+Shift+G or in this app), or every move and resize of a group window while the group is open becomes the new arrangement. Each group can be switched on its own. Where the group lies on the canvas always moves with its windows.</whatsthis>
+            <choices>
+                <choice name="Manual"><label>Only when saved</label></choice>
+                <choice name="Automatic"><label>Automatically when windows are moved</label></choice>
+            </choices>
+            <default>Manual</default>
+        </entry>
+        <entry name="GroupStartsApplications" type="Bool">
+            <label>Opening a group starts missing applications</label>
+            <whatsthis>When a group is opened and one of its applications has no window, it is started and its window is placed in the group. An application in several groups, like the browser, moves along with the group you open as long as only one window of it is open.</whatsthis>
+            <default>true</default>
+        </entry>
+        <entry name="GroupZoomToFit" type="Bool">
+            <label>Zoom out for groups larger than the screen</label>
+            <whatsthis>When an opened group does not fit on the screen at 100 %, the camera zooms out until all its windows are visible. Otherwise the camera centers the group at 100 %.</whatsthis>
+            <default>true</default>
+        </entry>
+        <entry name="ShowAreas" type="Enum">
+            <label>Show areas on the canvas</label>
+            <whatsthis>Areas are named parts of the canvas that you draw with Meta+Alt+B. They are drawn as a colored frame above the wallpaper and below the windows.</whatsthis>
+            <choices>
+                <choice name="Never"><label>Never</label></choice>
+                <choice name="WhileNavigating"><label>While moving or zooming</label></choice>
+                <choice name="Always"><label>Always</label></choice>
+            </choices>
+            <default>Always</default>
+        </entry>
+        <entry name="AreaPadding" type="Int">
+            <label>Space around the windows of an area</label>
+            <whatsthis>An area grows when you drag windows into it or make them larger, and shrinks when they leave or get smaller. It keeps this much space around its windows, in pixels at 100 %.</whatsthis>
+            <default>48</default>
+            <min>0</min>
+            <max>400</max>
+        </entry>
+        <entry name="MapSize" type="Int">
+            <label>Size of the map</label>
+            <whatsthis>How much of the screen the map (Meta+Alt+M) covers, in percent.</whatsthis>
+            <default>70</default>
+            <min>30</min>
+            <max>95</max>
+        </entry>
+
         <!-- ===================== Plasma integration ===================== -->
         <entry name="LauncherPosition" type="Enum">
             <label>Application launcher opens</label>

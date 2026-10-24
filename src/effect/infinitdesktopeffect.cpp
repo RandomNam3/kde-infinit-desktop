@@ -11,6 +11,7 @@
 #include "inputfilter.h"
 #include "launcherpositioner.h"
 #include "logging.h"
+#include "organizer.h"
 #include "parking.h"
 #include "statestore.h"
 
@@ -220,6 +221,7 @@ InfinitDesktopEffect::InfinitDesktopEffect()
     }
 
     m_placements.fromJson(m_stateStore->loadPlacements());
+    m_organizer = std::make_unique<Organizer>(this, m_stateStore.get());
 
     m_persistTimer.setSingleShot(true);
     m_persistTimer.setInterval(2s);
@@ -403,6 +405,23 @@ void InfinitDesktopEffect::loadSettings()
     s.crashGuard = config->crashGuard();
     s.rememberCanvas = config->rememberCanvas();
     s.debugLogging = config->debugLogging();
+    s.notesEnabled = config->notesEnabled();
+    s.groupLayoutAutomatic = config->groupLayoutMode() == InfinitDesktopConfig::EnumGroupLayoutMode::Automatic;
+    s.groupStartsApplications = config->groupStartsApplications();
+    s.groupZoomToFit = config->groupZoomToFit();
+    switch (config->showAreas()) {
+    case InfinitDesktopConfig::EnumShowAreas::Never:
+        s.showAreas = EffectSettings::Grid::Never;
+        break;
+    case InfinitDesktopConfig::EnumShowAreas::WhileNavigating:
+        s.showAreas = EffectSettings::Grid::WhileNavigating;
+        break;
+    default:
+        s.showAreas = EffectSettings::Grid::Always;
+        break;
+    }
+    s.areaPadding = std::clamp(config->areaPadding(), 0, 400);
+    s.mapSize = std::clamp(config->mapSize(), 30, 95);
 
     const_cast<QLoggingCategory &>(KWIN_INFINITDESKTOP()).setEnabled(QtDebugMsg, s.debugLogging);
     const_cast<QLoggingCategory &>(KWIN_INFINITDESKTOP()).setEnabled(QtInfoMsg, s.debugLogging);
@@ -826,6 +845,9 @@ void InfinitDesktopEffect::setUserPinned(ManagedWindow &window, bool pinned, boo
             adoptCurrentGeometry(window);
         }
     }
+    if (m_organizer) {
+        m_organizer->pinChanged(window);
+    }
     updateActivity();
 }
 
@@ -887,6 +909,12 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
         return;
     }
 
+    // Notes and windows started for a group have their place already.
+    if (m_organizer && m_organizer->windowAdopted(window, newlyMapped)) {
+        updateActivity();
+        return;
+    }
+
     if (newlyMapped && m_settings.rememberWindowPlacement && window.placementEligible && !window.appKey.isEmpty() && modeOf(window) == WindowMode::Canvas) {
         quint64 entry = 0;
         if (const auto placement = m_placements.take(window.appKey, &entry)) {
@@ -912,6 +940,9 @@ void InfinitDesktopEffect::forgetWindow(KWin::EffectWindow *w)
 {
     if (m_renderer) {
         m_renderer->forget(w);
+    }
+    if (m_organizer) {
+        m_organizer->windowDeleted(w);
     }
     if (m_move && m_move->record && m_move->record->effectWindow == w) {
         m_move.reset();
@@ -943,6 +974,9 @@ void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
     if (ManagedWindow *managed = record(w)) {
         if (isOperational()) {
             rememberPlacement(*managed);
+            if (m_organizer) {
+                m_organizer->windowClosed(*managed);
+            }
         }
         managed->closed = true;
         managed->closedAt = Clock::now();
@@ -1079,6 +1113,9 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
         return;
     } else if (!moved) {
         // Pure size change, the top left corner stays on the canvas.
+        if (m_organizer) {
+            m_organizer->windowResized(*managed);
+        }
         updateActivity();
         return;
     }
@@ -1177,6 +1214,7 @@ void InfinitDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
     if (isPinned(*managed)) {
         // A pinned window stays exactly where it was dropped.
         updateActivity();
+        windowArranged(*managed);
         return;
     }
     KWin::LogicalOutput *output = managed->window->output();
@@ -1206,6 +1244,14 @@ void InfinitDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
     }
     updateActivity();
     requestRepaint(canvas);
+    windowArranged(*managed);
+}
+
+void InfinitDesktopEffect::windowArranged(ManagedWindow &window)
+{
+    if (m_organizer && isOperational()) {
+        m_organizer->windowArranged(window);
+    }
 }
 
 void InfinitDesktopEffect::slotMinimizedChanged(KWin::EffectWindow *w)
@@ -2126,6 +2172,7 @@ void InfinitDesktopEffect::resizeWindowOnCanvas(ManagedWindow &window, Canvas &c
 
 void InfinitDesktopEffect::endCanvasResize(ManagedWindow &window)
 {
+    windowArranged(window);
     // The client may still answer the last request: keep the anchor a little longer.
     QPointer<KWin::EffectWindow> guard(window.effectWindow);
     QTimer::singleShot(1500ms, this, [this, guard]() {
@@ -2491,6 +2538,7 @@ bool InfinitDesktopEffect::paintScreen(const KWin::RenderTarget &renderTarget, c
             m_canvasLayerPainted = true;
             if (canvas) {
                 m_renderer->paintCanvasLayer(*this, *canvas, renderTarget, viewport, viewOutput, deviceRegion);
+                paintAreas(*canvas, renderTarget, viewport, viewOutput, deviceRegion);
             }
         }
         // Markers of windows outside the view go on top of everything.
@@ -2500,8 +2548,25 @@ bool InfinitDesktopEffect::paintScreen(const KWin::RenderTarget &renderTarget, c
                 m_renderer->paintMarkers(*canvas, markers, renderTarget, viewport, deviceRegion);
             }
         }
+        // Canvas menu, selection rectangle and map above everything.
+        if (m_organizer && m_organizer->overlayActive()) {
+            m_organizer->paintOverlay(renderTarget, viewport, viewOutput, deviceRegion);
+        }
     }
     return result;
+}
+
+void InfinitDesktopEffect::paintAreas(const Canvas &canvas, const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport,
+                                      KWin::LogicalOutput *output, const KWin::Region &deviceRegion)
+{
+    if (!m_organizer || m_settings.showAreas == EffectSettings::Grid::Never) {
+        return;
+    }
+    qreal alpha = 1.0;
+    if (m_settings.showAreas == EffectSettings::Grid::WhileNavigating) {
+        alpha = (canvas.navigation || canvas.interactions > 0 || canvas.motion.isActive()) ? 1.0 : 0.0;
+    }
+    m_organizer->paintAreas(canvas, alpha, renderTarget, viewport, output, deviceRegion);
 }
 
 void InfinitDesktopEffect::postPaintScreen()
@@ -2588,6 +2653,7 @@ bool InfinitDesktopEffect::paintWindow(const KWin::RenderTarget &renderTarget, c
         m_canvasLayerPainted = true;
         if (Canvas *canvas = currentCanvas(viewOutput)) {
             m_renderer->paintCanvasLayer(*this, *canvas, renderTarget, viewport, viewOutput, m_paintRegion);
+            paintAreas(*canvas, renderTarget, viewport, viewOutput, m_paintRegion);
         }
     };
     if (layerPending && !wallpaper) {
@@ -2698,6 +2764,13 @@ void InfinitDesktopEffect::updateActivity()
                 || !canvas.edgePanVelocity.isNull() || canvas.interactions > 0) {
                 active = true;
             }
+            if (m_organizer && m_organizer->needsPainting(canvas)) {
+                // Areas (unless a fullscreen window covers the screen) and open overlays.
+                KWin::LogicalOutput *output = outputOf(canvas);
+                if (m_organizer->overlayActive() || !output || !isLocked(output)) {
+                    active = true;
+                }
+            }
         }
         for (auto &[w, managed] : m_windows) {
             const WindowMode mode = modeOf(*managed);
@@ -2791,9 +2864,15 @@ void InfinitDesktopEffect::showMessage(const QString &text, const QString &icon)
     KWin::effects->showOnScreenMessage(text, icon);
 }
 
+void InfinitDesktopEffect::flashMessage(const QString &text, const QString &icon, std::chrono::milliseconds duration)
+{
+    showMessage(text, icon);
+    m_indicatorTimer.start(duration);
+}
+
 void InfinitDesktopEffect::persistSoon()
 {
-    if (m_settings.rememberCanvas || m_placementsDirty) {
+    if (m_settings.rememberCanvas || m_placementsDirty || (m_organizer && m_organizer->isDirty())) {
         m_persistTimer.start();
     }
 }
@@ -2804,6 +2883,9 @@ void InfinitDesktopEffect::persistNow()
     if (m_placementsDirty) {
         m_placementsDirty = false;
         m_stateStore->savePlacements(m_placements.toJson());
+    }
+    if (m_organizer) {
+        m_organizer->persist();
     }
     if (!m_settings.rememberCanvas) {
         return;
@@ -3275,6 +3357,35 @@ void InfinitDesktopEffect::triggerAction(ShortcutAction action)
         break;
     }
     case ShortcutAction::ToggleEnabled:
+        break;
+    case ShortcutAction::NewNote:
+        m_organizer->newNote(output, anchor);
+        break;
+    case ShortcutAction::ToggleNotes:
+        m_organizer->toggleNotes();
+        break;
+    case ShortcutAction::ShowMap:
+        m_organizer->toggleMap(output);
+        break;
+    case ShortcutAction::GroupFromSelection:
+        m_organizer->startSelection(true, output);
+        break;
+    case ShortcutAction::AreaFromSelection:
+        m_organizer->startSelection(false, output);
+        break;
+    case ShortcutAction::SaveGroupLayout:
+        m_organizer->saveGroupLayout();
+        break;
+    case ShortcutAction::OpenGroup1:
+    case ShortcutAction::OpenGroup2:
+    case ShortcutAction::OpenGroup3:
+    case ShortcutAction::OpenGroup4:
+    case ShortcutAction::OpenGroup5:
+    case ShortcutAction::OpenGroup6:
+    case ShortcutAction::OpenGroup7:
+    case ShortcutAction::OpenGroup8:
+    case ShortcutAction::OpenGroup9:
+        m_organizer->openGroup(int(action) - int(ShortcutAction::OpenGroup1));
         break;
     }
 }

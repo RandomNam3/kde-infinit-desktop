@@ -94,6 +94,36 @@ void StateStore::savePlacements(const QJsonObject &placements) const
     file.commit();
 }
 
+QJsonObject StateStore::loadFile(const QString &fileName) const
+{
+    const QString path = QFileInfo(filePath()).absolutePath() + QLatin1Char('/') + fileName;
+    QFile file(path);
+    // Our own files are small; anything huge is not ours to parse inside the compositor.
+    if (!file.open(QIODevice::ReadOnly) || file.size() > 16 * 1024 * 1024) {
+        return QJsonObject();
+    }
+    QJsonParseError error;
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
+    if (error.error != QJsonParseError::NoError || !document.isObject()) {
+        qCWarning(KWIN_INFINITDESKTOP) << "ignoring broken file" << path << error.errorString();
+        return QJsonObject();
+    }
+    return document.object();
+}
+
+void StateStore::saveFile(const QString &fileName, const QJsonObject &object) const
+{
+    const QString path = QFileInfo(filePath()).absolutePath() + QLatin1Char('/') + fileName;
+    QDir().mkpath(QFileInfo(path).absolutePath());
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qCWarning(KWIN_INFINITDESKTOP) << "cannot write" << path;
+        return;
+    }
+    file.write(QJsonDocument(object).toJson(QJsonDocument::Compact));
+    file.commit();
+}
+
 QHash<QString, StoredCanvas> StateStore::load() const
 {
     QHash<QString, StoredCanvas> result;

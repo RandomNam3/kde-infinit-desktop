@@ -48,6 +48,7 @@ class CanvasRenderer;
 class CrashGuard;
 class DBusInterface;
 class LauncherPositioner;
+class Organizer;
 class StateStore;
 
 /// Settings in the units the effect works with (converted from InfinitDesktopConfig).
@@ -111,6 +112,14 @@ struct EffectSettings
     bool crashGuard = true;
     bool rememberCanvas = true;
     bool debugLogging = false;
+    // Notes, groups, areas and the map
+    bool notesEnabled = true;
+    bool groupLayoutAutomatic = false;
+    bool groupStartsApplications = true;
+    bool groupZoomToFit = true;
+    Grid showAreas = Grid::Always; ///< same three states as the grid
+    qreal areaPadding = 48;
+    int mapSize = 70; ///< percent of the work area
 };
 
 /// One canvas: a camera looking at the windows of one output on one virtual desktop.
@@ -250,6 +259,13 @@ struct ManagedWindow
     /// the plugin moves it on the canvas, until KWin's move is cancelled the window stays a
     /// canvas window.
     bool moveTakenOver = false;
+    /// A note of the companion app (its id), see Organizer.
+    QString noteId;
+    /// The group this window was last opened or arranged with, and which member it is.
+    QString groupId;
+    int groupMember = -1;
+    /// The area of the canvas this window belongs to (empty: none).
+    QString areaId;
     /// Buffer scale asked from the client while zoomed out (0: the output's own scale), and
     /// the frame size before, which the client gets back afterwards.
     qreal contentScale = 0.0;
@@ -380,6 +396,10 @@ public:
     {
         return m_launcher.get();
     }
+    Organizer *organizer() const
+    {
+        return m_organizer.get();
+    }
 
     // Camera operations. Distances are in screen pixels.
     void beginInteraction(Canvas &canvas);
@@ -407,6 +427,8 @@ public:
     /// Resizes a window that is only drawn by the plugin; @p delta is in canvas units from @p start.
     void resizeWindowOnCanvas(ManagedWindow &window, Canvas &canvas, Qt::Edges edges, const QRectF &start, const QPointF &delta);
     void endCanvasResize(ManagedWindow &window);
+    /// The user finished moving or resizing a canvas window: areas and groups follow.
+    void windowArranged(ManagedWindow &window);
     /// Shows the resize cursor for @p edges while the pointer is over a resize zone (none: normal cursor).
     void setResizeCursor(Qt::Edges edges);
     /// Markers of the windows outside the view of @p canvas (empty while they are hidden).
@@ -454,6 +476,8 @@ public:
 
     void showZoomIndicator(const Canvas &canvas);
     void showMessage(const QString &text, const QString &icon = QString());
+    /// Shows a message for a moment.
+    void flashMessage(const QString &text, const QString &icon, std::chrono::milliseconds duration = std::chrono::milliseconds(1800));
     QString stateJson() const;
     QString windowPlacementsJson() const;
     void forgetWindowPlacements();
@@ -471,6 +495,9 @@ Q_SIGNALS:
     void statusChanged();
 
 private:
+    // Notes, groups, areas and the map work with the windows and canvases directly.
+    friend class Organizer;
+
     void loadSettings();
     void setupShortcuts();
     void setupWindow(KWin::EffectWindow *w);
@@ -555,6 +582,8 @@ private:
     /// Where a Wayland popup of a canvas window appears on screen (its frame's top left corner),
     /// placed around the drawn parent; nullopt if it is no xdg popup.
     std::optional<QPointF> visualPopupPosition(KWin::Window *popup, const ManagedWindow &owner, const Canvas &canvas, KWin::LogicalOutput *output, int depth = 0) const;
+    void paintAreas(const Canvas &canvas, const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport, KWin::LogicalOutput *output,
+                    const KWin::Region &deviceRegion);
     /// The output a render viewport shows, or nullptr if it covers several (workspace captures).
     KWin::LogicalOutput *outputForViewport(const KWin::RenderViewport &viewport) const;
     /// The screen whose canvas a window (or the window owning a popup) lives on.
@@ -563,6 +592,8 @@ private:
     EffectSettings m_settings;
     std::unique_ptr<CrashGuard> m_crashGuard;
     std::unique_ptr<StateStore> m_stateStore;
+    /// After the state store: saves into it when destroyed.
+    std::unique_ptr<Organizer> m_organizer;
     std::unique_ptr<CanvasInputFilter> m_inputFilter;
     std::unique_ptr<CanvasRenderer> m_renderer;
     std::unique_ptr<LauncherPositioner> m_launcher;

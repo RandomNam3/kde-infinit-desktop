@@ -6,6 +6,7 @@
 #include "dbusinterface.h"
 #include "infinitdesktopeffect.h"
 #include "logging.h"
+#include "organizer.h"
 
 #include "core/output.h"
 #include "effect/effecthandler.h"
@@ -31,6 +32,11 @@ DBusInterface::DBusInterface(InfinitDesktopEffect *effect)
         qCWarning(KWIN_INFINITDESKTOP) << "could not register D-Bus object" << ObjectPath;
     }
     connect(effect, &InfinitDesktopEffect::statusChanged, this, &DBusInterface::statusChanged);
+    if (Organizer *organizer = effect->organizer()) {
+        connect(organizer, &Organizer::groupsChanged, this, &DBusInterface::groupsChanged);
+        connect(organizer, &Organizer::areasChanged, this, &DBusInterface::areasChanged);
+        connect(organizer, &Organizer::notePinnedChanged, this, &DBusInterface::notePinnedChanged);
+    }
 }
 
 DBusInterface::~DBusInterface()
@@ -162,6 +168,106 @@ void DBusInterface::forgetWindowPlacements()
 void DBusInterface::forgetApplicationPlacements(const QString &application)
 {
     m_effect->forgetWindowPlacements(application);
+}
+
+void DBusInterface::expectNote(const QString &id)
+{
+    if (Organizer *organizer = m_effect->organizer()) {
+        organizer->expectNote(id);
+    }
+}
+
+QString DBusInterface::noteState(const QString &id) const
+{
+    Organizer *organizer = m_effect->organizer();
+    return organizer ? organizer->noteState(id) : QString();
+}
+
+void DBusInterface::setNotePinned(const QString &id, bool pinned, bool keepAbove)
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->setNotePinned(id, pinned, keepAbove);
+    }
+}
+
+void DBusInterface::forgetNote(const QString &id)
+{
+    if (Organizer *organizer = m_effect->organizer()) {
+        organizer->forgetNote(id);
+    }
+}
+
+void DBusInterface::retainNotes(const QStringList &existing)
+{
+    if (Organizer *organizer = m_effect->organizer()) {
+        organizer->retainNotes(existing);
+    }
+}
+
+void DBusInterface::newNote()
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->newNote(m_effect->pointerOutput(), KWin::effects->cursorPos());
+    }
+}
+
+QString DBusInterface::groups() const
+{
+    Organizer *organizer = m_effect->organizer();
+    return organizer ? organizer->groupsJson() : QString();
+}
+
+bool DBusInterface::setGroups(const QString &json)
+{
+    Organizer *organizer = m_effect->organizer();
+    return organizer && organizer->setGroupsJson(json);
+}
+
+void DBusInterface::openGroup(const QString &id)
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->openGroup(id);
+    }
+}
+
+void DBusInterface::saveGroupLayout(const QString &id)
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->saveGroupLayout(id);
+    }
+}
+
+void DBusInterface::newGroupFromSelection()
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->startSelection(true, m_effect->pointerOutput());
+    }
+}
+
+QString DBusInterface::areas() const
+{
+    Organizer *organizer = m_effect->organizer();
+    return organizer ? organizer->areasJson() : QString();
+}
+
+bool DBusInterface::setAreas(const QString &json)
+{
+    Organizer *organizer = m_effect->organizer();
+    return organizer && organizer->setAreasJson(json);
+}
+
+void DBusInterface::newAreaFromSelection()
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->startSelection(false, m_effect->pointerOutput());
+    }
+}
+
+void DBusInterface::showMap()
+{
+    if (Organizer *organizer = m_effect->organizer(); organizer && m_effect->isOperational()) {
+        organizer->toggleMap(m_effect->pointerOutput());
+    }
 }
 
 } // namespace InfinitDesktop
