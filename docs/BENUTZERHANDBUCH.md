@@ -19,13 +19,14 @@ hineinzoomen – die Taskleiste, Benachrichtigungen und das Hintergrundbild blei
 6. [Tastenkürzel](#tastenkürzel)
 7. [Fenster: finden, anpinnen, immer oben](#fenster-finden-anpinnen-immer-oben)
 8. [Fenster öffnen sich dort, wo sie zuletzt waren](#fenster-öffnen-sich-dort-wo-sie-zuletzt-waren)
-9. [Mehrere Bildschirme](#mehrere-bildschirme)
-10. [Vollbild, Videos und Spiele](#vollbild-videos-und-spiele)
-11. [Startmenü an der Mausposition](#startmenü-an-der-mausposition)
-12. [Einstellungen](#einstellungen)
-13. [Verträglichkeit mit anderen Erweiterungen](#verträglichkeit-mit-anderen-erweiterungen)
-14. [Fehlerbehebung](#fehlerbehebung)
-15. [Häufige Fragen](#häufige-fragen)
+9. [Notizen, Gruppen, Bereiche und die Karte](#notizen-gruppen-bereiche-und-die-karte)
+10. [Mehrere Bildschirme](#mehrere-bildschirme)
+11. [Vollbild, Videos und Spiele](#vollbild-videos-und-spiele)
+12. [Startmenü an der Mausposition](#startmenü-an-der-mausposition)
+13. [Einstellungen](#einstellungen)
+14. [Verträglichkeit mit anderen Erweiterungen](#verträglichkeit-mit-anderen-erweiterungen)
+15. [Fehlerbehebung](#fehlerbehebung)
+16. [Häufige Fragen](#häufige-fragen)
 
 ---
 
@@ -172,6 +173,13 @@ Standardkürzel von Plasma 6.8.
 | Meta + Alt + T | Fenster an den Bildschirm anpinnen / lösen |
 | Meta + Alt + Umschalt + T | Fenster anpinnen **und immer im Vordergrund** (bei einem schon angepinnten Fenster: zusätzlich im Vordergrund) / lösen |
 | *(frei)* | Gesten pausieren / fortsetzen |
+| Meta + Alt + N | Neue Notiz an der Mausposition |
+| Meta + Alt + Umschalt + N | Alle Notizen aus- / einblenden |
+| Meta + Alt + M | Karte der Fläche zeigen / schließen |
+| Meta + Alt + G | Rechteck aufziehen: die Fenster darin werden eine Gruppe |
+| Meta + Alt + B | Rechteck aufziehen: ein neuer Bereich |
+| Meta + Alt + Umschalt + G | Anordnung der Gruppe des aktiven Fensters speichern |
+| Meta + Alt + F1 … F9 | Gruppe 1 … 9 öffnen bzw. zusammenholen |
 
 ## Fenster: finden, anpinnen, immer oben
 
@@ -216,6 +224,85 @@ gerade nicht im Bild, fährt die Kamera hin.
 - *„Wo wieder geöffnete Fenster erscheinen“*: an derselben Stelle **der Fläche** (Standard) oder an
   derselben Stelle **des Bildschirms**.
 - Gespeicherte Positionen lassen sich in der Einstellungs-App löschen.
+
+## Notizen, Gruppen, Bereiche und die Karte
+
+### Das Menü der Arbeitsfläche
+
+Herausgezoomt öffnet ein **Rechtsklick auf die freie Fläche** ein Menü mit den folgenden Einträgen:
+- neue Notiz und Notizen ein-/ausblenden;
+- neue Gruppe und neuer Bereich;
+- Bereich entfernen, wenn du auf einem Bereich klickst;
+- Karte, alle Fenster zeigen, 100 % und Einstellungen.
+
+Bei 100 % öffnet es **Meta + Rechtsklick**; der normale Rechtsklick zeigt weiter das Desktop-Menü von
+Plasma.
+
+### Notizen
+
+Notizen sind kleine Zettel, die wie Fenster auf der Fläche liegen. Neu anlegen kannst du sie auf drei Wegen:
+- **Meta + Alt + N** an der Mausposition;
+- über das Menü der Arbeitsfläche;
+- über das **Notiz-Symbol in der Systemleiste**.
+
+- **Schreiben:** Klick in die Notiz zeigt den Text zum Bearbeiten, sonst ist er formatiert. Markdown geht:
+  `# Überschrift`, `**fett**`, `*kursiv*`, `- Liste`, `[Link](https://…)`. Links lassen sich anklicken.
+- **Speichern** passiert automatisch, kurz nach dem Tippen. Jede Notiz ist eine Markdown-Datei unter
+  `~/.local/share/kde-infinit-desktop/notes/` und lässt sich auch dort lesen.
+- **Verschieben** an der Kopfzeile, **Größe ändern** an der Ecke rechts unten. Notizen öffnen sich wieder
+  genau dort, wo sie lagen.
+- **Anheften** (Knopf ◉ in der Kopfzeile oder Meta + Alt + T): Die Notiz bleibt am Bildschirm, auch wenn
+  die Kamera weiterzieht – praktisch für eine Einkaufsliste oder Aufgaben, die immer sichtbar sein sollen.
+- **Ausblenden:** ✕ blendet eine Notiz aus (sie bleibt erhalten), **Meta + Alt + Umschalt + N** blendet
+  alle aus und wieder ein. Ein Klick auf das Notiz-Symbol in der Systemleiste macht dasselbe.
+- **Farbe, löschen** und mehr im Menü der Notiz (⋯ oder Rechtsklick auf die Kopfzeile).
+
+Notizen stehen nicht in der Taskleiste und nicht in Alt+Tab.
+
+### Gruppen
+
+Eine Gruppe sind Programme, die zusammengehören – zum Beispiel E-Mail, Kalender und Notizen, oder Editor,
+Terminal und Browser für ein Projekt.
+
+- **Anlegen:** Meta + Alt + G drücken und ein Rechteck um die offenen Fenster aufziehen, oder in der
+  Einstellungs-App unter *Notizen und Gruppen* eine Gruppe anlegen und Programme hinzufügen.
+- **Öffnen:** **Meta + Alt + F1** öffnet die erste Gruppe, F2 die zweite usw.
+  - Die Fenster der Gruppe kommen an den Ort, an dem die Gruppe zuletzt war, immer gleich angeordnet und
+    gleich groß.
+  - Fehlt ein Programm, wird es gestartet und sein Fenster an seinen Platz gelegt.
+  - Die Kamera springt hin. Ist die Gruppe größer als der Bildschirm, zoomt sie so weit heraus, dass
+    alles zu sehen ist.
+- **Programme in mehreren Gruppen:** Ist zum Beispiel der Browser in zwei Gruppen und nur ein
+  Browserfenster offen, springt er mit der Gruppe mit, die du gerade öffnest. Sind mehrere offen, nimmt
+  jede Gruppe „ihr“ Fenster.
+- **Anordnung:** Für jede Gruppe stellst du ein, wann sie sich die Anordnung merkt:
+  - *Beim Speichern* (Standard): Erst Meta + Alt + Umschalt + G oder der Knopf in der App macht die
+    jetzige Anordnung zur neuen. Zwischendurch kannst du Fenster frei verschieben, die Gruppe öffnet
+    trotzdem immer gleich.
+  - *Automatisch*: Jede Änderung, solange die Gruppe offen ist, wird zur neuen Anordnung.
+
+  Der **Ort** der Gruppe wandert in beiden Fällen mit ihren Fenstern mit.
+- **Reihenfolge:** In der App bestimmst du die Reihenfolge der Gruppen und damit ihr Tastenkürzel
+  (F1 … F9).
+
+### Bereiche
+
+Mit **Meta + Alt + B** ziehst du einen Bereich auf: einen benannten Teil der Fläche, etwa „Projekt“,
+„Lesen“ oder „Privat“. Er erscheint als farbiger Rahmen über dem Hintergrundbild und unter den Fenstern.
+
+- Ziehst du ein Fenster in einen Bereich, gehört es dazu. Der Bereich **wächst mit**, wenn das Fenster über
+  seinen Rand ragt oder größer wird, und **schrumpft**, wenn Fenster ihn verlassen oder kleiner werden.
+- Ein fester Bereich (Schalter *Wächst mit seinen Fenstern* in der App aus) behält seine Größe.
+- Umbenennen und entfernen geht in der App, entfernen auch über das Menü der Arbeitsfläche.
+
+### Die Karte
+
+**Meta + Alt + M** zeigt eine Karte der ganzen Fläche dieses Bildschirms mit allen Fenstern, Notizen
+(gelb), Gruppen und Bereichen. Das helle Rechteck ist der sichtbare Ausschnitt.
+
+- **Ziehen** verschiebt die Kamera, **Klick** auf eine freie Stelle fährt dorthin.
+- **Klick auf ein Fenster** fliegt zu ihm und schließt die Karte.
+- Das **Mausrad** zoomt, **Esc**, Rechtsklick oder ein Klick neben die Karte schließt sie.
 
 ## Mehrere Bildschirme
 

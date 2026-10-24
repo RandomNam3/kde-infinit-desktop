@@ -1,3 +1,12 @@
+kde-infinit-desktop (0.5.0-1) unstable; urgency=medium
+
+  * New features: notes with Markdown on the canvas (companion app with a
+    tray icon), groups of applications that open together at their place,
+    areas that grow with their windows, a map of the canvas and a canvas
+    menu.
+
+ -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sun, 25 Oct 2026 01:30:00 +0200
+
 kde-infinit-desktop (0.4.2-1) unstable; urgency=medium
 
   * Bug fix release: menus of X11 programs (Steam, Wine) in place while

@@ -31,11 +31,12 @@ Wayland); alle Aussagen zur KWin-API beziehen sich auf den Quellcode von KWin 6.
 
 | Verzeichnis | Inhalt | Abhängigkeiten |
 |---|---|---|
-| `src/core/` | reine Logik: Kamera, Animationen, Geschwindigkeitsmessung, Park-Positionen, Navigation, Fensterplatz-Gedächtnis | nur Qt Core – vollständig unit-getestet |
+| `src/core/` | reine Logik: Kamera, Animationen, Geschwindigkeitsmessung, Park-Positionen, Navigation, Fensterplatz-Gedächtnis, Gruppen, Bereiche, Notizplätze, Karte | nur Qt Core – vollständig unit-getestet, gemeinsam mit der Windows-Version |
 | `src/shared/` | Einstellungs-Schema (`infinitdesktop.kcfg`), UI-Metadaten, Tastenkürzel-Tabelle, D-Bus-XML | KConfig, KI18n |
 | `src/effect/` | das KWin-Plugin | KWin::kwin (+ Kern, Shared) |
 | `src/kcm/` | Modul für die Systemeinstellungen | KCMUtils, XmlGui |
 | `src/app/` | Einstellungs-App (Qt Quick, eigenes Design) | Qt Quick, KConfig, KGlobalAccel |
+| `src/companion/` | Begleit-App: Notizen, Symbol in der Systemleiste | Qt Quick, Qt Widgets (Systemleiste), KConfig, KI18n |
 | `tests/` | Unit-Tests (QtTest) | |
 | `tools/demo/` | interaktive Plasma-Sitzung im Container (RDP) | Podman/Docker |
 
@@ -514,3 +515,90 @@ Die API hat sich zwischen 6.x-Versionen deutlich geändert, z.B.:
 - Zeigerereignisse für Effects seit 6.7
 
 Unterstützt wird daher zunächst **KWin ≥ 6.8**. Ältere Versionen bräuchten Kompatibilitätszweige.
+
+## 14. Notizen, Gruppen, Bereiche und Karte
+
+Die Logik liegt im Kern und gilt für KDE und Windows gleich:
+
+| Datei | Inhalt |
+|---|---|
+| `src/core/groups.h` | `Group` (Mitglieder mit Programm, Startbefehl und Platz relativ zum Ursprung), `planGroup()`, `captureLayout()`, `followWindows()`, `autoArrange()`, `GroupStore` |
+| `src/core/areas.h` | `Area`, `dynamicAreaRect()`, `areaForWindow()`, `AreaStore` |
+| `src/core/noteplacements.h` | Platz jeder Notiz (Bildschirm, Flächenposition, angeheftet) |
+| `src/core/minimap.h` | `MapView`: Ausschnitt der Fläche ↔ Rechteck der Karte |
+
+`Organizer` (`src/effect/organizer.cpp`) verbindet sie mit KWin.
+
+**Fenster:** `ManagedWindow` trägt `noteId`, `groupId`/`groupMember` und `areaId`. Organizer speichert
+keine Zeiger auf Fenster. Wartende Starts (`PendingLaunch`) und angekündigte Notizen (`ExpectedNote`)
+enthalten nur Zeichenketten und eine Frist (30 s bzw. 10 s). Overlays merken sich den Namen des Ausgangs.
+Textur-Caches mit `EffectWindow*`-Schlüssel räumt `windowDeleted()` auf.
+
+**Gruppe öffnen** (`openGroup`):
+1. Mitglieder ohne Platz (aus der Liste der App) ordnet `autoArrange()` an.
+2. `planGroup()` wählt pro Mitglied ein Fenster:
+   - zuerst eines mit derselben Gruppe;
+   - sonst das einzige Fenster des Programms, auch wenn es zu einer anderen Gruppe gehört;
+   - sonst das nächstgelegene ohne Gruppe;
+   - sonst wird das Programm gestartet.
+3. Fenster bekommen Platz und Größe, auf anderen Flächen über `transferWindow()`.
+4. Fehlende Programme startet `kstart --application <desktop-datei>` (Ausweichweg `gtk-launch`).
+   `windowAdopted()` legt das neue Fenster an seinen Platz statt der Platzwahl des Fensterplatz-Gedächtnisses.
+5. Die Kamera zeigt die Gruppe bei 100 % mittig, oder herausgezoomt (`fitCamera`), wenn sie nicht passt.
+
+Nach jedem Verschieben oder jeder Größenänderung (`windowArranged()`) gilt je nach Gruppe:
+- `captureLayout()` (automatisch): Die jetzige Anordnung wird zur gespeicherten.
+- `followWindows()` (beim Speichern): Nur der Ursprung folgt, um den Mittelwert der Verschiebungen.
+
+**Bereiche:** Ein Fenster gehört zu dem Bereich, in dem seine Mitte nach dem Loslassen liegt (bei
+verschachtelten der kleinste). `updateAreas()` setzt die Größe aus den Fenstern plus Abstand
+(`AreaPadding`). Größenänderungen der Programme selbst werden pro Fläche gesammelt und einmal pro
+Ereignisschleife verrechnet.
+
+**Notizen:** Die Notizen sind Fenster der Begleit-App (`org.kde.infinitdesktop.companion`, App-ID =
+Desktop-Datei).
+- Vor jedem Zeigen ruft die App `expectNote(id)` auf und wartet kurz auf die Antwort (500 ms). Erst dann
+  zeigt sie das Fenster; die Ankündigung ist also da, bevor KWin es meldet.
+- Das nächste Fenster mit dieser App-ID bekommt die älteste Ankündigung.
+- Der Effekt nimmt Notizen aus Taskleiste, Fensterwechsler und Pager und legt sie an ihren gespeicherten
+  Platz. Neue Notizen kommen an die Mausposition.
+- Angeheftet ist eine Notiz über den normalen Pin-Mechanismus. `notePinnedChanged` meldet es der App.
+- Startet KWin oder der Effekt neu, kennt er die offenen Notizfenster nicht. Er ruft dann
+  `reannounceNotes` auf, ohne die App zu starten. Die App zeigt ihre Fenster neu und kündigt sie dabei an.
+
+**Begleit-App** (`src/companion`): D-Bus-Dienst `org.kde.InfinitDesktop.Companion` auf `/Companion`.
+- **Methoden:** `newNote`, `toggleNotes`, `setNotesVisible`, `reannounceNotes`, `notes`, `quit`.
+- **Start:** über D-Bus-Aktivierung (`.service`-Datei) oder Autostart. Ein zweiter Start reicht
+  `--new-note` an die laufende App weiter.
+- **Speicher:** `~/.local/share/kde-infinit-desktop/notes/<id>.md` und `index.json` (Farbe, Größe,
+  ausgeblendet). Gespeichert wird 600 ms nach der letzten Änderung, atomar per `QSaveFile`. Ids sind
+  geprüfte UUIDs, weil sie in Dateinamen stehen.
+- **Ressourcen:**
+  - Ein Fenster gibt es nur für sichtbare Notizen; ausgeblendete Notizen geben ihr Fenster sofort frei.
+  - Alle Fenster zeichnen nacheinander im GUI-Thread (`QSG_RENDER_LOOP=basic`), ohne eigenen Render-Thread
+    und GL-Kontext pro Notiz.
+- **D-Bus aus KWin:** Der Effekt ruft die App nur mit `QDBus::NoBlock` auf. Der Compositor wartet nie auf
+  einen anderen Prozess.
+
+**Overlays** (Menü der Arbeitsfläche, Rechteck aufziehen, Karte):
+- Gezeichnet wird in `paintScreen` nach den Markierungen, mit KWins `ShaderManager`/`GLVertexBuffer`:
+  einfarbige Rechtecke, Ränder als schmale Rechtecke.
+- Beschriftungen, Programmsymbole und das Menü sind kleine `GLTexture`s aus `QPainter`-Bildern. Sie werden
+  zwischengespeichert und beim Schließen freigegeben. In Ruhe belegt nichts davon GPU-Speicher.
+- Solange ein Overlay offen ist, bekommt `Organizer` jede Zeiger- und Mausrad-Eingabe und Esc/Enter/Pfeile
+  (der Eingabefilter fragt zuerst). Andere Tasten gehen weiter, damit Meta + Alt + M die Karte wieder
+  schließt.
+
+Bereiche werden in der Canvas-Ebene gezeichnet, also über dem Hintergrund und unter den Fenstern. Mit
+`ShowAreas = Always` halten sie den Effekt aktiv, aber nur wenn es auf der Fläche Bereiche gibt und kein
+Vollbild-Fenster den Bildschirm sperrt. Spiele behalten so Direct Scanout.
+
+**D-Bus-Erweiterung von `org.kde.InfinitDesktop`:**
+- Notizen: `expectNote`, `noteState`, `setNotePinned`, `forgetNote`, `retainNotes`, `newNote`.
+- Gruppen: `groups`, `setGroups`, `openGroup`, `saveGroupLayout`, `newGroupFromSelection`.
+- Bereiche: `areas`, `setAreas`, `newAreaFromSelection`.
+- Karte: `showMap`.
+- Signale: `groupsChanged`, `areasChanged`, `notePinnedChanged`.
+
+Das JSON-Format steht in `src/shared/org.kde.InfinitDesktop.xml`. `groups.json`, `areas.json` und
+`notes.json` liegen neben `canvas.json` und werden beim Laden geprüft wie alle anderen Dateien.
