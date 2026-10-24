@@ -101,6 +101,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.2.0" date="2026-10-24">
+      <description>
+        <p>Windows that draw their own title bar (browsers, Steam, Wine/Proton programs) can be moved while zoomed out. Games in borderless fullscreen mode are treated like fullscreen windows. Zooming with Meta and the mouse wheel no longer opens the launcher.</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-10-24">
       <description>
         <p>First release: infinite canvas effect, System Settings module and settings app.</p>
