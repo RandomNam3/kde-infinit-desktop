@@ -227,6 +227,10 @@ struct ManagedWindow
     TimePoint closedAt;
     /// Canvas position of the tile shown while a fullscreen window is minimized.
     std::optional<QPointF> tilePos;
+    /// Without a frame and covering exactly its whole screen ("borderless fullscreen" of games,
+    /// e.g. under Wine/Proton): treated like a fullscreen window. Follows the geometry changes
+    /// made by the client and by KWin, not the plugin's own moves.
+    bool borderlessFullScreen = false;
     /// Application key for the placement memory, and whether this window takes part in it.
     QString appKey;
     bool placementEligible = false;
@@ -349,6 +353,8 @@ public:
     QRectF canvasRect(const ManagedWindow &window) const;
     QRectF tileCanvasRect(const ManagedWindow &window, const Canvas &canvas) const;
     WindowMode modeOf(const ManagedWindow &window) const;
+    /// Fullscreen, or borderless fullscreen (see ManagedWindow::borderlessFullScreen).
+    bool isFullScreen(const ManagedWindow &window) const;
     /// Fixed on the screen: pinned by the user, on all desktops, kept above (if enabled) or not movable.
     bool isPinned(const ManagedWindow &window) const;
     ManagedWindow *findManaged(KWin::EffectWindow *w) const
@@ -470,6 +476,8 @@ private:
     Canvas &ensureCanvas(const QString &key, const QString &outputName, const QString &desktopId);
     bool isCurrentCanvas(const Canvas &canvas) const;
     QRectF workArea(KWin::LogicalOutput *output) const;
+    /// A normal window without frame, not maximized, whose frame is exactly the screen it is on.
+    bool coversScreenBorderless(const ManagedWindow &window) const;
     void placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output);
     void parkWindow(ManagedWindow &window, KWin::LogicalOutput *output);
     void moveWindowPhysically(KWin::Window *window, const QPointF &topLeft);

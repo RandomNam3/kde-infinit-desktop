@@ -560,8 +560,10 @@ bool InfinitDesktopEffect::isLocked(KWin::LogicalOutput *output) const
     if (!m_settings.lockFullscreen || !output) {
         return false;
     }
-    const KWin::EffectWindow *active = KWin::effects->activeWindow();
-    return active && active->isFullScreen() && !active->isMinimized() && active->window() && active->window()->output() == output;
+    KWin::EffectWindow *active = KWin::effects->activeWindow();
+    const ManagedWindow *managed = active ? record(active) : nullptr;
+    return active && (managed ? isFullScreen(*managed) : active->isFullScreen()) && !active->isMinimized() && active->window()
+        && active->window()->output() == output;
 }
 
 QRectF InfinitDesktopEffect::workArea(KWin::LogicalOutput *output) const
@@ -631,9 +633,9 @@ WindowMode InfinitDesktopEffect::modeOf(const ManagedWindow &window) const
         return WindowMode::Hidden;
     }
     if (w->isMinimized()) {
-        return (w->isFullScreen() && m_settings.minimizedFullscreenOnCanvas) ? WindowMode::Tile : WindowMode::Minimized;
+        return (isFullScreen(window) && m_settings.minimizedFullscreenOnCanvas) ? WindowMode::Tile : WindowMode::Minimized;
     }
-    if (w->isFullScreen()) {
+    if (isFullScreen(window)) {
         return WindowMode::Fullscreen;
     }
     if ((window.window->isInteractiveMove() || window.window->isInteractiveResize()) && !window.moveTakenOver) {
@@ -643,6 +645,24 @@ WindowMode InfinitDesktopEffect::modeOf(const ManagedWindow &window) const
         return WindowMode::Pinned;
     }
     return WindowMode::Canvas;
+}
+
+bool InfinitDesktopEffect::isFullScreen(const ManagedWindow &window) const
+{
+    return window.effectWindow->isFullScreen() || window.borderlessFullScreen;
+}
+
+bool InfinitDesktopEffect::coversScreenBorderless(const ManagedWindow &window) const
+{
+    const KWin::EffectWindow *w = window.effectWindow;
+    if (!window.window || !w->isNormalWindow() || w->hasDecoration() || window.window->maximizeMode() != KWin::MaximizeRestore) {
+        return false;
+    }
+    const QRectF frame = toQRectF(w->frameGeometry());
+    const QRectF screen = outputRect(outputContaining(frame.center()));
+    // Up to a pixel off: fractional scaling rounds the client size.
+    return !screen.isEmpty() && std::abs(frame.left() - screen.left()) < 1.0 && std::abs(frame.top() - screen.top()) < 1.0
+        && std::abs(frame.right() - screen.right()) < 1.0 && std::abs(frame.bottom() - screen.bottom()) < 1.0;
 }
 
 bool InfinitDesktopEffect::isPinned(const ManagedWindow &window) const
@@ -807,6 +827,7 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
     managed->canvasKey = canvasKeyForWindow(*managed, output);
     managed->appKey = PlacementMemory::applicationKey(w->window()->desktopFileName(), w->window()->resourceClass());
     managed->placementEligible = isPlacementEligible(w);
+    managed->borderlessFullScreen = coversScreenBorderless(*managed);
 
     KWin::VirtualDesktop *desktop = KWin::effects->currentDesktop(output);
     const auto desktops = w->desktops();
@@ -938,7 +959,19 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
         return;
     }
     ManagedWindow *managed = record(w);
-    if (!managed || managed->closed || !managed->window || !isOperational()) {
+    if (!managed || managed->closed || !managed->window) {
+        return;
+    }
+    // Borderless fullscreen begins and ends with the geometry (fullscreen has its own signal).
+    if (const bool borderless = coversScreenBorderless(*managed); borderless != managed->borderlessFullScreen) {
+        const bool wasFullScreen = isFullScreen(*managed);
+        managed->borderlessFullScreen = borderless;
+        if (isFullScreen(*managed) != wasFullScreen) {
+            slotFullScreenChanged(w);
+            return;
+        }
+    }
+    if (!isOperational()) {
         return;
     }
     if (KWin::workspace()->inRearrange()) {
@@ -1131,8 +1164,11 @@ void InfinitDesktopEffect::slotFullScreenChanged(KWin::EffectWindow *w)
     if (!managed || !managed->window) {
         return;
     }
+    managed->borderlessFullScreen = coversScreenBorderless(*managed);
     if (KWin::LogicalOutput *output = managed->window->output()) {
-        if (w->isFullScreen()) {
+        if (isFullScreen(*managed)) {
+            // It covers the screen now, wherever it was parked.
+            managed->parked = false;
             managed->canvasKey = canvasKeyForWindow(*managed, output);
             if (Canvas *canvas = canvasByKey(managed->canvasKey)) {
                 // A fullscreen window covers the screen: stop zooming around below it.
@@ -1381,7 +1417,7 @@ void InfinitDesktopEffect::restoreAllWindows()
     QHash<KWin::LogicalOutput *, int> cascade;
     for (auto &[w, managed] : m_windows) {
         KWin::Window *window = managed->window;
-        if (!window || managed->closed || window->isDeleted() || w->isFullScreen()) {
+        if (!window || managed->closed || window->isDeleted() || isFullScreen(*managed)) {
             continue;
         }
         const QRectF geometry = toQRectF(window->frameGeometry());
@@ -2014,7 +2050,11 @@ void InfinitDesktopEffect::restoreTile(ManagedWindow &window)
     KWin::LogicalOutput *output = canvas ? outputOf(*canvas) : nullptr;
     if (output && window.window && window.window->output() != output) {
         // The tile was dragged onto another screen: become fullscreen there.
-        window.window->sendToOutput(output);
+        if (window.borderlessFullScreen && !window.effectWindow->isFullScreen()) {
+            window.window->moveResize(output->geometryF());
+        } else {
+            window.window->sendToOutput(output);
+        }
     }
     window.effectWindow->unminimize();
     KWin::effects->activateWindow(window.effectWindow);

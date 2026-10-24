@@ -1,5 +1,6 @@
 #!/bin/bash
-# Remembered placements, pinning (shortcut), fullscreen lock and fullscreen tiles.
+# Remembered placements, pinning (shortcut), fullscreen lock and fullscreen tiles, also for
+# borderless fullscreen (X11 window without frame covering the screen, like games under Proton).
 source /th/lib.sh
 FAILURES=0
 KEY_LEFTMETA=125; KEY_LEFTALT=56; KEY_LEFTSHIFT=42; KEY_T=20; KEY_PAGEDOWN=109
@@ -101,6 +102,34 @@ echo "clicking the tile at $SX,$SY"
 input abs "$SX" "$SY" sleep 50 click left sleep 800
 check "click on the tile restored the fullscreen window" '(.windows[] | select(.caption=="Movie") | .mode) == "fullscreen"'
 shot 06-restored-fullscreen
+
+# ---------------------------------------------------------------- borderless fullscreen (games under Wine/Proton)
+pkill -f "title Movie"; sleep 0.5
+dbuscall goHome; sleep 0.3
+QT_QPA_PLATFORM=xcb /usr/lib/qt6/bin/qml /th/probe.qml > /tmp/probe-x11.log 2>&1 &
+XPID=$!
+for _ in $(seq 1 80); do state | grep -q '"ProbeX11"' && break; sleep 0.1; done
+sleep 0.8
+check "a framed X11 window is a canvas window" '(.windows[] | select(.caption=="ProbeX11") | .mode) == "canvas"'
+# what such a game does: no frame, exactly the whole screen, no fullscreen state
+kwin_js 'for (const w of workspace.windowList()) if (w.caption == "ProbeX11") { w.noBorder = true; w.frameGeometry = {x: 0, y: 0, width: 1600, height: 900}; }'
+win "ProbeX11"
+check "a window without frame covering the whole screen counts as fullscreen" '(.windows[] | select(.caption=="ProbeX11") | .mode) == "fullscreen"'
+check "output locked while the borderless fullscreen window has focus" '[.outputs[] | .locked] | any'
+input keydown $KEY_LEFTMETA key $KEY_PAGEDOWN keyup $KEY_LEFTMETA sleep 800
+check "minimized borderless fullscreen window became a tile" '(.windows[] | select(.caption=="ProbeX11") | .mode) == "tile" and ((.windows[] | select(.caption=="ProbeX11") | .tileX) != null)'
+TX=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .tileX')
+TY=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .tileY')
+read -r SX SY < <(state | jq -r --argjson tx "$TX" --argjson ty "$TY" '([.canvases[] | select(.current)][0].camera) as $c | ((.outputs[0].geometry) as $o | "\(($o.x + $o.width/2 + ($tx + 30 - $c.x) * $c.zoom) | floor) \(($o.y + $o.height/2 + ($ty + 30 - $c.y) * $c.zoom) | floor)")')
+input abs "$SX" "$SY" sleep 50 click left sleep 800
+check "click on the tile restored the borderless fullscreen window" '(.windows[] | select(.caption=="ProbeX11") | .mode) == "fullscreen"'
+# the game goes back to a smaller window: a canvas window again
+kwin_js 'for (const w of workspace.windowList()) if (w.caption == "ProbeX11") w.frameGeometry = {x: 200, y: 150, width: 800, height: 500};'
+sleep 0.3
+check "no longer covering the screen, it is a canvas window again" '(.windows[] | select(.caption=="ProbeX11") | .mode) == "canvas"'
+check "and the output is no longer locked" '[.outputs[] | .locked] | any | not'
+kill "$XPID" 2>/dev/null
+sleep 0.5
 
 check "plugin still operational" '.operational == true'
 echo "FAILURES=$FAILURES"

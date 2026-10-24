@@ -17,7 +17,7 @@ Unter Windows mit Podman: `.\tests\runtime\run.ps1 [-Asan] [-Scenarios 1,2]`.
 |---|---|
 | 1 | Pannen (D-Bus, Ziehen auf leerer Fläche, Meta+Alt+Ziehen), Parken, Zurückholen, Zoom/Navigationsmodus, Mausrad-Zoom mit Einrasten bei 100 % |
 | 2 | Zwei Bildschirme: getrennte Flächen, Zuschnitt am Rand, Überhang-Auflösung, langsames Ziehen blockiert + Kantenscrollen ohne KWin-Kacheln, schneller Wurf wechselt den Bildschirm |
-| 3 | Fensterplatz-Gedächtnis (Position + Größe), Anpinnen und „immer oben“ per Kürzel, Vollbild-Sperre, Live- und Symbol-Kachel, Klick auf Kachel |
+| 3 | Fensterplatz-Gedächtnis (Position + Größe), Anpinnen und „immer oben“ per Kürzel, Vollbild-Sperre, Live- und Symbol-Kachel, Klick auf Kachel, dasselbe für randloses Vollbild (X11-Fenster ohne Rahmen, wie Proton-Spiele) |
 | 4 | Belastung: zufällige Navigation mit kommenden/gehenden Fenstern, Prozesse beenden während ihre Fenster geparkt sind, Klick während des Nachgleitens, neues Fenster beendet den Zoom |
 | 5 | Verträglichkeit mit anderen Effekten: Unschärfe (eingebaut oder Better Blur DX), Transparenz, Wabernde Fenster, Wunderlampe. Pannen, Zoom, Ziehen, Minimieren |
 | 6 | Herausgezoomt arbeiten: Klick, Mausrad und Tastatur kommen im Fenster an der richtigen Stelle an (Testfenster `probe.qml`), Kontextmenü (xdg-Popup) geht am Mauszeiger auf und nimmt Klicks an, Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete wie Browser-Tabs, unter Wayland und X11), Doppelklick führt zu 100 %, scharfe Inhalte (Bruchteilskalierung). Markierungen für Fenster außerhalb des Bildes. Kein Nachgleiten nach Kreisbewegungen |
