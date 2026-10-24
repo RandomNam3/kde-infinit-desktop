@@ -9,6 +9,8 @@ ecm_add_tests(
     test_parking.cpp
     test_navigation.cpp
     test_placementmemory.cpp
+    test_groups.cpp
+    test_areas.cpp
     LINK_LIBRARIES infinitdesktop_core Qt6::Test
 )
 
