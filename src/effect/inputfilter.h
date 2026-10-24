@@ -29,6 +29,7 @@ namespace InfinitDesktop
 
 class InfinitDesktopEffect;
 struct Canvas;
+struct ManagedWindow;
 struct ZoomedTarget;
 
 /**
@@ -72,6 +73,10 @@ public:
 
     /// Gives the pointer back to KWin after using windows while zoomed out.
     void endZoomedInput();
+    /// A window used while zoomed out asked KWin to move it (client side title bar, e.g.
+    /// browser tabs): from now on the plugin moves it on the canvas. False if the pointer
+    /// is not held on that window while its canvas is zoomed out.
+    bool takeOverClientMove(ManagedWindow &window);
 
 private:
     enum class DragKind {

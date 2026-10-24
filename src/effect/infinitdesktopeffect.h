@@ -240,6 +240,10 @@ struct ManagedWindow
         QPointF corner;
     };
     std::optional<ResizeAnchor> resizeAnchor;
+    /// The window asked KWin to move it while it was used zoomed out (client side title bar):
+    /// the plugin moves it on the canvas, until KWin's move is cancelled the window stays a
+    /// canvas window.
+    bool moveTakenOver = false;
     /// Buffer scale asked from the client while zoomed out (0: the output's own scale), and
     /// the frame size before, which the client gets back afterwards.
     qreal contentScale = 0.0;

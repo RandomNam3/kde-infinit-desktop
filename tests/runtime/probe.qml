@@ -35,6 +35,26 @@ Window {
         onReleased: mouse => console.log("RELEASE " + Math.round(mouse.x) + " " + Math.round(mouse.y))
         onWheel: wheel => console.log("WHEEL " + wheel.angleDelta.y)
     }
+    // Like a client side title bar (browser tabs): dragging the bottom strip asks the
+    // compositor to move the window (xdg_toplevel.move).
+    MouseArea {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 40
+        property point pressedAt
+        property bool moveRequested: false
+        onPressed: mouse => {
+            pressedAt = Qt.point(mouse.x, mouse.y);
+            moveRequested = false;
+        }
+        onPositionChanged: mouse => {
+            if (!moveRequested && Math.abs(mouse.x - pressedAt.x) + Math.abs(mouse.y - pressedAt.y) > 6) {
+                moveRequested = true;
+                console.log("SYSTEMMOVE " + root.startSystemMove());
+            }
+        }
+    }
 
     Window {
         id: popup
