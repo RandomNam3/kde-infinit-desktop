@@ -295,6 +295,12 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   Fenster, also an den Bildschirmrand. Solange eine Taste auf einem verkleinerten Fenster gedrückt ist,
   geht ein solcher Warp nicht an den Client. Das Plugin rechnet mit der Position davor und setzt den
   Zeiger dorthin zurück.
+- Manche X11-Programme fragen KWin gar nicht, sondern verschieben sich selbst (`XMoveWindow`) und folgen
+  dabei dem Zeiger, wie sie ihn auf dem geparkten Fenster sehen (Steam, Launcher unter Wine/Proton).
+  Bewegt sich ein geparktes Fenster ohne Größenänderung, während eine Taste darauf gedrückt ist,
+  übernimmt das Plugin genauso (`slotFrameGeometryChanged` → `takeOverClientMove`), und das Fenster wird
+  wieder geparkt. Sonst würde jede dieser Bewegungen rückgängig gemacht, und das Fenster ließe sich
+  herausgezoomt nicht verschieben.
 - Die Tastatur folgt dem aktiven Fenster; ein Klick aktiviert es.
 - Noch nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
   arbeitet mit physischen Positionen) und Touch.
@@ -455,7 +461,7 @@ Geprüft werden:
   Fenster geparkt sind; Klick während des Nachgleitens.
 - Herausgezoomt arbeiten (Szenario 6): Ein Testfenster (`probe.qml`) meldet Klicks, Mausrad und
   Tastatureingaben mit Position. Geprüft wird, dass sie bei 50 % pixelgenau ankommen, dass ein
-  Rechtsklick-Popup am Mauszeiger aufgeht und Klicks annimmt, dass die Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete, unter Wayland und X11), der Doppelklick zu 100 % führt und die Inhaltsskalierung gesetzt und
+  Rechtsklick-Popup am Mauszeiger aufgeht und Klicks annimmt, dass die Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete, unter Wayland und X11), dass ein X11-Fenster, das sich selbst verschiebt (wie Steam), auf der Fläche mitgeht, der Doppelklick zu 100 % führt und die Inhaltsskalierung gesetzt und
   zurückgesetzt wird. Außerdem: Markierungen und ihr Klick, und kein Nachgleiten nach Kreisbewegungen.
 - Verträglichkeit (`compat-session.sh`): eingebaute Unschärfe oder Better Blur DX, im Container gegen
   dieselbe KWin-Version gebaut, dazu Transparenz, Wobbly Windows und Magic Lamp. Szenario 5 prüft Pannen,

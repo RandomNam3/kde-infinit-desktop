@@ -999,7 +999,13 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
         }
     }
     if (managed->parked) {
-        if (moved) {
+        if (moved && geometry.size() == toQRectF(oldGeometry).size() && m_inputFilter && m_inputFilter->takeOverClientMove(*managed)) {
+            // An X11 client with its own title bar that moves itself (Steam, launchers under
+            // Wine/Proton): it follows the pointer it sees on the parked window with
+            // XMoveWindow instead of asking KWin to move it. Like for a move through KWin,
+            // the plugin moves it on the canvas from now on, and the client gets its release.
+            qCDebug(KWIN_INFINITDESKTOP) << "client moved itself while used zoomed out, taking over:" << w->caption();
+        } else if (moved) {
             qCDebug(KWIN_INFINITDESKTOP) << "parked window" << w->caption() << "was moved to" << geometry.topLeft() << "- parking it again";
         }
         // The window stays where it is on the canvas and is parked again (with its new size).
