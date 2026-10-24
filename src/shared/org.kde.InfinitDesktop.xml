@@ -61,7 +61,7 @@
     <method name="expectNote">
       <arg name="id" type="s" direction="in"/>
     </method>
-    <!-- JSON {"open": b, "pinned": b, "keepAbove": b}. -->
+    <!-- JSON {"id": s, "open": b, "pinned": b, "keepAbove": b}. -->
     <method name="noteState">
       <arg name="id" type="s" direction="in"/>
       <arg type="s" direction="out"/>

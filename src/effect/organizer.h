@@ -257,7 +257,7 @@ private:
     /// Canvases whose areas are recomputed at the next event loop round.
     QSet<QString> m_areaUpdates;
 
-    QHash<QString, CachedTexture> m_labels;
+    std::unordered_map<QString, CachedTexture> m_labels;
     std::unordered_map<KWin::EffectWindow *, CachedTexture> m_icons;
 };
 

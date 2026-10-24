@@ -2,3 +2,7 @@ usr/bin/kde-infinit-desktop-settings
 usr/share/applications/kde-infinit-desktop-settings.desktop
 usr/share/icons/hicolor/*/apps/org.kde.infinitdesktop.*
 usr/share/metainfo/org.kde.infinitdesktop.metainfo.xml
+usr/bin/kde-infinit-desktop-companion
+usr/share/applications/org.kde.infinitdesktop.companion.desktop
+usr/share/dbus-1/services/org.kde.InfinitDesktop.Companion.service
+etc/xdg/autostart/org.kde.infinitdesktop.companion.desktop

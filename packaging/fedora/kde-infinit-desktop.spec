@@ -137,6 +137,7 @@ export QT_QPA_PLATFORM=offscreen
 %endif
 %if %{with app}
 desktop-file-validate %{buildroot}%{_datadir}/applications/kde-infinit-desktop-settings.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
 %endif
 
@@ -154,6 +155,10 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infini
 %files settings
 %{_bindir}/kde-infinit-desktop-settings
 %{_datadir}/applications/kde-infinit-desktop-settings.desktop
+%{_bindir}/kde-infinit-desktop-companion
+%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
+%{_datadir}/dbus-1/services/org.kde.InfinitDesktop.Companion.service
+%{_sysconfdir}/xdg/autostart/org.kde.infinitdesktop.companion.desktop
 %{_datadir}/icons/hicolor/*/apps/org.kde.infinitdesktop.*
 %{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
 %endif

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Infinit Desktop Notes
+Name[de]=Infinit-Desktop-Notizen
+Comment=Notes on the infinite canvas
+Comment[de]=Notizen auf der unendlichen Arbeitsfläche
+Exec=kde-infinit-desktop-companion --new-note
+Icon=knotes
+Terminal=false
+NoDisplay=false
+Categories=Utility;Qt;KDE;
+Keywords=note;sticky;canvas;
+Keywords[de]=Notiz;Zettel;Arbeitsfläche;

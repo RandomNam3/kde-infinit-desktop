@@ -34,7 +34,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QPainter>
+#include <QPalette>
 #include <QPainterPath>
+#include <QPen>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTimer>
@@ -996,6 +998,7 @@ QString Organizer::noteState(const QString &id) const
     for (const auto &[w, managed] : m_effect->m_windows) {
         if (!managed->closed && managed->noteId == id) {
             return QString::fromUtf8(QJsonDocument(QJsonObject{
+                                                       {QStringLiteral("id"), id},
                                                        {QStringLiteral("open"), true},
                                                        {QStringLiteral("pinned"), managed->userPinned},
                                                        {QStringLiteral("keepAbove"), w->keepAbove()},
@@ -1005,6 +1008,7 @@ QString Organizer::noteState(const QString &id) const
     }
     const std::optional<NotePlacement> placement = m_notes.find(id);
     return QString::fromUtf8(QJsonDocument(QJsonObject{
+                                               {QStringLiteral("id"), id},
                                                {QStringLiteral("open"), false},
                                                {QStringLiteral("pinned"), placement && placement->pinned},
                                                {QStringLiteral("keepAbove"), placement && placement->keepAbove},
@@ -1111,28 +1115,28 @@ QList<Organizer::MenuItem> Organizer::menuItems() const
     QList<MenuItem> items;
     const EffectSettings &settings = m_effect->settings();
     if (settings.notesEnabled) {
-        items.append({QStringLiteral("new-note"), i18nc("@action canvas menu", "New Note Here")});
-        items.append({QStringLiteral("toggle-notes"), i18nc("@action canvas menu", "Show / Hide Notes")});
-        items.append({QString(), QString(), true});
+        items.append(MenuItem{QStringLiteral("new-note"), i18nc("@action canvas menu", "New Note Here")});
+        items.append(MenuItem{QStringLiteral("toggle-notes"), i18nc("@action canvas menu", "Show / Hide Notes")});
+        items.append(MenuItem{QString(), QString(), true});
     }
-    items.append({QStringLiteral("new-group"), i18nc("@action canvas menu", "New Group from Selection…")});
-    items.append({QStringLiteral("new-area"), i18nc("@action canvas menu", "New Area from Selection…")});
+    items.append(MenuItem{QStringLiteral("new-group"), i18nc("@action canvas menu", "New Group from Selection…")});
+    items.append(MenuItem{QStringLiteral("new-area"), i18nc("@action canvas menu", "New Area from Selection…")});
     if (KWin::LogicalOutput *output = overlayOutput()) {
         if (Canvas *canvas = m_effect->currentCanvas(output)) {
             if (areaAt(areasOf(*canvas), m_menuCanvasPos) >= 0) {
-                items.append({QStringLiteral("remove-area"), i18nc("@action canvas menu", "Remove This Area")});
+                items.append(MenuItem{QStringLiteral("remove-area"), i18nc("@action canvas menu", "Remove This Area")});
             }
         }
     }
-    items.append({QStringLiteral("map"), i18nc("@action canvas menu", "Show Map")});
-    items.append({QString(), QString(), true});
-    items.append({QStringLiteral("show-all"), i18nc("@action canvas menu", "Show All Windows")});
+    items.append(MenuItem{QStringLiteral("map"), i18nc("@action canvas menu", "Show Map")});
+    items.append(MenuItem{QString(), QString(), true});
+    items.append(MenuItem{QStringLiteral("show-all"), i18nc("@action canvas menu", "Show All Windows")});
     if (KWin::LogicalOutput *output = overlayOutput()) {
         if (Canvas *canvas = m_effect->currentCanvas(output); canvas && !m_effect->targetCamera(*canvas).isUnitZoom()) {
-            items.append({QStringLiteral("zoom-reset"), i18nc("@action canvas menu", "Zoom to 100 %")});
+            items.append(MenuItem{QStringLiteral("zoom-reset"), i18nc("@action canvas menu", "Zoom to 100 %")});
         }
     }
-    items.append({QStringLiteral("settings"), i18nc("@action canvas menu", "Infinit Desktop Settings…")});
+    items.append(MenuItem{QStringLiteral("settings"), i18nc("@action canvas menu", "Infinit Desktop Settings…")});
     return items;
 }
 
@@ -1589,10 +1593,10 @@ KWin::GLTexture *Organizer::labelTexture(const QString &text, int pixelHeight, c
 {
     const QString key = QStringLiteral("%1|%2|%3").arg(pixelHeight).arg(color.rgba()).arg(text);
     auto it = m_labels.find(key);
-    if (it != m_labels.end() && it->texture) {
-        return it->texture.get();
+    if (it != m_labels.end() && it->second.texture) {
+        return it->second.texture.get();
     }
-    if (m_labels.size() >= MaxLabels) {
+    if (m_labels.size() >= std::size_t(MaxLabels)) {
         m_labels.clear();
     }
     QFont font = QGuiApplication::font();

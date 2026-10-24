@@ -74,6 +74,7 @@ set(qml_files
     UiTextField.qml
     UiToolTip.qml
     UpdatesCard.qml
+    WorkspaceCards.qml
 )
 set(qml_paths)
 foreach(file IN LISTS qml_files)
@@ -104,6 +105,8 @@ qt_add_qml_module(kde-infinit-desktop-settings
         updatechecker.h
         windowplacements.cpp
         windowplacements.h
+        workspacemodel.cpp
+        workspacemodel.h
     DEPENDENCIES
         QtQuick
 )

@@ -26,3 +26,11 @@ if(BUILD_SETTINGS_APP)
     )
     target_include_directories(test_updatechecker PRIVATE ${PROJECT_SOURCE_DIR}/src/app)
 endif()
+
+if(BUILD_COMPANION)
+    ecm_add_test(test_notestore.cpp ${PROJECT_SOURCE_DIR}/src/companion/notestore.cpp
+        TEST_NAME test_notestore
+        LINK_LIBRARIES Qt6::Test
+    )
+    target_include_directories(test_notestore PRIVATE ${PROJECT_SOURCE_DIR}/src/companion)
+endif()

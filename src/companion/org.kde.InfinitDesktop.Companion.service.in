@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.kde.InfinitDesktop.Companion
+Exec=@KDE_INSTALL_FULL_BINDIR@/kde-infinit-desktop-companion
