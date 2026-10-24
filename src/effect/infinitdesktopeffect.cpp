@@ -606,8 +606,8 @@ ManagedWindow *InfinitDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
             return managed;
         }
     }
-    if (const auto it = m_x11Popups.constFind(w); it != m_x11Popups.cend() && it.value()) {
-        return record(it.value().data());
+    if (const auto it = m_x11Popups.constFind(w); it != m_x11Popups.cend() && it->popup == w && it->owner) {
+        return record(it->owner.data());
     }
     return nullptr;
 }
@@ -624,8 +624,8 @@ bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
 bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
 {
     for (auto it = m_x11Popups.cbegin(); it != m_x11Popups.cend(); ++it) {
-        KWin::EffectWindow *popup = it.key();
-        if (owner && it.value() == owner && !popup->isDeleted() && popup->isVisible() && popup->opacity() > 0.0 && popup->window()
+        KWin::EffectWindow *popup = it->popup.data();
+        if (owner && popup && it->owner == owner && !popup->isDeleted() && popup->isVisible() && popup->opacity() > 0.0 && popup->window()
             && popup->window()->hitTest(toQRectF(popup->frameGeometry()).center())) {
             // Not the invisible ones that take no input (Steam keeps those around).
             return true;
@@ -930,7 +930,11 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
         // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
         // screen, so it is the one that opened this.
         qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << toQRectF(w->frameGeometry()) << "belongs to" << m_x11Input->caption();
-        m_x11Popups.insert(w, m_x11Input);
+        // Entries of popups gone without windowDeleted.
+        for (auto it = m_x11Popups.begin(); it != m_x11Popups.end();) {
+            it = it->popup ? std::next(it) : m_x11Popups.erase(it);
+        }
+        m_x11Popups.insert(w, X11Popup{w, m_x11Input});
     }
 }
 
@@ -1416,10 +1420,13 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
         return;
     }
     if (m_x11Input.data() == next) {
+        if (!managed) {
+            return;
+        }
         const QRectF frame = toQRectF(w->frameGeometry());
-        const QRectF area = managed ? workArea(outputOf(*canvas)) : QRectF();
+        const QRectF area = workArea(outputOf(*canvas));
         const bool fits = area.width() >= frame.width() && area.height() >= frame.height();
-        if (managed && (frame.contains(KWin::effects->cursorPos()) || (fits && !area.contains(frame)))) {
+        if (frame.contains(KWin::effects->cursorPos()) || (fits && !area.contains(frame))) {
             // The pointer reached where it is physically: KWin would give it the pointer. Or
             // something parked it outside of the screen again (a new window of the same
             // program, a configure): Xwayland would put its clicks at the screen edge.

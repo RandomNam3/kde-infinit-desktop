@@ -572,8 +572,14 @@ private:
     std::unordered_map<KWin::EffectWindow *, std::unique_ptr<ManagedWindow>> m_windows;
     /// X11 window used zoomed out, parked on its screen (setZoomedInputWindow()).
     QPointer<KWin::EffectWindow> m_x11Input;
-    /// X11 popups without parent (isLoneX11Popup()) by the input window they opened for.
-    QHash<KWin::EffectWindow *, QPointer<KWin::EffectWindow>> m_x11Popups;
+    /// X11 popups without parent (isLoneX11Popup()) and the input window they opened for. The
+    /// popup is a QPointer too: KWin does not always announce the end of unmanaged windows.
+    struct X11Popup
+    {
+        QPointer<KWin::EffectWindow> popup;
+        QPointer<KWin::EffectWindow> owner;
+    };
+    QHash<KWin::EffectWindow *, X11Popup> m_x11Popups;
     /// xdg popups by surface: their positioners place them around the drawn parent.
     QHash<KWin::SurfaceInterface *, QPointer<KWin::XdgPopupInterface>> m_xdgPopups;
     CanvasStore m_canvases;
