@@ -49,6 +49,7 @@ ACTION=install
 REBUILD=0
 HOOK_MODE=0
 DRY_RUN=0
+RELOGIN_NEEDED=0
 ENABLE_EFFECT=1
 UPDATE_CHECK=1
 AUTO_REBUILD=1
@@ -342,7 +343,8 @@ dnf_is_dnf5() {
 
 # --------------------------------------------------- dependency handling --
 # Package names of the native package managers. Verified in containers
-# (see docs/INSTALL.md for the distro table).
+# (see docs/INSTALL.md for the distro table). An apt entry "a|b" is satisfied
+# by either package; the first one the repositories have is installed.
 DEPS=()
 PM_NAME=''
 
@@ -358,7 +360,8 @@ deps_for_family() {
                 # runtime: QML modules of the settings app, SVG icons, tools used below
                 qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts
                 qml6-module-qtquick-effects qml6-module-qtquick-shapes qml6-module-qtquick-window
-                qml6-module-qtqml-workerscript qt6-svg-plugins libkf6config-bin qdbus-qt6)
+                # (KDE neon ships the SVG plugins in its qt6-svg, it has no qt6-svg-plugins)
+                qml6-module-qtqml-workerscript 'qt6-svg-plugins|qt6-svg' libkf6config-bin qdbus-qt6)
             ;;
         arch)
             PM_NAME=pacman
@@ -465,6 +468,16 @@ pkg_installed() {
     esac
 }
 
+# dep_installed ENTRY: true if the package of a DEPS entry, or one of its alternatives ("a|b"), is installed
+dep_installed() {
+    local alts alt
+    IFS='|' read -ra alts <<<"$1"
+    for alt in "${alts[@]}"; do
+        pkg_installed "$alt" && return 0
+    done
+    return 1
+}
+
 # apt_available NAME: true if apt can install NAME (real or virtual package)
 apt_available() {
     local line in_rp=0
@@ -517,28 +530,36 @@ install_deps() {
 
     local missing=() p
     for p in "${DEPS[@]}"; do
-        pkg_installed "$p" || missing+=("$p")
+        dep_installed "$p" || missing+=("$p")
     done
     if [ "${#missing[@]}" -eq 0 ]; then
         ok "all build dependencies are installed"
         return 0
     fi
 
-    info "Missing packages (${PM_NAME}): ${missing[*]}"
+    info "Missing packages (${PM_NAME}): ${missing[*]//|/ or }"
     confirm "Install them now?" || die "aborted - install them yourself or re-run with --no-deps"
 
     case $PM_NAME in
         apt)
             run_root env DEBIAN_FRONTEND=noninteractive apt-get update
-            local avail=() unavailable=()
+            local avail=() unavailable=() alts alt choice
             for p in "${missing[@]}"; do
-                if [ "$DRY_RUN" -eq 1 ] || apt_available "$p"; then
-                    avail+=("$p")
+                choice=''
+                IFS='|' read -ra alts <<<"$p"
+                for alt in "${alts[@]}"; do
+                    if [ "$DRY_RUN" -eq 1 ] || apt_available "$alt"; then
+                        choice=$alt
+                        break
+                    fi
+                done
+                if [ -n "$choice" ]; then
+                    avail+=("$choice")
                 else
                     unavailable+=("$p")
                 fi
             done
-            [ "${#unavailable[@]}" -eq 0 ] || warn "not available in your repositories (skipped): ${unavailable[*]}"
+            [ "${#unavailable[@]}" -eq 0 ] || warn "not available in your repositories (skipped): ${unavailable[*]//|/ or }"
             [ "${#avail[@]}" -eq 0 ] || run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${avail[@]}"
             ;;
         pacman)
@@ -693,6 +714,23 @@ kwin_effects_call() {
     return 127
 }
 
+running_plugin_version() {
+    # version of the plugin KWin is running right now (empty if none)
+    local q
+    for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
+        if have "$q"; then
+            "$q" org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.version 2>/dev/null
+            return
+        fi
+    done
+    if have gdbus; then
+        gdbus call --session --dest org.kde.KWin --object-path /InfinitDesktop \
+            --method org.kde.InfinitDesktop.version 2>/dev/null | sed -n "s/^('\(.*\)',)\$/\1/p"
+        return
+    fi
+    return 127
+}
+
 kwriteconfig() {
     local k
     for k in kwriteconfig6 /usr/lib/kf6/bin/kwriteconfig6 /usr/lib64/kf6/bin/kwriteconfig6; do
@@ -724,9 +762,23 @@ enable_effect() {
     fi
     print_cmd qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect "$EFFECT_ID"
     [ "$DRY_RUN" -eq 1 ] && return 0
+    local was_loaded=0 running version
+    if kwin_effects_call isEffectLoaded "$EFFECT_ID" 2>/dev/null | grep -q true; then
+        was_loaded=1
+    fi
     kwin_effects_call loadEffect "$EFFECT_ID" >/dev/null 2>&1 || true
     if kwin_effects_call isEffectLoaded "$EFFECT_ID" 2>/dev/null | grep -q true; then
-        ok "effect '${EFFECT_ID}' is loaded"
+        # A running KWin keeps the plugin library it loaded first: neither loadEffect
+        # nor reloading the effect brings in the build that was just installed.
+        running=$(running_plugin_version || true)
+        version=$(project_version)
+        if [ "$was_loaded" -eq 1 ] || { [ -n "$running" ] && [ -n "$version" ] && [ "$running" != "$version" ]; }; then
+            RELOGIN_NEEDED=1
+            warn "KWin keeps running the build it loaded before${running:+ (version $running)}."
+            warn "Log out and back in to use the one just installed${version:+ (version $version)}."
+        else
+            ok "effect '${EFFECT_ID}' is loaded"
+        fi
     else
         warn "KWin did not load the effect right now. This is normal right after a KWin update (log out and back in)."
         warn "Otherwise check: journalctl --user -b -g ${EFFECT_ID}"
@@ -1080,6 +1132,9 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
     echo
     info "Done."
     echo "Next steps:"
+    if [ "$RELOGIN_NEEDED" -eq 1 ]; then
+        echo "  * Log out and back in: KWin only loads the new build at login"
+    fi
     echo "  * Configure: System Settings > Window Management > Desktop Effects > KDE Infinit Desktop"
     if [ "$WITH_APP" = ON ]; then
         echo "    or run: kde-infinit-desktop-settings"
