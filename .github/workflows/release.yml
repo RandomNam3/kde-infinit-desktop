@@ -1,45 +1,103 @@
 # SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Creates the GitHub release for a version tag (vX.Y.Z). The tag has to match
-# the project version in CMakeLists.txt; the release notes are the body of the
-# annotated tag (git tag -a --cleanup=verbatim -F notes.md vX.Y.Z). GitHub adds
-# the source archive the packages build from (archive/refs/tags/vX.Y.Z.tar.gz).
+# Every version gets its tag (vX.Y.Z) and its GitHub release, which the update
+# check of the settings app reads.
+#
+# - Push to main: if the project version in CMakeLists.txt has no tag yet, the
+#   tag is created on that commit and the release is published.
+# - Manual run with a commit: releases the version of that commit (for a
+#   version that was merged without its release).
+# - Pushing a tag vX.Y.Z by hand still works; it has to match the version.
+#
+# The release notes are docs/releases/X.Y.Z.md (Markdown, without a title line;
+# taken from main, so they can be added after the fact); without that file, the
+# body of an annotated tag. GitHub adds the source archive the packages build
+# from (archive/refs/tags/vX.Y.Z.tar.gz).
 # Prebuilt packages per KWin version come from packages.yml ("kwin-builds").
 
 name: Release
 
 on:
   push:
+    branches: [main]
+    paths: ['CMakeLists.txt', 'docs/releases/**']
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit (or branch) whose version is released
+        default: main
 
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
-    name: GitHub release
+    name: Tag and GitHub release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          fetch-depth: 0
 
-      - name: Tag matches the project version
+      - name: Version, tag and notes
+        id: version
         run: |
           ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
-          echo "tag: $GITHUB_REF_NAME, project version: $ver"
-          [ "v$ver" = "$GITHUB_REF_NAME" ] || { echo "::error::tag $GITHUB_REF_NAME does not match the project version $ver"; exit 1; }
+          [ -n "$ver" ] || { echo "::error::no project version in CMakeLists.txt"; exit 1; }
+          tag="v$ver"
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "$GITHUB_REF_NAME" != "$tag" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match the project version $ver"
+            exit 1
+          fi
+          echo "version $ver, tag $tag, commit $(git rev-parse --short HEAD)"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
-      - name: Create the release
+          # the checkout may not carry the annotated tag object, fetch it explicitly
+          git fetch --force --no-tags origin "refs/tags/$tag:refs/tags/$tag" 2>/dev/null || true
+          git fetch --no-tags origin main
+          if git show "origin/main:docs/releases/$ver.md" > notes.md 2>/dev/null && [ -s notes.md ]; then
+            echo "notes: docs/releases/$ver.md"
+          elif [ -s "docs/releases/$ver.md" ]; then
+            cp "docs/releases/$ver.md" notes.md
+            echo "notes: docs/releases/$ver.md of this commit"
+          elif git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            git for-each-ref "refs/tags/$tag" --format='%(contents:body)' > notes.md
+            echo "notes: body of the tag"
+          fi
+          if [ ! -s notes.md ]; then
+            echo "::warning::no release notes in docs/releases/$ver.md"
+            echo "KDE Infinit Desktop $ver" > notes.md
+          fi
+
+      - name: Create the tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG exists ($(git rev-parse --short "$TAG^{commit}"))"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          { echo "KDE Infinit Desktop ${TAG#v}"; echo; cat notes.md; } > tag-message.md
+          git tag -a --cleanup=verbatim -F tag-message.md "$TAG" HEAD
+          git push origin "refs/tags/$TAG"
+
+      - name: Create or update the release
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
-          # the checkout may not carry the annotated tag object, fetch it explicitly
-          git fetch --force --no-tags origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
-          git for-each-ref "refs/tags/$GITHUB_REF_NAME" --format='%(contents:body)' > notes.md
-          [ -s notes.md ] || echo "KDE Infinit Desktop ${GITHUB_REF_NAME#v}" > notes.md
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
           else
-            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
-              --title "KDE Infinit Desktop ${GITHUB_REF_NAME#v}" --notes-file notes.md
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag \
+              --title "KDE Infinit Desktop ${TAG#v}" --notes-file notes.md
           fi

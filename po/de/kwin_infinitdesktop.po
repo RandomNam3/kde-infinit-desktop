@@ -2045,3 +2045,94 @@ msgstr "Fenster am Bildschirm angeheftet, immer im Vordergrund"
 
 msgid "Window pinned to the screen"
 msgstr "Fenster am Bildschirm angeheftet"
+
+# ---------------------------------------------------------------------------
+# Update check (settings app)
+# ---------------------------------------------------------------------------
+
+msgid "GitHub sent an unexpected answer."
+msgstr "GitHub hat unerwartet geantwortet."
+
+msgid ""
+"The update is installed. Log out and back in once so that KWin loads the new "
+"version."
+msgstr ""
+"Das Update ist installiert. Melden Sie sich einmal ab und wieder an, damit "
+"KWin die neue Version lädt."
+
+msgid "The update failed, see the messages above."
+msgstr "Das Update ist fehlgeschlagen, siehe die Meldungen oben."
+
+msgid "Press Enter to close this window. "
+msgstr "Eingabetaste drücken, um dieses Fenster zu schließen. "
+
+msgid "Looking for updates…"
+msgstr "Suche nach Updates …"
+
+msgctxt "@info %1 is a version number"
+msgid "Version %1 is up to date"
+msgstr "Version %1 ist aktuell"
+
+msgctxt "@info %1 is a version number"
+msgid "Version %1 is available"
+msgstr "Version %1 ist verfügbar"
+
+msgid "Could not look for updates"
+msgstr "Die Suche nach Updates ist fehlgeschlagen"
+
+msgctxt "@info %1 is a time"
+msgid "Checked at %1"
+msgstr "Geprüft um %1"
+
+msgctxt "@info %1 is a version number"
+msgid "You have version %1. What is new:"
+msgstr "Installiert ist Version %1. Das ist neu:"
+
+msgid "Not checked for updates yet"
+msgstr "Noch nicht nach Updates gesucht"
+
+msgctxt "@action:button look for a new version"
+msgid "Check Now"
+msgstr "Jetzt prüfen"
+
+msgctxt "@title %1 is a version number"
+msgid "Version %1"
+msgstr "Version %1"
+
+msgctxt "@title %1 is a version number, %2 a date"
+msgid "Version %1 – %2"
+msgstr "Version %1 – %2"
+
+msgid ""
+"The update opens a terminal window: the installer builds the new version and "
+"asks for your password. Afterwards, log out and back in once so that KWin "
+"loads the new version."
+msgstr ""
+"Das Update öffnet ein Terminalfenster: Der Installer baut die neue Version "
+"und fragt nach Ihrem Passwort. Melden Sie sich danach einmal ab und wieder "
+"an, damit KWin die neue Version lädt."
+
+msgctxt "@action:button"
+msgid "Install Update"
+msgstr "Update installieren"
+
+msgctxt "@action:button"
+msgid "Open on GitHub"
+msgstr "Auf GitHub öffnen"
+
+msgid ""
+"The update is running in the terminal window. When it has finished, log out "
+"and back in."
+msgstr ""
+"Das Update läuft im Terminalfenster. Wenn es fertig ist, melden Sie sich ab "
+"und wieder an."
+
+msgid ""
+"No terminal program was found. Run this command in a terminal, then log out "
+"and back in:"
+msgstr ""
+"Kein Terminalprogramm gefunden. Führen Sie diesen Befehl in einem Terminal "
+"aus und melden Sie sich danach ab und wieder an:"
+
+msgid "Look for updates when this app starts"
+msgstr "Beim Start dieser App nach Updates suchen"

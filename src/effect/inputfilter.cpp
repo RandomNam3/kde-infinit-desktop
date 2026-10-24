@@ -174,6 +174,7 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
         KWin::EffectWindow *w = m_forward.window;
         const std::optional<QMatrix4x4> transform = w ? m_effect->zoomedInputTransform(w) : std::nullopt;
         if (!transform) {
+            qCDebug(KWIN_INFINITDESKTOP) << "window used while zoomed out is gone, ending its input";
             endZoomedInput();
             return false;
         }
@@ -200,11 +201,14 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
 bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
 {
     if (!m_forward.buttons || m_forward.window != window.effectWindow || m_drag.kind != DragKind::None) {
+        qCDebug(KWIN_INFINITDESKTOP) << "not taking over the move: button held" << bool(m_forward.buttons) << "on"
+                                     << (m_forward.window ? m_forward.window->caption() : QString()) << "drag" << int(m_drag.kind);
         return false;
     }
     Canvas *canvas = m_effect->canvasByKey(window.canvasKey);
     KWin::LogicalOutput *output = canvas ? m_effect->outputOf(*canvas) : nullptr;
     if (!canvas || !canvas->navigation || !output) {
+        qCDebug(KWIN_INFINITDESKTOP) << "not taking over the move: canvas not zoomed out";
         return false;
     }
     // Where the user holds the window. X11 clients had KWin warp the pointer onto the parked
@@ -231,6 +235,7 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     m_drag.window = window.effectWindow;
     m_drag.moved = true;
     m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - window.canvasPos;
+    qCDebug(KWIN_INFINITDESKTOP) << "taking over the move of" << window.effectWindow->caption() << "at" << pos << "(pointer at" << KWin::effects->cursorPos() << ")";
     if (KWin::effects->cursorPos() != pos) {
         // Handled by the drag above: the window stays where it is.
         KWin::input()->warpPointer(pos);
