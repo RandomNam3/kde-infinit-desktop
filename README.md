@@ -58,6 +58,14 @@ Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
 
 ## Installation
 
+Ein Befehl, als normaler Benutzer (nicht mit `sudo`, der Installer fragt selbst nach dem Passwort):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash
+```
+
+Oder aus einem Klon des Repositorys:
+
 ```bash
 git clone https://github.com/RandomNam3/kde-infinit-desktop.git
 cd kde-infinit-desktop
