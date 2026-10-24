@@ -77,6 +77,27 @@ read -r TX TY <<<"$(probe_point 300 $((-OY / 2)))"
 input abs "$TX" "$TY" sleep 60
 input drag "$TX" "$TY" $((TX + 100)) "$TY" 10 250 left sleep 400
 check "dragging the title bar while zoomed out moves the window on the canvas" "(.windows[] | select(.caption==\"Probe\") | .canvasX) >= ($CX0 + 180)"
+
+# client side title bar (browser tabs): the client asks KWin to move it, the plugin moves it on the canvas
+CX0=$(state | jq '.windows[] | select(.caption=="Probe") | .canvasX')
+CY0=$(state | jq '.windows[] | select(.caption=="Probe") | .canvasY')
+read -r SX SY <<<"$(probe_point 300 380)"
+input abs "$SX" "$SY" sleep 60
+input drag "$SX" "$SY" $((SX + 100)) $((SY - 60)) 10 250 left sleep 400
+if [ "$(last SYSTEMMOVE)" = true ]; then echo "PASS: the client asked to be moved (client side title bar)"; else echo "FAIL: the client did not start a move ('$(last SYSTEMMOVE)')"; FAILURES=$((FAILURES+1)); fi
+echo "Probe after the client side move: $(win Probe)"
+# 100 x -60 screen pixels are 200 x -120 on the canvas at 50 %, less what the client needs to see a drag
+check "a client side move while zoomed out moves the window on the canvas" "(.windows[] | select(.caption==\"Probe\") | .canvasX >= ($CX0 + 120) and .canvasY <= ($CY0 - 60))"
+check "the client side move is not left to KWin (window parked, drawn at the zoom)" '(.windows[] | select(.caption=="Probe") | .mode == "canvas" and .parked == true)'
+check "the client side move did not return to 100 %" '[.canvases[] | select(.current)][0] | .navigation == true and .camera.zoom == 0.5'
+# (another point than the clicks before, so an old PRESS line cannot pass)
+read -r PX PY <<<"$(probe_point 150 200)"
+input abs "$PX" "$PY" sleep 60
+input drag "$PX" "$PY" "$PX" "$PY" 1 40 left sleep 300
+read -r CX CY _ <<<"$(last PRESS)"
+echo "click at screen $PX,$PY after the move arrived at $CX,$CY (expected about 150,200)"
+if [ -n "$CX" ] && [ $((CX > 150 ? CX - 150 : 150 - CX)) -le 3 ] && [ $((CY > 200 ? CY - 200 : 200 - CY)) -le 3 ]; then echo "PASS: after the client side move clicks reach the window at the right position"; else echo "FAIL: click after the client side move arrived at '$CX,$CY'"; FAILURES=$((FAILURES+1)); fi
+
 read -r TX TY <<<"$(probe_point 300 $((-OY / 2)))"
 input abs "$TX" "$TY" sleep 60 click left sleep 80 click left sleep 900
 check "double click on the title bar returns to 100 %" '[.canvases[] | select(.current)][0] | .navigation == false and .camera.zoom == 1'

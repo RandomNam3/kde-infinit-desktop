@@ -165,33 +165,6 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
             endZoomedInput();
             return false;
         }
-        KWin::Window *client = w->window();
-        ManagedWindow *managed = m_effect->findManaged(w);
-        if (client && managed && client->isInteractiveMove()) {
-            // Moved by its own title bar (client side decoration): move it on the canvas instead
-            // of letting KWin drag the parked window around.
-            client->cancelInteractiveMoveResize();
-            Canvas *canvas = m_effect->canvasByKey(managed->canvasKey);
-            KWin::LogicalOutput *output = canvas ? m_effect->outputOf(*canvas) : nullptr;
-            // The client gets its release now; the real one ends the canvas move.
-            seat->setTimestamp(time);
-            for (quint32 button : std::as_const(m_forward.nativeButtons)) {
-                seat->notifyPointerButton(button, KWin::PointerButtonState::Released);
-            }
-            seat->notifyPointerFrame();
-            forwardLeave(pos);
-            if (canvas && output) {
-                m_drag = Drag{};
-                m_drag.kind = DragKind::Window;
-                m_drag.button = Qt::LeftButton;
-                m_drag.canvasKey = canvas->key;
-                m_drag.pressPos = pos;
-                m_drag.window = w;
-                m_drag.moved = true;
-                m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - managed->canvasPos;
-            }
-            return true;
-        }
         seat->setFocusedPointerSurfaceTransformation(*transform);
         send();
         return true;
@@ -209,6 +182,41 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
         seat->setFocusedPointerSurfaceTransformation(target->inputTransform);
     }
     send();
+    return true;
+}
+
+bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
+{
+    if (!m_forward.buttons || m_forward.window != window.effectWindow || m_drag.kind != DragKind::None) {
+        return false;
+    }
+    Canvas *canvas = m_effect->canvasByKey(window.canvasKey);
+    KWin::LogicalOutput *output = canvas ? m_effect->outputOf(*canvas) : nullptr;
+    if (!canvas || !canvas->navigation || !output) {
+        return false;
+    }
+    const QPointF pos = KWin::effects->cursorPos();
+    // Usually the left button; otherwise the lowest one held.
+    Qt::MouseButton button = Qt::LeftButton;
+    while (!(m_forward.buttons & button)) {
+        button = Qt::MouseButton(button << 1);
+    }
+    // The client gets its release now; the real one ends the canvas move.
+    KWin::SeatInterface *seat = KWin::waylandServer()->seat();
+    for (quint32 native : std::as_const(m_forward.nativeButtons)) {
+        seat->notifyPointerButton(native, KWin::PointerButtonState::Released);
+    }
+    seat->notifyPointerFrame();
+    forwardLeave(pos);
+
+    m_drag = Drag{};
+    m_drag.kind = DragKind::Window;
+    m_drag.button = button;
+    m_drag.canvasKey = canvas->key;
+    m_drag.pressPos = pos;
+    m_drag.window = window.effectWindow;
+    m_drag.moved = true;
+    m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - window.canvasPos;
     return true;
 }
 

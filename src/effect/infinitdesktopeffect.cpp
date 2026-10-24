@@ -636,7 +636,7 @@ WindowMode InfinitDesktopEffect::modeOf(const ManagedWindow &window) const
     if (w->isFullScreen()) {
         return WindowMode::Fullscreen;
     }
-    if ((window.window->isInteractiveMove() || window.window->isInteractiveResize())) {
+    if ((window.window->isInteractiveMove() || window.window->isInteractiveResize()) && !window.moveTakenOver) {
         return WindowMode::Moving;
     }
     if (isPinned(window)) {
@@ -1008,6 +1008,21 @@ void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
     if (!managed || !managed->window) {
         return;
     }
+    managed->moveTakenOver = false;
+    if (w->isUserMove() && m_inputFilter && m_inputFilter->takeOverClientMove(*managed)) {
+        // A window used while zoomed out moves itself (client side title bar). KWin would drag
+        // the parked window around at 100 %, so the plugin moves it on the canvas instead.
+        // KWin's move is cancelled once KWin has finished starting it.
+        managed->moveTakenOver = true;
+        QPointer<KWin::Window> client = managed->window;
+        QTimer::singleShot(0, this, [client]() {
+            if (client && client->isInteractiveMove()) {
+                client->cancelInteractiveMoveResize();
+            }
+        });
+        updateActivity();
+        return;
+    }
     // Pinned windows are moved like on a normal desktop: no screen fling, no edge scrolling.
     if (w->isUserMove() && !isPinned(*managed)) {
         m_move = MoveState{managed->window, managed, managed->window->output(), KWin::effects->cursorPos()};
@@ -1050,6 +1065,11 @@ void InfinitDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
 
     ManagedWindow *managed = record(w);
     if (!managed || !managed->window || managed->closed) {
+        return;
+    }
+    if (std::exchange(managed->moveTakenOver, false)) {
+        // KWin's move was cancelled, its geometry is the parked one: the canvas position stays.
+        updateActivity();
         return;
     }
     if (isPinned(*managed)) {
