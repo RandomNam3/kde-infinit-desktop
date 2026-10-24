@@ -624,7 +624,10 @@ bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
 bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
 {
     for (auto it = m_x11Popups.cbegin(); it != m_x11Popups.cend(); ++it) {
-        if (owner && it.value() == owner && !it.key()->isDeleted() && it.key()->isVisible()) {
+        KWin::EffectWindow *popup = it.key();
+        if (owner && it.value() == owner && !popup->isDeleted() && popup->isVisible() && popup->opacity() > 0.0 && popup->window()
+            && popup->window()->hitTest(toQRectF(popup->frameGeometry()).center())) {
+            // Not the invisible ones that take no input (Steam keeps those around).
             return true;
         }
     }
@@ -926,7 +929,7 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
         // Menus of Steam (CEF) and Wine are override-redirect windows without
         // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
         // screen, so it is the one that opened this.
-        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << "belongs to" << m_x11Input->caption();
+        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << w->frameGeometry() << "belongs to" << m_x11Input->caption();
         m_x11Popups.insert(w, m_x11Input);
     }
 }
@@ -1971,6 +1974,11 @@ std::optional<ZoomedTarget> InfinitDesktopEffect::zoomedTargetAt(const QPointF &
         const QRectF frame = toQRectF(w->frameGeometry());
         const QRectF visual(frame.topLeft() + decision.translation, frame.size() * decision.scale);
         if (!visual.contains(pos)) {
+            continue;
+        }
+        if (!self && w->window() && !w->window()->hitTest(frame.topLeft() + (pos - visual.topLeft()) / decision.scale)) {
+            // Steam (CEF) keeps invisible popups around that take no input (empty input
+            // shape); like KWin, look past them.
             continue;
         }
         const std::optional<QMatrix4x4> transform = zoomedInputTransform(w);
