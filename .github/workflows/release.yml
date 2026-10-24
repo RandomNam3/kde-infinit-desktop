@@ -7,7 +7,10 @@
 # - Push to main: if the project version in CMakeLists.txt has no tag yet, the
 #   tag is created on that commit and the release is published.
 # - Manual run with a commit: releases the version of that commit (for a
-#   version that was merged without its release).
+#   version that was merged without its release). GitHub only lets this
+#   workflow's token create a tag on a commit whose workflow files match the
+#   ones on main; for an older commit, create the tag by hand (a release on
+#   github.com) and run this with the tag to add the notes.
 # - Pushing a tag vX.Y.Z by hand still works; it has to match the version.
 #
 # The release notes are docs/releases/X.Y.Z.md (Markdown, without a title line;

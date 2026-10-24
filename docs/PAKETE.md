@@ -118,5 +118,9 @@ Einstellungs-App liest genau diese Releases.
 3. Nach `main` übernehmen. `.github/workflows/release.yml` legt dann den Tag auf diesem
    Commit an und veröffentlicht das Release mit den Patchnotes.
 
-Fehlt das Release einer schon übernommenen Version, den Workflow „Release“ von Hand
-starten und den Commit dieser Version angeben.
+Fehlt das Release einer schon übernommenen Version, das Release auf GitHub von Hand
+anlegen: neuer Tag `vX.Y.Z` auf dem Commit dieser Version (das geht direkt über
+`…/releases/new?tag=vX.Y.Z&target=<Commit>`). Der Workflow ergänzt danach die Patchnotes;
+sonst ihn von Hand mit dem Tag als Commit starten. Den Tag selbst kann der Workflow nur auf
+Commits setzen, deren Workflow-Dateien denen auf `main` entsprechen: Für ältere Commits
+verweigert GitHub dem Workflow-Token das Anlegen.
