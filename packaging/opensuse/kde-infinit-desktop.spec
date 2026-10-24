@@ -27,7 +27,7 @@
 %endif
 
 Name:           kde-infinit-desktop
-Version:        0.3.0
+Version:        0.4.0
 Release:        1%{?kwin_tag}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
