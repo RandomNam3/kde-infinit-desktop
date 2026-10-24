@@ -233,6 +233,7 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     }
     seat->notifyPointerFrame();
     forwardLeave(pos);
+    m_effect->holdZoomedInputWindow(window.effectWindow);
 
     m_drag = Drag{};
     m_drag.kind = DragKind::Window;
@@ -411,6 +412,10 @@ bool CanvasInputFilter::finishDrag(KWin::PointerButtonEvent *event)
             }
         } else if (!canvas->navigation) {
             m_effect->commit(*canvas);
+        } else if (!m_forward.window) {
+            // Released after a move: like a fresh hover (the X11 window kept its input spot).
+            m_effect->setZoomedInputWindow(nullptr);
+            forwardMotion(event->position, event->timestamp);
         }
         return true;
     }

@@ -604,7 +604,29 @@ ManagedWindow *InfinitDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
             return managed;
         }
     }
+    if (const auto it = m_x11Popups.constFind(w); it != m_x11Popups.cend() && it.value()) {
+        return record(it.value().data());
+    }
     return nullptr;
+}
+
+bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
+{
+    KWin::Window *window = w ? w->window() : nullptr;
+    if (!window || !w->isX11Client() || w->isDNDIcon() || record(w) || window->transientFor()) {
+        return false;
+    }
+    return !w->isManaged() || w->isPopupWindow() || w->isMenu() || w->isDropdownMenu() || w->isPopupMenu() || w->isTooltip() || w->isComboBox();
+}
+
+bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
+{
+    for (auto it = m_x11Popups.cbegin(); it != m_x11Popups.cend(); ++it) {
+        if (owner && it.value() == owner && !it.key()->isDeleted() && it.key()->isVisible()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 QRectF InfinitDesktopEffect::canvasRect(const ManagedWindow &window) const
@@ -898,6 +920,13 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
 {
     setupWindow(w);
     adoptWindow(w, true);
+    if (m_x11Input && isLoneX11Popup(w)) {
+        // Menus of Steam (CEF) and Wine are override-redirect windows without
+        // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
+        // screen, so it is the one that opened this.
+        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << "belongs to" << m_x11Input->caption();
+        m_x11Popups.insert(w, m_x11Input);
+    }
 }
 
 void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
@@ -921,6 +950,7 @@ void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
 
 void InfinitDesktopEffect::slotWindowDeleted(KWin::EffectWindow *w)
 {
+    m_x11Popups.remove(w);
     forgetWindow(w);
     updateActivity();
 }
@@ -1369,6 +1399,11 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
         managed = nullptr;
     }
     KWin::EffectWindow *next = managed ? w : nullptr;
+    if (m_x11Input && hasOpenX11Popup(m_x11Input)) {
+        // Its menu stays where the client put it: the window must not move away from it,
+        // and stays the input window until the menu is closed.
+        return;
+    }
     if (m_x11Input.data() == next) {
         if (managed && toQRectF(w->frameGeometry()).contains(KWin::effects->cursorPos())) {
             // The pointer reached where it is physically: KWin would give it the pointer.
@@ -1392,6 +1427,16 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
                 parkWindow(*managed, outputOf(*canvas));
             }
         });
+    }
+}
+
+void InfinitDesktopEffect::holdZoomedInputWindow(KWin::EffectWindow *w)
+{
+    // Jumping between its screen and the void during the move makes the client (and
+    // effects like Wobbly Windows) see moves the user did not make. Parked again by the
+    // caller of takeOverClientMove(), at its input spot.
+    if (w && w->isX11Client() && record(w)) {
+        m_x11Input = w;
     }
 }
 
@@ -1694,6 +1739,7 @@ void InfinitDesktopEffect::leaveNavigation(Canvas &canvas)
         m_inputFilter->endZoomedInput();
     }
     m_x11Input.clear();
+    m_x11Popups.clear();
     // At 100 % the windows draw at full resolution again, right away.
     for (auto &[w, managed] : m_windows) {
         if (managed->canvasKey == canvas.key) {

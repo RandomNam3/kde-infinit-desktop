@@ -315,7 +315,14 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   Bewegt sich ein geparktes Fenster ohne Größenänderung, während eine Taste darauf gedrückt ist,
   übernimmt das Plugin genauso (`slotFrameGeometryChanged` → `takeOverClientMove`), und das Fenster wird
   wieder geparkt. Sonst würde jede dieser Bewegungen rückgängig gemacht, und das Fenster ließe sich
-  herausgezoomt nicht verschieben.
+  herausgezoomt nicht verschieben. Während das Plugin es verschiebt, bleibt ein X11-Fenster an seinem
+  Platz auf dem Bildschirm (`holdZoomedInputWindow`), statt zwischen Bildschirm und Außenbereich zu
+  springen.
+- Menüs und Dropdowns von Steam (CEF) und Wine sind X11-Fenster ohne `WM_TRANSIENT_FOR`, meist
+  override-redirect. KWin kennt deshalb kein Elternfenster. Öffnet sich herausgezoomt ein solches Fenster,
+  gehört es zu dem X11-Fenster, das gerade den Zeiger hat (`isLoneX11Popup`, `m_x11Popups`), denn nur
+  dieses steht auf dem Bildschirm. Es wird dann wie ein Popup um das gezeichnete Elternfenster
+  verkleinert und verschoben. Solange es offen ist, bleibt das Elternfenster, wo es ist.
 - Die Tastatur folgt dem aktiven Fenster; ein Klick aktiviert es.
 - Noch nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
   arbeitet mit physischen Positionen) und Touch.

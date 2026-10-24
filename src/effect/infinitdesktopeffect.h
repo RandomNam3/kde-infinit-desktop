@@ -424,6 +424,9 @@ public:
     /// would get every click at the screen edge: while it has the pointer, it is parked on its
     /// screen instead, out of the way of the pointer (see x11InputSpot()).
     void setZoomedInputWindow(KWin::EffectWindow *w);
+    /// Keeps @p w on its screen while the plugin moves it after the client started a move
+    /// itself, without moving it right now (KWin is reporting its geometry change).
+    void holdZoomedInputWindow(KWin::EffectWindow *w);
     void transferWindow(ManagedWindow &window, Canvas &to, const QPointF &canvasPos);
     void activateAndReveal(ManagedWindow &window, bool returnToUnitZoom);
     void restoreTile(ManagedWindow &window);
@@ -478,6 +481,10 @@ private:
     ManagedWindow *record(KWin::Window *window) const;
     /// The managed window a popup/transient belongs to.
     ManagedWindow *ownerRecord(KWin::EffectWindow *w) const;
+    /// An X11 menu/popup that names no parent (WM_TRANSIENT_FOR), like the override-redirect
+    /// menus of Steam (CEF) and Wine.
+    bool isLoneX11Popup(KWin::EffectWindow *w) const;
+    bool hasOpenX11Popup(KWin::EffectWindow *owner) const;
     QString canvasKeyFor(KWin::LogicalOutput *output, KWin::VirtualDesktop *desktop) const;
     QString canvasKeyForWindow(const ManagedWindow &window, KWin::LogicalOutput *output) const;
     Canvas &ensureCanvas(const QString &key, const QString &outputName, const QString &desktopId);
@@ -565,6 +572,8 @@ private:
     std::unordered_map<KWin::EffectWindow *, std::unique_ptr<ManagedWindow>> m_windows;
     /// X11 window used zoomed out, parked on its screen (setZoomedInputWindow()).
     QPointer<KWin::EffectWindow> m_x11Input;
+    /// X11 popups without parent (isLoneX11Popup()) by the input window they opened for.
+    QHash<KWin::EffectWindow *, QPointer<KWin::EffectWindow>> m_x11Popups;
     /// xdg popups by surface: their positioners place them around the drawn parent.
     QHash<KWin::SurfaceInterface *, QPointer<KWin::XdgPopupInterface>> m_xdgPopups;
     CanvasStore m_canvases;
