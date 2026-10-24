@@ -538,7 +538,7 @@ ls "$(qtpaths6 --query QT_INSTALL_PLUGINS)"/kwin/effects/plugins/ | grep infinit
 **Protokoll**
 
 ```sh
-journalctl --user -b -g infinitdesktop
+journalctl --user -b QT_CATEGORY=kwin_effect_infinitdesktop
 journalctl --user -b -u plasma-kwin_wayland        # KWin allgemein
 ```
 

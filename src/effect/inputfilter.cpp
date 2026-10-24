@@ -86,6 +86,17 @@ bool CanvasInputFilter::pointerMotion(KWin::PointerMotionEvent *event)
     if (m_shortcutPass.action && !event->warp) {
         m_shortcutPass = {};
     }
+    if (m_drag.kind == DragKind::Window && m_drag.takenOver) {
+        if (event->warp) {
+            // KWin starting another move the client asked for puts the pointer where the
+            // client thinks it is (its parked window): back to the hand.
+            if (event->position != m_drag.handPos) {
+                KWin::input()->warpPointer(m_drag.handPos);
+            }
+            return true;
+        }
+        m_drag.handPos = event->position;
+    }
     if (m_drag.kind != DragKind::None) {
         return handleDragMotion(event);
     }
@@ -233,6 +244,7 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     }
     seat->notifyPointerFrame();
     forwardLeave(pos);
+    m_effect->holdZoomedInputWindow(window.effectWindow);
 
     m_drag = Drag{};
     m_drag.kind = DragKind::Window;
@@ -241,6 +253,8 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     m_drag.pressPos = pos;
     m_drag.window = window.effectWindow;
     m_drag.moved = true;
+    m_drag.takenOver = true;
+    m_drag.handPos = pos;
     m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - window.canvasPos;
     qCDebug(KWIN_INFINITDESKTOP) << "taking over the move of" << window.effectWindow->caption() << "at" << pos << "(pointer at" << KWin::effects->cursorPos() << ")";
     if (KWin::effects->cursorPos() != pos) {
@@ -248,6 +262,11 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
         KWin::input()->warpPointer(pos);
     }
     return true;
+}
+
+bool CanvasInputFilter::isMovingWindow(const KWin::EffectWindow *w) const
+{
+    return w && m_drag.kind == DragKind::Window && m_drag.window.data() == w;
 }
 
 void CanvasInputFilter::updateResizeCursor(const QPointF &pos)
@@ -331,6 +350,7 @@ bool CanvasInputFilter::handleDragMotion(KWin::PointerMotionEvent *event)
                 m_drag.canvasKey = target->key;
             } else {
                 effectivePos = clampInto(pos, rectOf(source));
+                m_drag.handPos = effectivePos;
                 if (!event->warp) {
                     KWin::input()->warpPointer(effectivePos);
                 }
@@ -411,6 +431,10 @@ bool CanvasInputFilter::finishDrag(KWin::PointerButtonEvent *event)
             }
         } else if (!canvas->navigation) {
             m_effect->commit(*canvas);
+        } else if (!m_forward.window) {
+            // Released after a move: like a fresh hover (the X11 window kept its input spot).
+            m_effect->setZoomedInputWindow(nullptr);
+            forwardMotion(event->position, event->timestamp);
         }
         return true;
     }

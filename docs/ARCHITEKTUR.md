@@ -306,16 +306,24 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   eine Position auf dem X-Bildschirm um (physische Fensterposition + Position im Fenster) und hält den
   Zeiger dort innerhalb des Bildschirms. Bei einem geparkten Fenster außerhalb des Bildschirms landete
   so jeder Klick am Rand und nicht im Fenster. Hat ein X11-Fenster herausgezoomt den Zeiger, wird es
-  deshalb auf seinem Bildschirm geparkt (`setZoomedInputWindow`, `x11InputSpot`): ganz im Bildschirm,
-  in der Ecke, die am weitesten vom Zeiger entfernt ist. KWin sieht es dort, wählt es aber nicht, solange
+  deshalb auf seinem Bildschirm geparkt (`setZoomedInputWindow`, `x11InputSpot`): ganz im Arbeitsbereich
+  mit etwas Abstand zu Leisten (eine schwebende Leiste, die ein Fenster berührt, dockt sonst an), in der Ecke, die am weitesten vom Zeiger entfernt ist. KWin sieht es dort, wählt es aber nicht, solange
   der Zeiger nicht physisch darüber steht. Erreicht der Zeiger die Stelle, wandert das Fenster in eine
-  andere Ecke. Verlässt der Zeiger das Fenster, wird es wieder außerhalb geparkt.
+  andere Ecke. Verlässt der Zeiger das Fenster, wird es wieder außerhalb geparkt. Landet es währenddessen doch außerhalb
+  (etwa wenn das Programm ein weiteres Fenster öffnet), holt die nächste Zeigerbewegung es zurück.
 - Manche X11-Programme fragen KWin gar nicht, sondern verschieben sich selbst (`XMoveWindow`) und folgen
   dabei dem Zeiger, wie sie ihn auf dem geparkten Fenster sehen (Steam, Launcher unter Wine/Proton).
   Bewegt sich ein geparktes Fenster ohne Größenänderung, während eine Taste darauf gedrückt ist,
   übernimmt das Plugin genauso (`slotFrameGeometryChanged` → `takeOverClientMove`), und das Fenster wird
   wieder geparkt. Sonst würde jede dieser Bewegungen rückgängig gemacht, und das Fenster ließe sich
-  herausgezoomt nicht verschieben.
+  herausgezoomt nicht verschieben. Während das Plugin es verschiebt, bleibt ein X11-Fenster an seinem
+  Platz auf dem Bildschirm (`holdZoomedInputWindow`), statt zwischen Bildschirm und Außenbereich zu
+  springen.
+- Menüs und Dropdowns von Steam (CEF) und Wine sind X11-Fenster ohne `WM_TRANSIENT_FOR`, meist
+  override-redirect. KWin kennt deshalb kein Elternfenster. Öffnet sich herausgezoomt ein solches Fenster,
+  gehört es zu dem X11-Fenster, das gerade den Zeiger hat (`isLoneX11Popup`, `m_x11Popups`), denn nur
+  dieses steht auf dem Bildschirm. Es wird dann wie ein Popup um das gezeichnete Elternfenster
+  verkleinert und verschoben. Solange es offen ist, bleibt das Elternfenster, wo es ist.
 - Die Tastatur folgt dem aktiven Fenster; ein Klick aktiviert es.
 - Noch nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
   arbeitet mit physischen Positionen) und Touch.

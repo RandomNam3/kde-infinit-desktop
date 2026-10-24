@@ -68,6 +68,8 @@ constexpr qreal MinimumContentScale = 0.25;
 constexpr auto ClosingAnimationLimit = 10s;
 /// Activating a window this soon after it opened belongs to opening it (new window rule).
 constexpr auto NewWindowActivation = 2s;
+/// Distance of an X11 input window from the work area edges (x11InputSpot()).
+constexpr qreal X11InputMargin = 24.0;
 /// Offset between windows of one application that would open at the same place.
 constexpr qreal CascadeOffset = 32.0;
 /// Width of the resize zone along the edges of a zoomed out window, in screen pixels.
@@ -604,7 +606,32 @@ ManagedWindow *InfinitDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
             return managed;
         }
     }
+    if (const auto it = m_x11Popups.constFind(w); it != m_x11Popups.cend() && it->popup == w && it->owner) {
+        return record(it->owner.data());
+    }
     return nullptr;
+}
+
+bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
+{
+    KWin::Window *window = w ? w->window() : nullptr;
+    if (!window || !w->isX11Client() || w->isDNDIcon() || record(w) || window->transientFor()) {
+        return false;
+    }
+    return !w->isManaged() || w->isPopupWindow() || w->isMenu() || w->isDropdownMenu() || w->isPopupMenu() || w->isTooltip() || w->isComboBox();
+}
+
+bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
+{
+    for (auto it = m_x11Popups.cbegin(); it != m_x11Popups.cend(); ++it) {
+        KWin::EffectWindow *popup = it->popup.data();
+        if (owner && popup && it->owner == owner && !popup->isDeleted() && popup->isVisible() && popup->opacity() > 0.0 && popup->window()
+            && popup->window()->hitTest(toQRectF(popup->frameGeometry()).center())) {
+            // Not the invisible ones that take no input (Steam keeps those around).
+            return true;
+        }
+    }
+    return false;
 }
 
 QRectF InfinitDesktopEffect::canvasRect(const ManagedWindow &window) const
@@ -898,6 +925,17 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
 {
     setupWindow(w);
     adoptWindow(w, true);
+    if (m_x11Input && isLoneX11Popup(w)) {
+        // Menus of Steam (CEF) and Wine are override-redirect windows without
+        // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
+        // screen, so it is the one that opened this.
+        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << toQRectF(w->frameGeometry()) << "belongs to" << m_x11Input->caption();
+        // Entries of popups gone without windowDeleted.
+        for (auto it = m_x11Popups.begin(); it != m_x11Popups.end();) {
+            it = it->popup ? std::next(it) : m_x11Popups.erase(it);
+        }
+        m_x11Popups.insert(w, X11Popup{w, m_x11Input});
+    }
 }
 
 void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
@@ -921,6 +959,7 @@ void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
 
 void InfinitDesktopEffect::slotWindowDeleted(KWin::EffectWindow *w)
 {
+    m_x11Popups.remove(w);
     forgetWindow(w);
     updateActivity();
 }
@@ -1070,10 +1109,12 @@ void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
     }
     managed->moveTakenOver = false;
     qCDebug(KWIN_INFINITDESKTOP) << "KWin starts to" << (w->isUserMove() ? "move" : "resize") << w->caption();
-    if (w->isUserMove() && m_inputFilter && m_inputFilter->takeOverClientMove(*managed)) {
+    if (w->isUserMove() && m_inputFilter && (m_inputFilter->takeOverClientMove(*managed) || m_inputFilter->isMovingWindow(w))) {
         // A window used while zoomed out moves itself (client side title bar). KWin would drag
         // the parked window around at 100 %, so the plugin moves it on the canvas instead.
-        // KWin's move is cancelled once KWin has finished starting it.
+        // KWin's move is cancelled once KWin has finished starting it. Steam asks again
+        // after the cancel (_NET_WM_MOVERESIZE); that one is cancelled too, otherwise KWin
+        // and the plugin would both move it, and its end would put the window elsewhere.
         managed->moveTakenOver = true;
         QPointer<KWin::Window> client = managed->window;
         QTimer::singleShot(0, this, [client]() {
@@ -1337,8 +1378,12 @@ void InfinitDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput
 
 QPointF InfinitDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const
 {
-    const QRectF screen = outputRect(output);
+    // Inside the work area and away from its edges: a floating panel that a window touches
+    // stops floating (and auto-hiding panels would show up).
+    const QRectF area = workArea(output);
     const QRectF frame = toQRectF(window.effectWindow->frameGeometry());
+    const QRectF inset = area.adjusted(X11InputMargin, X11InputMargin, -X11InputMargin, -X11InputMargin);
+    const QRectF screen = inset.width() >= frame.width() && inset.height() >= frame.height() ? inset : area;
     const QPointF pointer = KWin::effects->cursorPos();
     // Where it is now, if that already works: no configure for the client.
     if (screen.contains(frame) && !frame.contains(pointer)) {
@@ -1369,9 +1414,25 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
         managed = nullptr;
     }
     KWin::EffectWindow *next = managed ? w : nullptr;
+    if (m_x11Input && hasOpenX11Popup(m_x11Input)) {
+        // Its menu stays where the client put it: the window must not move away from it,
+        // and stays the input window until the menu is closed.
+        return;
+    }
     if (m_x11Input.data() == next) {
-        if (managed && toQRectF(w->frameGeometry()).contains(KWin::effects->cursorPos())) {
-            // The pointer reached where it is physically: KWin would give it the pointer.
+        if (!managed) {
+            return;
+        }
+        const QRectF frame = toQRectF(w->frameGeometry());
+        const QRectF area = workArea(outputOf(*canvas));
+        const bool fits = area.width() >= frame.width() && area.height() >= frame.height();
+        if (frame.contains(KWin::effects->cursorPos()) || (fits && !area.contains(frame))) {
+            // The pointer reached where it is physically: KWin would give it the pointer. Or
+            // something parked it outside of the screen again (a new window of the same
+            // program, a configure): Xwayland would put its clicks at the screen edge.
+            if (!area.contains(frame)) {
+                qCDebug(KWIN_INFINITDESKTOP) << "X11 window" << w->caption() << "is at" << frame << "outside of its screen, back to its input spot";
+            }
             parkWindow(*managed, outputOf(*canvas));
         }
         return;
@@ -1392,6 +1453,16 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
                 parkWindow(*managed, outputOf(*canvas));
             }
         });
+    }
+}
+
+void InfinitDesktopEffect::holdZoomedInputWindow(KWin::EffectWindow *w)
+{
+    // Jumping between its screen and the void during the move makes the client (and
+    // effects like Wobbly Windows) see moves the user did not make. Parked again by the
+    // caller of takeOverClientMove(), at its input spot.
+    if (w && w->isX11Client() && record(w)) {
+        m_x11Input = w;
     }
 }
 
@@ -1694,6 +1765,7 @@ void InfinitDesktopEffect::leaveNavigation(Canvas &canvas)
         m_inputFilter->endZoomedInput();
     }
     m_x11Input.clear();
+    m_x11Popups.clear();
     // At 100 % the windows draw at full resolution again, right away.
     for (auto &[w, managed] : m_windows) {
         if (managed->canvasKey == canvas.key) {
@@ -1909,6 +1981,11 @@ std::optional<ZoomedTarget> InfinitDesktopEffect::zoomedTargetAt(const QPointF &
         const QRectF frame = toQRectF(w->frameGeometry());
         const QRectF visual(frame.topLeft() + decision.translation, frame.size() * decision.scale);
         if (!visual.contains(pos)) {
+            continue;
+        }
+        if (!self && w->window() && !w->window()->hitTest(frame.topLeft() + (pos - visual.topLeft()) / decision.scale)) {
+            // Steam (CEF) keeps invisible popups around that take no input (empty input
+            // shape); like KWin, look past them.
             continue;
         }
         const std::optional<QMatrix4x4> transform = zoomedInputTransform(w);
