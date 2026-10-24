@@ -1,3 +1,11 @@
+kde-infinit-desktop (0.4.2-1) unstable; urgency=medium
+
+  * Bug fix release: menus of X11 programs (Steam, Wine) in place while
+    zoomed out, reliable moving of Steam, no stray clicks after submenus,
+    floating panels stay floating.
+
+ -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 22:20:00 +0200
+
 kde-infinit-desktop (0.4.1-1) unstable; urgency=medium
 
   * Bug fix release: X11 windows (Steam, launchers under Wine/Proton) can be

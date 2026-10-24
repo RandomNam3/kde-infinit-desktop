@@ -13,7 +13,7 @@
         "License": "GPL-3.0-or-later",
         "Name": "KDE Infinit Desktop",
         "Name[de]": "KDE Infinit Desktop",
-        "Version": "0.4.1"
+        "Version": "0.4.2"
     },
     "X-KDE-ConfigModule": "kwin_infinitdesktop_config"
 }
