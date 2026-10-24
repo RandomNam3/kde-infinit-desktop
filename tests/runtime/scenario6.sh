@@ -121,6 +121,27 @@ check "the X11 client side move is not left to KWin" '(.windows[] | select(.capt
 kill "$XPID" 2>/dev/null
 sleep 0.5
 
+# an X11 client that moves itself with XMoveWindow (Steam, launchers under Wine/Proton): it follows
+# the pointer it sees on the parked window, the plugin takes the move over
+/usr/local/bin/kid-selfmove SelfMove > /tmp/selfmove.log 2>&1 &
+SPID=$!
+for _ in $(seq 1 80); do state | grep -q '"SelfMove"' && break; sleep 0.1; done
+sleep 0.8
+dbuscall setZoom 0.5; sleep 1.2      # a new window may have ended the zoom
+echo "SelfMove before moving itself: $(win SelfMove)"
+CX0=$(state | jq '.windows[] | select(.caption=="SelfMove") | .canvasX')
+CY0=$(state | jq '.windows[] | select(.caption=="SelfMove") | .canvasY')
+read -r SX SY <<<"$(probe_point 240 20 SelfMove 0 0)"
+input abs "$SX" "$SY" sleep 60
+input drag "$SX" "$SY" $((SX + 100)) $((SY + 60)) 10 250 left sleep 400
+echo "SelfMove after the drag: $(win SelfMove) client: $(tr '\n' ' ' < /tmp/selfmove.log)"
+if grep -q SELFMOVE /tmp/selfmove.log; then echo "PASS: the X11 client moved itself"; else echo "FAIL: the X11 client did not move itself"; FAILURES=$((FAILURES+1)); fi
+check "a client that moves itself while zoomed out moves on the canvas, with the pointer" "(.windows[] | select(.caption==\"SelfMove\") | .canvasX >= ($CX0 + 120) and .canvasX <= ($CX0 + 210) and .canvasY >= ($CY0 + 60) and .canvasY <= ($CY0 + 130))"
+check "the window that moved itself stays parked, drawn at the zoom" '(.windows[] | select(.caption=="SelfMove") | .mode == "canvas" and .parked == true)'
+check "a client that moves itself did not change the zoom" '[.canvases[] | select(.current)][0] | .navigation == true and .camera.zoom == 0.5'
+kill "$SPID" 2>/dev/null
+sleep 0.5
+
 read -r TX TY <<<"$(probe_point 300 $((-OY / 2)))"
 input abs "$TX" "$TY" sleep 60 click left sleep 80 click left sleep 900
 check "double click on the title bar returns to 100 %" '[.canvases[] | select(.current)][0] | .navigation == false and .camera.zoom == 1'
