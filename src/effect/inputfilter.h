@@ -179,6 +179,7 @@ private:
         QPointer<KWin::EffectWindow> window; ///< window (or popup) that has the pointer while zoomed out
         Qt::MouseButtons buttons; ///< pressed on it: it keeps the pointer until they are released
         QList<quint32> nativeButtons; ///< the same buttons as evdev codes
+        QPointF position; ///< last pointer position on it while a button is held (no warps)
     } m_forward;
     struct
     {

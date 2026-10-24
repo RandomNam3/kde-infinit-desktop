@@ -9,7 +9,8 @@ Window {
     width: 600
     height: 400
     visible: true
-    title: "Probe"
+    // QT_QPA_PLATFORM=xcb runs it as an X11 window (through Xwayland).
+    title: Qt.platform.pluginName === "xcb" ? "ProbeX11" : "Probe"
     color: "#ff0000"
 
     TextInput {
