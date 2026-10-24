@@ -14,8 +14,9 @@ class TestUpdateChecker : public QObject
 private Q_SLOTS:
     void newerReleasesOnly()
     {
+        // "\/" instead of "/" in the URL: moc reads "//" in a raw string as a comment and skips the class
         const QByteArray json = R"([
-            {"tag_name": "v0.3.0", "name": "KDE Infinit Desktop 0.3.0", "body": "Notes 0.3.0\n", "html_url": "https://example.org/0.3.0",
+            {"tag_name": "v0.3.0", "name": "KDE Infinit Desktop 0.3.0", "body": "Notes 0.3.0\n", "html_url": "https:\/\/example.org/0.3.0",
              "published_at": "2026-10-25T10:00:00Z", "draft": false, "prerelease": false},
             {"tag_name": "v0.2.0", "body": "old", "draft": false, "prerelease": false},
             {"tag_name": "v0.1.0", "body": "older", "draft": false, "prerelease": false},
