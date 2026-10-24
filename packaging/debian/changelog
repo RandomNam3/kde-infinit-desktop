@@ -1,3 +1,10 @@
+kde-infinit-desktop (0.3.0-1) unstable; urgency=medium
+
+  * New release: update check in the settings app, installer fixes for KDE
+    neon and updates over a loaded plugin, automatic GitHub releases.
+
+ -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 20:30:00 +0200
+
 kde-infinit-desktop (0.2.0-1) unstable; urgency=medium
 
   * New release: moving windows with their own title bar while zoomed out
