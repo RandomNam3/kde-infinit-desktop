@@ -1100,10 +1100,12 @@ void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
     }
     managed->moveTakenOver = false;
     qCDebug(KWIN_INFINITDESKTOP) << "KWin starts to" << (w->isUserMove() ? "move" : "resize") << w->caption();
-    if (w->isUserMove() && m_inputFilter && m_inputFilter->takeOverClientMove(*managed)) {
+    if (w->isUserMove() && m_inputFilter && (m_inputFilter->takeOverClientMove(*managed) || m_inputFilter->isMovingWindow(w))) {
         // A window used while zoomed out moves itself (client side title bar). KWin would drag
         // the parked window around at 100 %, so the plugin moves it on the canvas instead.
-        // KWin's move is cancelled once KWin has finished starting it.
+        // KWin's move is cancelled once KWin has finished starting it. Steam asks again
+        // after the cancel (_NET_WM_MOVERESIZE); that one is cancelled too, otherwise KWin
+        // and the plugin would both move it, and its end would put the window elsewhere.
         managed->moveTakenOver = true;
         QPointer<KWin::Window> client = managed->window;
         QTimer::singleShot(0, this, [client]() {

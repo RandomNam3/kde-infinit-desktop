@@ -307,7 +307,7 @@ Von Hand: `./install.sh --rebuild`. Die Einstellungs-App zeigt diesen Zustand eb
 KWin ist mehrmals kurz hintereinander abgestürzt, während das Plugin aktiv war. Damit dein Desktop
 benutzbar bleibt, hat sich das Plugin selbst deaktiviert. Wieder einschalten über die Einstellungs-App
 (*Abgesicherten Modus verlassen*). Bitte melde den Fehler mit dem Protokoll:
-`journalctl --user -b -g infinitdesktop`.
+`journalctl --user -b QT_CATEGORY=kwin_effect_infinitdesktop`.
 
 **Ein Fenster ist „verschwunden“.**
 Es liegt auf der Fläche außerhalb des Bilds: Klick in der Taskleiste oder Alt+Tab holt es, Meta+Alt+W
@@ -318,7 +318,7 @@ Gesten kurz pausieren (Kürzel *Gesten pausieren/fortsetzen*) oder die Belegung 
 ändern.
 
 **Ausführliches Protokoll:** Option *Debug-Protokoll* einschalten, dann
-`journalctl --user -f -g infinitdesktop`.
+`journalctl --user -f QT_CATEGORY=kwin_effect_infinitdesktop`.
 
 **Status abfragen:**
 ```bash

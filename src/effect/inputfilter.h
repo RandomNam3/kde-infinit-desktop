@@ -81,6 +81,8 @@ public:
     /// it on the canvas. False if the pointer is not held on that window while its canvas is
     /// zoomed out.
     bool takeOverClientMove(ManagedWindow &window);
+    /// The plugin is moving @p w on the canvas (a drag of the pointer, maybe taken over).
+    bool isMovingWindow(const KWin::EffectWindow *w) const;
 
 private:
     enum class DragKind {
@@ -105,6 +107,8 @@ private:
         bool titleBar = false; ///< pressed on the title bar of a window used while zoomed out
         bool moved = false;
         bool passRelease = false; ///< the press reached the desktop, so must the release
+        bool takenOver = false; ///< a move the client started (takeOverClientMove())
+        QPointF handPos; ///< taken over: where the user's hand has the pointer
         VelocityTracker tracker;
     };
 
