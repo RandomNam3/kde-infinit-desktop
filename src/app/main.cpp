@@ -22,6 +22,7 @@
 #include "settingsmodel.h"
 #include "shortcutmodel.h"
 #include "themecontroller.h"
+#include "updatechecker.h"
 #include "windowplacements.h"
 
 #include <KAboutData>
@@ -140,6 +141,7 @@ int main(int argc, char *argv[])
     if (screenshotMode) {
         ThemeController::instance()->setForcedAccent(QColor(0x3d, 0xae, 0xe9));
         EffectStatus::instance()->setDemoState(QStringLiteral("active"));
+        UpdateChecker::instance()->setDemoMode(true);
     }
 
     QQmlApplicationEngine engine;
@@ -159,6 +161,8 @@ int main(int argc, char *argv[])
         }
         auto *runner = new ScreenshotRunner(window, QDir(parser.value(screenshotOption)).absolutePath(), parseSize(parser.value(screenshotSizeOption)), &app);
         runner->start();
+    } else {
+        UpdateChecker::instance()->checkOnStartIfEnabled();
     }
 
     return app.exec();

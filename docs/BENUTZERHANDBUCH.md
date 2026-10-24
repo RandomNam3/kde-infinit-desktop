@@ -276,6 +276,15 @@ Es gibt zwei gleichwertige Wege; beide verwenden dieselben Einstellungen:
 Alle Einstellungen liegen in `~/.config/kwinrc`, Gruppe `[Effect-infinitdesktop]`. Kamerapositionen,
 Lesezeichen und gemerkte Fensterpositionen liegen unter `~/.local/state/kde-infinit-desktop/`.
 
+### Updates
+
+Die Einstellungs-App sieht beim Start auf GitHub nach, ob es eine neue Version gibt (abschaltbar auf der
+Startseite, dort gibt es auch *Jetzt prüfen*). Gibt es eine, zeigt die Startseite die Neuerungen aller
+neueren Versionen. **Update installieren** öffnet ein Terminalfenster mit dem normalen Installer für
+diese Version, der nach dem Passwort fragt. Danach **einmal ab- und wieder anmelden**, denn die laufende
+KWin-Instanz behält die alte Version im Speicher. Ohne Terminalprogramm zeigt die App den Befehl zum
+Kopieren an.
+
 ## Verträglichkeit mit anderen Erweiterungen
 
 | Erweiterung | Status |
