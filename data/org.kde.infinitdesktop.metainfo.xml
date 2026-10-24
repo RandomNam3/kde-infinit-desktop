@@ -101,6 +101,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.4.1" date="2026-10-24">
+      <description>
+        <p>X11 programs such as Steam and launchers under Wine/Proton can be clicked and moved while zoomed out.</p>
+      </description>
+    </release>
     <release version="0.4.0" date="2026-10-24">
       <description>
         <p>Steam and launchers under Wine/Proton can be moved while zoomed out. Their splash windows no longer end the zoom, and with "New windows return to 100 %" switched off, starting them keeps the zoom.</p>

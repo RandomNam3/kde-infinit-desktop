@@ -302,6 +302,14 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   Fenster, also an den Bildschirmrand. Solange eine Taste auf einem verkleinerten Fenster gedrückt ist,
   geht ein solcher Warp nicht an den Client. Das Plugin rechnet mit der Position davor und setzt den
   Zeiger dorthin zurück.
+- **X11-Fenster** bekommen den Zeiger über Xwayland. Xwayland rechnet die Position auf dem Fenster in
+  eine Position auf dem X-Bildschirm um (physische Fensterposition + Position im Fenster) und hält den
+  Zeiger dort innerhalb des Bildschirms. Bei einem geparkten Fenster außerhalb des Bildschirms landete
+  so jeder Klick am Rand und nicht im Fenster. Hat ein X11-Fenster herausgezoomt den Zeiger, wird es
+  deshalb auf seinem Bildschirm geparkt (`setZoomedInputWindow`, `x11InputSpot`): ganz im Bildschirm,
+  in der Ecke, die am weitesten vom Zeiger entfernt ist. KWin sieht es dort, wählt es aber nicht, solange
+  der Zeiger nicht physisch darüber steht. Erreicht der Zeiger die Stelle, wandert das Fenster in eine
+  andere Ecke. Verlässt der Zeiger das Fenster, wird es wieder außerhalb geparkt.
 - Manche X11-Programme fragen KWin gar nicht, sondern verschieben sich selbst (`XMoveWindow`) und folgen
   dabei dem Zeiger, wie sie ihn auf dem geparkten Fenster sehen (Steam, Launcher unter Wine/Proton).
   Bewegt sich ein geparktes Fenster ohne Größenänderung, während eine Taste darauf gedrückt ist,

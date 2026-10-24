@@ -419,6 +419,11 @@ public:
     std::optional<ZoomedTarget> zoomedTargetAt(const QPointF &pos, KWin::LogicalOutput *output) const;
     /// Current input transformation of a window drawn zoomed out (it changes with the camera).
     std::optional<QMatrix4x4> zoomedInputTransform(KWin::EffectWindow *w) const;
+    /// The canvas window that has the pointer while zoomed out (nullptr: none). Xwayland keeps
+    /// the pointer of X11 clients inside the screen, so an X11 window parked outside of it
+    /// would get every click at the screen edge: while it has the pointer, it is parked on its
+    /// screen instead, out of the way of the pointer (see x11InputSpot()).
+    void setZoomedInputWindow(KWin::EffectWindow *w);
     void transferWindow(ManagedWindow &window, Canvas &to, const QPointF &canvasPos);
     void activateAndReveal(ManagedWindow &window, bool returnToUnitZoom);
     void restoreTile(ManagedWindow &window);
@@ -485,6 +490,9 @@ private:
     bool newWindowEndsZoom(const ManagedWindow &window) const;
     void placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output);
     void parkWindow(ManagedWindow &window, KWin::LogicalOutput *output);
+    /// Where an X11 window that has the pointer while zoomed out is parked: fully on @p output
+    /// (where Xwayland can put the pointer) but not under the pointer (KWin must not pick it).
+    QPointF x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const;
     void moveWindowPhysically(KWin::Window *window, const QPointF &topLeft);
     void enterNavigation(Canvas &canvas);
     void leaveNavigation(Canvas &canvas);
@@ -555,6 +563,8 @@ private:
     KConfigWatcher::Ptr m_configWatcher;
 
     std::unordered_map<KWin::EffectWindow *, std::unique_ptr<ManagedWindow>> m_windows;
+    /// X11 window used zoomed out, parked on its screen (setZoomedInputWindow()).
+    QPointer<KWin::EffectWindow> m_x11Input;
     /// xdg popups by surface: their positioners place them around the drawn parent.
     QHash<KWin::SurfaceInterface *, QPointer<KWin::XdgPopupInterface>> m_xdgPopups;
     CanvasStore m_canvases;

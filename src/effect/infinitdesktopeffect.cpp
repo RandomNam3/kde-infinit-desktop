@@ -1326,9 +1326,73 @@ void InfinitDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput
     }
     int ownerIndex = -1;
     const QList<QRectF> outputs = allOutputRects(&ownerIndex, output);
-    const ParkingSpot spot = computeParkingSpot(outputs, ownerIndex, window.effectWindow->frameGeometry().size());
     window.parked = true;
+    if (window.effectWindow == m_x11Input.data()) {
+        moveWindowPhysically(window.window, x11InputSpot(window, output));
+        return;
+    }
+    const ParkingSpot spot = computeParkingSpot(outputs, ownerIndex, window.effectWindow->frameGeometry().size());
     moveWindowPhysically(window.window, spot.topLeft);
+}
+
+QPointF InfinitDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const
+{
+    const QRectF screen = outputRect(output);
+    const QRectF frame = toQRectF(window.effectWindow->frameGeometry());
+    const QPointF pointer = KWin::effects->cursorPos();
+    // Where it is now, if that already works: no configure for the client.
+    if (screen.contains(frame) && !frame.contains(pointer)) {
+        return frame.topLeft();
+    }
+    const qreal right = std::max(screen.left(), screen.right() - frame.width());
+    const qreal bottom = std::max(screen.top(), screen.bottom() - frame.height());
+    const QPointF corners[] = {screen.topLeft(), QPointF(right, screen.top()), QPointF(screen.left(), bottom), QPointF(right, bottom)};
+    // The corner farthest from the pointer; a window as large as the screen is under it anyway.
+    QPointF best = corners[0];
+    qreal bestDistance = -1.0;
+    for (const QPointF &corner : corners) {
+        const QRectF rect(corner, frame.size());
+        const qreal distance = rect.contains(pointer) ? 0.0 : QLineF(rect.center(), pointer).length();
+        if (distance > bestDistance) {
+            best = corner;
+            bestDistance = distance;
+        }
+    }
+    return best;
+}
+
+void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
+{
+    ManagedWindow *managed = w ? record(w) : nullptr;
+    Canvas *canvas = managed ? canvasByKey(managed->canvasKey) : nullptr;
+    if (!managed || !canvas || !w->isX11Client() || !managed->parked || !canvas->navigation || modeOf(*managed) != WindowMode::Canvas) {
+        managed = nullptr;
+    }
+    KWin::EffectWindow *next = managed ? w : nullptr;
+    if (m_x11Input.data() == next) {
+        if (managed && toQRectF(w->frameGeometry()).contains(KWin::effects->cursorPos())) {
+            // The pointer reached where it is physically: KWin would give it the pointer.
+            parkWindow(*managed, outputOf(*canvas));
+        }
+        return;
+    }
+    const QPointer<KWin::EffectWindow> previous = m_x11Input;
+    m_x11Input = next;
+    if (managed) {
+        qCDebug(KWIN_INFINITDESKTOP) << "X11 window" << w->caption() << "used zoomed out, parking it on its screen";
+        parkWindow(*managed, outputOf(*canvas));
+    }
+    if (previous) {
+        // Back outside of the screens. Not right away: this can run while KWin reports a
+        // geometry change of that window (a client moving itself).
+        QTimer::singleShot(0, this, [this, previous]() {
+            ManagedWindow *managed = previous ? record(previous.data()) : nullptr;
+            Canvas *canvas = managed ? canvasByKey(managed->canvasKey) : nullptr;
+            if (managed && canvas && previous != m_x11Input && managed->parked && modeOf(*managed) == WindowMode::Canvas) {
+                parkWindow(*managed, outputOf(*canvas));
+            }
+        });
+    }
 }
 
 void InfinitDesktopEffect::placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output)
@@ -1629,6 +1693,7 @@ void InfinitDesktopEffect::leaveNavigation(Canvas &canvas)
     if (m_inputFilter) {
         m_inputFilter->endZoomedInput();
     }
+    m_x11Input.clear();
     // At 100 % the windows draw at full resolution again, right away.
     for (auto &[w, managed] : m_windows) {
         if (managed->canvasKey == canvas.key) {
