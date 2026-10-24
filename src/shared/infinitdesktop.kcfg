@@ -182,7 +182,7 @@
         </entry>
         <entry name="NewWindowsExitZoom" type="Bool">
             <label>New windows return to 100 %</label>
-            <whatsthis>When a new window opens while the canvas is zoomed, zoom back to 100 % on the new window so it can be used right away.</whatsthis>
+            <whatsthis>When a new window opens while the canvas is zoomed, zoom back to 100 % on the new window so it can be used right away. Windows that are not shown in the task bar, like splash screens of launchers, keep the zoom.</whatsthis>
             <default>true</default>
         </entry>
         <entry name="InteractWhileZoomed" type="Bool">

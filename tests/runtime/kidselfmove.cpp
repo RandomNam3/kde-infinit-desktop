@@ -1,7 +1,8 @@
 // X11 test window that moves itself, like Steam or launchers under Wine/Proton: no
 // decoration (Motif hints), and dragging its top 40 pixels moves it with XMoveWindow,
 // following the pointer as the client sees it in root coordinates.
-// usage: kid-selfmove [title]   (prints PRESS, SELFMOVE <count>, RELEASE)
+// usage: kid-selfmove [title] [--skip-taskbar]   (prints PRESS, SELFMOVE <count>, RELEASE)
+// --skip-taskbar: not in the task bar, like the splash and helper windows of launchers.
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -32,6 +33,11 @@ int main(int argc, char **argv)
     const long motif[5] = {2, 0, 0, 0, 0};
     const Atom motifAtom = XInternAtom(display, "_MOTIF_WM_HINTS", False);
     XChangeProperty(display, window, motifAtom, motifAtom, 32, PropModeReplace, reinterpret_cast<const unsigned char *>(motif), 5);
+    if (argc > 2 && std::strcmp(argv[2], "--skip-taskbar") == 0) {
+        const Atom skipTaskbar = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", False);
+        XChangeProperty(display, window, XInternAtom(display, "_NET_WM_STATE", False), XA_ATOM, 32, PropModeReplace,
+                        reinterpret_cast<const unsigned char *>(&skipTaskbar), 1);
+    }
     XMapWindow(display, window);
     XFlush(display);
 
