@@ -22,7 +22,7 @@
 # build from a local checkout with ./build.sh --package (uses a local tarball).
 
 pkgname=kde-infinit-desktop
-pkgver=0.1.0
+pkgver=0.2.0
 pkgrel=1
 pkgdesc="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect for Plasma 6 on Wayland)"
 arch=(x86_64 aarch64)
