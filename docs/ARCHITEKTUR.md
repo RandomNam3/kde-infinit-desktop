@@ -152,6 +152,13 @@ Benachrichtigungen, angepinnte Fenster und den Desktop, und die bleiben normal b
 zeichnet die Fenster verkleinert und live. Erreicht der Zoom wieder genau 100 % und läuft keine Geste
 mehr, wird der Navigationsmodus verlassen und committet.
 
+**Neue Fenster** beenden den Zoom nur, wenn „Neue Fenster kehren zu 100 % zurück“ an ist und das Fenster
+in der Taskleiste steht (`newWindowEndsZoom`). Splash- und Hilfsfenster von Launchern (Steam,
+Wine/Proton) stehen meist nicht darin und werden nur geparkt. Die Regel gilt auch, wenn das
+Fensterplatz-Gedächtnis das Fenster an seinen alten Platz setzt. Aktiviert sich ein Fenster in den ersten
+2 s nach dem Öffnen selbst, entscheidet ebenfalls nur diese Regel, nicht „Aktivierte Fenster ins Bild
+holen“. Sonst würde ein Launcher den Zoom auch bei ausgeschalteter Einstellung beenden.
+
 ### KWin-Rettungsaktionen
 
 `Workspace::updateClientArea()` ruft `checkWorkspacePosition()` für alle Fenster auf, z.B. wenn sich

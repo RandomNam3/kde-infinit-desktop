@@ -50,6 +50,14 @@ open_term Late 30 8 || exit 1
 sleep 0.5
 check "a new window returned the canvas to 100 %" '[.canvases[] | select(.current)][0] | .camera.zoom == 1 and .navigation == false'
 dbuscall setZoom 0.3; sleep 0.2
+# a window outside of the task bar (splash or helper window of a launcher like Steam) keeps the zoom
+/usr/local/bin/kid-selfmove Splash --skip-taskbar >/dev/null 2>&1 &
+SPLASH=$!
+for _ in $(seq 1 50); do state | grep -q '"Splash"' && break; sleep 0.1; done
+sleep 0.5
+check "a new window outside of the task bar keeps the zoom" '[.canvases[] | select(.current)][0] | .camera.zoom == 0.3 and .navigation == true'
+check "it is parked, drawn at the zoom" '(.windows[] | select(.caption=="Splash") | .mode == "canvas" and .parked == true)'
+kill "$SPLASH" 2>/dev/null
 pkill -f "sleep 600"
 sleep 1.5
 dbuscall resetZoom; sleep 0.3

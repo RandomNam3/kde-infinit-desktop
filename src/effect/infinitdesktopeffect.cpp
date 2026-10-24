@@ -66,6 +66,8 @@ constexpr auto ContentScaleDelay = 350ms;
 constexpr qreal MinimumContentScale = 0.25;
 /// Upper bound for other effects' close animations of parked windows.
 constexpr auto ClosingAnimationLimit = 10s;
+/// Activating a window this soon after it opened belongs to opening it (new window rule).
+constexpr auto NewWindowActivation = 2s;
 /// Offset between windows of one application that would open at the same place.
 constexpr qreal CascadeOffset = 32.0;
 /// Width of the resize zone along the edges of a zoomed out window, in screen pixels.
@@ -665,6 +667,11 @@ bool InfinitDesktopEffect::coversScreenBorderless(const ManagedWindow &window) c
         && std::abs(frame.right() - screen.right()) < 1.0 && std::abs(frame.bottom() - screen.bottom()) < 1.0;
 }
 
+bool InfinitDesktopEffect::newWindowEndsZoom(const ManagedWindow &window) const
+{
+    return m_settings.newWindowsExitZoom && window.window && !window.window->skipTaskbar();
+}
+
 bool InfinitDesktopEffect::isPinned(const ManagedWindow &window) const
 {
     const KWin::EffectWindow *w = window.effectWindow;
@@ -828,6 +835,9 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
     managed->appKey = PlacementMemory::applicationKey(w->window()->desktopFileName(), w->window()->resourceClass());
     managed->placementEligible = isPlacementEligible(w);
     managed->borderlessFullScreen = coversScreenBorderless(*managed);
+    if (newlyMapped) {
+        managed->mappedAt = Clock::now();
+    }
 
     KWin::VirtualDesktop *desktop = KWin::effects->currentDesktop(output);
     const auto desktops = w->desktops();
@@ -861,7 +871,7 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
     }
 
     if (newlyMapped && canvas.navigation && isCurrentCanvas(canvas) && modeOf(window) == WindowMode::Canvas) {
-        if (m_settings.newWindowsExitZoom) {
+        if (newWindowEndsZoom(window)) {
             qCDebug(KWIN_INFINITDESKTOP) << "new window" << w->caption() << "ends the zoom";
             animateTo(canvas, reference);
         } else {
@@ -942,6 +952,12 @@ void InfinitDesktopEffect::slotWindowActivated(KWin::EffectWindow *w)
         }
         Canvas *canvas = canvasByKey(managed->canvasKey);
         if (!canvas || !isCurrentCanvas(*canvas) || canvas->interactions > 0) {
+            return;
+        }
+        if (canvas->navigation && managed->mappedAt && Clock::now() - *managed->mappedAt < NewWindowActivation) {
+            // A window activating itself as it opens (Steam, Wine/Proton launchers): whether
+            // that ends the zoom is up to the new window rule (adoptWindow), not to this one.
+            qCDebug(KWIN_INFINITDESKTOP) << "new window" << guard->caption() << "activated while zoomed out, left to the new window rule";
             return;
         }
         KWin::LogicalOutput *output = outputOf(*canvas);
@@ -2828,7 +2844,9 @@ void InfinitDesktopEffect::applyPlacement(ManagedWindow &window, const WindowPla
         window.canvasPos += QPointF(CascadeOffset, CascadeOffset);
     }
     const QRectF rect(window.canvasPos, size);
-    const bool needsCamera = canvas.navigation || !isFullyVisible(base, rect, viewport, area);
+    // While zoomed out the zoom only ends for windows the new window rule lets end it: the
+    // others are parked at their remembered place.
+    const bool needsCamera = canvas.navigation ? newWindowEndsZoom(window) : !isFullyVisible(base, rect, viewport, area);
     if (needsCamera && isCurrentCanvas(canvas)) {
         const Camera target = revealCamera(base, rect, viewport, area, m_settings.revealMode, RevealMargin, 1.0);
         if (placement.maximized && m_settings.restoreWindowSize) {

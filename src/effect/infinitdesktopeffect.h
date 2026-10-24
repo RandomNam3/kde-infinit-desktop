@@ -222,6 +222,8 @@ struct ManagedWindow
     bool userPinned = false;
     /// "Keep above" was switched on by the pin shortcut and is restored on unpin.
     bool keepAboveSetByPin = false;
+    /// When the window was mapped (newly opened windows only).
+    std::optional<TimePoint> mappedAt;
     /// Closed, kept until deleted so close animations are drawn at the right place.
     bool closed = false;
     TimePoint closedAt;
@@ -478,6 +480,9 @@ private:
     QRectF workArea(KWin::LogicalOutput *output) const;
     /// A normal window without frame, not maximized, whose frame is exactly the screen it is on.
     bool coversScreenBorderless(const ManagedWindow &window) const;
+    /// A window opening while zoomed out returns to 100 % (setting). Not for windows outside of
+    /// the task bar: splash and helper windows of launchers (Steam, Wine/Proton).
+    bool newWindowEndsZoom(const ManagedWindow &window) const;
     void placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output);
     void parkWindow(ManagedWindow &window, KWin::LogicalOutput *output);
     void moveWindowPhysically(KWin::Window *window, const QPointF &topLeft);
