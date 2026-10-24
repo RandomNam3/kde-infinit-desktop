@@ -68,6 +68,8 @@ constexpr qreal MinimumContentScale = 0.25;
 constexpr auto ClosingAnimationLimit = 10s;
 /// Activating a window this soon after it opened belongs to opening it (new window rule).
 constexpr auto NewWindowActivation = 2s;
+/// Distance of an X11 input window from the work area edges (x11InputSpot()).
+constexpr qreal X11InputMargin = 24.0;
 /// Offset between windows of one application that would open at the same place.
 constexpr qreal CascadeOffset = 32.0;
 /// Width of the resize zone along the edges of a zoomed out window, in screen pixels.
@@ -1369,8 +1371,12 @@ void InfinitDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput
 
 QPointF InfinitDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const
 {
-    const QRectF screen = outputRect(output);
+    // Inside the work area and away from its edges: a floating panel that a window touches
+    // stops floating (and auto-hiding panels would show up).
+    const QRectF area = workArea(output);
     const QRectF frame = toQRectF(window.effectWindow->frameGeometry());
+    const QRectF inset = area.adjusted(X11InputMargin, X11InputMargin, -X11InputMargin, -X11InputMargin);
+    const QRectF screen = inset.width() >= frame.width() && inset.height() >= frame.height() ? inset : area;
     const QPointF pointer = KWin::effects->cursorPos();
     // Where it is now, if that already works: no configure for the client.
     if (screen.contains(frame) && !frame.contains(pointer)) {
@@ -1407,8 +1413,16 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
         return;
     }
     if (m_x11Input.data() == next) {
-        if (managed && toQRectF(w->frameGeometry()).contains(KWin::effects->cursorPos())) {
-            // The pointer reached where it is physically: KWin would give it the pointer.
+        const QRectF frame = toQRectF(w->frameGeometry());
+        const QRectF area = managed ? workArea(outputOf(*canvas)) : QRectF();
+        const bool fits = area.width() >= frame.width() && area.height() >= frame.height();
+        if (managed && (frame.contains(KWin::effects->cursorPos()) || (fits && !area.contains(frame)))) {
+            // The pointer reached where it is physically: KWin would give it the pointer. Or
+            // something parked it outside of the screen again (a new window of the same
+            // program, a configure): Xwayland would put its clicks at the screen edge.
+            if (!area.contains(frame)) {
+                qCDebug(KWIN_INFINITDESKTOP) << "X11 window" << w->caption() << "is at" << frame << "outside of its screen, back to its input spot";
+            }
             parkWindow(*managed, outputOf(*canvas));
         }
         return;
