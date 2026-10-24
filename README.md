@@ -83,7 +83,6 @@ Alles Weitere, auch fertige Pakete und die Anleitung je Distribution, steht in [
 | [docs/INSTALL.md](docs/INSTALL.md) | Installation auf allen Distributionen, Neubau nach Updates |
 | [docs/PAKETE.md](docs/PAKETE.md) | Fertige `.deb`/`.rpm`/`.pkg.tar.zst`-Pakete und Build-Dienste |
 | [docs/ARCHITEKTUR.md](docs/ARCHITEKTUR.md) | Technische Dokumentation: Aufbau, Datenmodell, Stabilität, Leistung, Tests |
-| [docs/REFERENZANALYSE.md](docs/REFERENZANALYSE.md) | Analyse von driftwm, hyprland-infinite-desktop, InfiniteGlass und den Wallpaper-Engines |
 
 ## Selbst bauen
 
