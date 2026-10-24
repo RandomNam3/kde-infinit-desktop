@@ -91,7 +91,7 @@ Fensterpositionen auf der Fläche sind in logischen Pixeln bei 100 % gespeichert
 |---|---|---|
 | `Canvas` | normales Fenster | bewegt sich mit der Fläche |
 | `Pinned` | angepinnt, auf allen Desktops, „immer im Vordergrund“ (optional), nicht verschiebbar | fest auf dem Bildschirm |
-| `Fullscreen` | Vollbild | fest, sperrt den Bildschirm solange fokussiert |
+| `Fullscreen` | Vollbild oder randloses Vollbild | fest, sperrt den Bildschirm solange fokussiert |
 | `Tile` | minimiertes Vollbild-Fenster | Kachel auf der Fläche |
 | `Moving` | KWin verschiebt/skaliert interaktiv | wird nicht angefasst |
 | `Minimized`, `Hidden` | minimiert / anderer Desktop | wird nicht gezeichnet |
@@ -310,6 +310,13 @@ Ausgewertet wird per Kleinste-Quadrate-Regression über die letzten 90 ms (`Velo
 
 ## 6. Vollbild und Kacheln
 
+- **Randloses Vollbild** zählt wie Vollbild (`isFullScreen(ManagedWindow)`). Spiele unter Wine/Proton
+  setzen in ihrem randlosen Fenstermodus keinen Vollbild-Zustand. Sie sind ein normales Fenster ohne
+  Rahmen, das genau seinen ganzen Bildschirm bedeckt (`coversScreenBorderless`, maximierte Fenster
+  ausgenommen). Erkannt wird das beim Übernehmen des Fensters und bei jeder Geometrieänderung durch
+  Client oder KWin (`ManagedWindow::borderlessFullScreen`), nicht bei den Bewegungen des Plugins selbst.
+  Ein Flächenfenster, das beim Scrollen zufällig genau auf dem Bildschirm landet, wird also nicht zum
+  Vollbild. Beginn und Ende laufen über denselben Weg wie das Signal `windowFullScreenChanged`.
 - Vollbild-Fenster sind nie Canvas-Fenster. `isLocked(output)` ist wahr, solange das aktive Fenster ein
   nicht minimiertes Vollbild-Fenster auf diesem Ausgang ist. Dann sind alle Gesten und Kürzel für den
   Ausgang wirkungslos.
@@ -433,7 +440,8 @@ Geprüft werden:
   Überhang-Auflösung, langsames Ziehen blockiert (Kantenscrollen ohne KWins Rand-Kacheln), schneller Wurf
   wechselt den Bildschirm.
 - Fensterplatz-Gedächtnis, Anpinnen per Kürzel.
-- Vollbild-Sperre, Live- und Symbol-Kachel, Kachel-Klick.
+- Vollbild-Sperre, Live- und Symbol-Kachel, Kachel-Klick, ebenso für randloses Vollbild (X11-Fenster ohne
+  Rahmen über den ganzen Bildschirm).
 - Belastung: zufällige Navigation, während Fenster kommen und gehen; Clients beenden, während ihre
   Fenster geparkt sind; Klick während des Nachgleitens.
 - Herausgezoomt arbeiten (Szenario 6): Ein Testfenster (`probe.qml`) meldet Klicks, Mausrad und

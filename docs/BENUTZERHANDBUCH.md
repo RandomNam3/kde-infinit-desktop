@@ -238,6 +238,8 @@ für den Bildschirmwechsel“* ein (Standard 1600 Pixel pro Sekunde). Mit Meta +
 ## Vollbild, Videos und Spiele
 
 - Programme im **Vollbild** bleiben im Vollbild und werden nicht verschoben.
+- Als Vollbild zählt auch der **randlose Fenstermodus** vieler Spiele (z. B. unter Proton/Wine): ein
+  Fenster ohne Rahmen, das genau den ganzen Bildschirm bedeckt. Maximierte Fenster zählen nicht dazu.
 - Solange ein Vollbild-Fenster **den Fokus** hat, lässt sich die Fläche dieses Bildschirms weder
   verschieben noch zoomen – ein Spiel oder Film kann also nicht aus Versehen „weggescrollt“ werden.
 - Wird ein Vollbild-Fenster **minimiert**, bleibt es als **Kachel** auf der Fläche liegen
