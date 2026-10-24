@@ -84,6 +84,12 @@ bool CanvasInputFilter::pointerMotion(KWin::PointerMotionEvent *event)
     if (m_drag.kind != DragKind::None) {
         return handleDragMotion(event);
     }
+    if (m_forward.buttons && event->warp) {
+        // Held on a window used while zoomed out. X11 clients have KWin warp the pointer to
+        // where they think it is (on the parked window) right before KWin starts their move:
+        // not a position of the user's hand, see takeOverClientMove().
+        return true;
+    }
     if (m_effect->moveState()) {
         return handleInteractiveMove(event);
     }
@@ -159,6 +165,7 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
     };
     if (m_forward.buttons) {
         // Implicit grab: the window keeps the pointer while a button is held.
+        m_forward.position = pos;
         KWin::EffectWindow *w = m_forward.window;
         const std::optional<QMatrix4x4> transform = w ? m_effect->zoomedInputTransform(w) : std::nullopt;
         if (!transform) {
@@ -195,7 +202,9 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     if (!canvas || !canvas->navigation || !output) {
         return false;
     }
-    const QPointF pos = KWin::effects->cursorPos();
+    // Where the user holds the window. X11 clients had KWin warp the pointer onto the parked
+    // window (to the screen edge) before the move started: it goes back there below.
+    const QPointF pos = m_forward.position;
     // Usually the left button; otherwise the lowest one held.
     Qt::MouseButton button = Qt::LeftButton;
     while (!(m_forward.buttons & button)) {
@@ -217,6 +226,10 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     m_drag.window = window.effectWindow;
     m_drag.moved = true;
     m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - window.canvasPos;
+    if (KWin::effects->cursorPos() != pos) {
+        // Handled by the drag above: the window stays where it is.
+        KWin::input()->warpPointer(pos);
+    }
     return true;
 }
 
@@ -564,6 +577,7 @@ bool CanvasInputFilter::pointerButton(KWin::PointerButtonEvent *event)
                 seat->notifyPointerFrame();
                 m_forward.buttons |= event->button;
                 m_forward.nativeButtons.append(event->nativeButton);
+                m_forward.position = pos;
                 return true;
             }
         }

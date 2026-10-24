@@ -15,8 +15,8 @@ W0=$(state | jq '.windows[] | select(.caption=="Probe") | .frame.width')
 echo "client area starts at $OX,$OY inside the frame; width $W0"
 echo "Probe before zooming: $(win Probe) $(canvases)"
 
-# screen position of a point inside Probe's client area at the current zoom: "x y"
-probe_point() { state | jq -r --argjson lx "$1" --argjson ly "$2" --argjson ox "$OX" --argjson oy "$OY" '([.canvases[] | select(.current)][0].camera) as $c | (.outputs[0].geometry) as $o | .windows[] | select(.caption=="Probe") |
+# screen position of a point inside the client area of Probe (or window $3 with client offset $4,$5) at the current zoom: "x y"
+probe_point() { state | jq -r --argjson lx "$1" --argjson ly "$2" --arg caption "${3:-Probe}" --argjson ox "${4:-$OX}" --argjson oy "${5:-$OY}" '([.canvases[] | select(.current)][0].camera) as $c | (.outputs[0].geometry) as $o | .windows[] | select(.caption==$caption) |
     "\(($o.width/2 + (.canvasX + $ox + $lx - $c.x) * $c.zoom) | floor) \(($o.height/2 + (.canvasY + $oy + $ly - $c.y) * $c.zoom) | floor)"'; }
 last() { grep "$1" /tmp/probe.log | tail -1 | sed "s/.*$1 //"; }
 
@@ -87,7 +87,7 @@ input drag "$SX" "$SY" $((SX + 100)) $((SY - 60)) 10 250 left sleep 400
 if [ "$(last SYSTEMMOVE)" = true ]; then echo "PASS: the client asked to be moved (client side title bar)"; else echo "FAIL: the client did not start a move ('$(last SYSTEMMOVE)')"; FAILURES=$((FAILURES+1)); fi
 echo "Probe after the client side move: $(win Probe)"
 # 100 x -60 screen pixels are 200 x -120 on the canvas at 50 %, less what the client needs to see a drag
-check "a client side move while zoomed out moves the window on the canvas" "(.windows[] | select(.caption==\"Probe\") | .canvasX >= ($CX0 + 120) and .canvasY <= ($CY0 - 60))"
+check "a client side move while zoomed out moves the window on the canvas" "(.windows[] | select(.caption==\"Probe\") | .canvasX >= ($CX0 + 120) and .canvasX <= ($CX0 + 210) and .canvasY <= ($CY0 - 60) and .canvasY >= ($CY0 - 130))"
 check "the client side move is not left to KWin (window parked, drawn at the zoom)" '(.windows[] | select(.caption=="Probe") | .mode == "canvas" and .parked == true)'
 check "the client side move did not return to 100 %" '[.canvases[] | select(.current)][0] | .navigation == true and .camera.zoom == 0.5'
 # (another point than the clicks before, so an old PRESS line cannot pass)
@@ -97,6 +97,29 @@ input drag "$PX" "$PY" "$PX" "$PY" 1 40 left sleep 300
 read -r CX CY _ <<<"$(last PRESS)"
 echo "click at screen $PX,$PY after the move arrived at $CX,$CY (expected about 150,200)"
 if [ -n "$CX" ] && [ $((CX > 150 ? CX - 150 : 150 - CX)) -le 3 ] && [ $((CY > 200 ? CY - 200 : 200 - CY)) -le 3 ]; then echo "PASS: after the client side move clicks reach the window at the right position"; else echo "FAIL: click after the client side move arrived at '$CX,$CY'"; FAILURES=$((FAILURES+1)); fi
+
+# the same for an X11 client (Steam, Wine/Proton): KWin first warps the pointer to where the client
+# thinks it is, i.e. onto the parked window at the screen edge
+QT_QPA_PLATFORM=xcb /usr/lib/qt6/bin/qml /th/probe.qml > /tmp/probe-x11.log 2>&1 &
+XPID=$!
+for _ in $(seq 1 80); do state | grep -q '"ProbeX11"' && break; sleep 0.1; done
+sleep 0.8
+dbuscall setZoom 0.5; sleep 1.2      # a new window may have ended the zoom
+kwin_js 'for (const w of workspace.windowList()) if (w.caption == "ProbeX11") print("PROBEX11GEO " + (w.clientGeometry.x - w.frameGeometry.x) + " " + (w.clientGeometry.y - w.frameGeometry.y));'
+read -r XOX XOY <<<"$(grep 'PROBEX11GEO' /tmp/kwin.log | tail -1 | sed 's/.*PROBEX11GEO //')"
+echo "ProbeX11 before the client side move: $(win ProbeX11)"
+CX0=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .canvasX')
+CY0=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .canvasY')
+read -r SX SY <<<"$(probe_point 300 380 ProbeX11 "$XOX" "$XOY")"
+input abs "$SX" "$SY" sleep 60
+input drag "$SX" "$SY" $((SX + 100)) $((SY - 60)) 10 250 left sleep 400
+XMOVE=$(grep SYSTEMMOVE /tmp/probe-x11.log | tail -1 | sed 's/.*SYSTEMMOVE //')
+if [ "$XMOVE" = true ]; then echo "PASS: the X11 client asked to be moved (_NET_WM_MOVERESIZE)"; else echo "FAIL: the X11 client did not start a move ('$XMOVE')"; FAILURES=$((FAILURES+1)); fi
+echo "ProbeX11 after the client side move: $(win ProbeX11)"
+check "an X11 client side move while zoomed out moves the window on the canvas, from where it was grabbed" "(.windows[] | select(.caption==\"ProbeX11\") | .canvasX >= ($CX0 + 120) and .canvasX <= ($CX0 + 210) and .canvasY <= ($CY0 - 60) and .canvasY >= ($CY0 - 130))"
+check "the X11 client side move is not left to KWin" '(.windows[] | select(.caption=="ProbeX11") | .mode == "canvas" and .parked == true)'
+kill "$XPID" 2>/dev/null
+sleep 0.5
 
 read -r TX TY <<<"$(probe_point 300 $((-OY / 2)))"
 input abs "$TX" "$TY" sleep 60 click left sleep 80 click left sleep 900

@@ -275,13 +275,17 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   läuft vor KWins `Popup`-Filter, ein Klick in ein verkleinertes Menü schließt es also nicht.
 - Die serverseitige Titelleiste gehört dem Plugin: Ziehen verschiebt auf der Fläche, ein Doppelklick führt
   zu 100 %.
-- Startet ein Programm mit eigener Titelleiste (GTK, Browser) selbst ein Verschieben (`xdg_toplevel.move`),
-  übernimmt das Plugin schon beim Start (`windowStartUserMovedResized`): Ab da verschiebt es das Fenster
-  auf der Fläche, und der Client bekommt sein Loslassen sofort. KWins Verschieben wird abgebrochen
-  (`cancelInteractiveMoveResize`), sobald KWin es fertig gestartet hat (`QTimer::singleShot(0)`).
-  Bis dahin bleibt das Fenster ein Flächenfenster (`ManagedWindow::moveTakenOver`). Sonst würde KWin das
-  geparkte Fenster in Originalgröße unter den Zeiger holen, und das Ende des Verschiebens würde seine
-  Flächenposition überschreiben.
+- Startet ein Programm mit eigener Titelleiste (GTK, Browser, Steam, Wine/Proton) selbst ein Verschieben
+  (`xdg_toplevel.move`, bei X11 `_NET_WM_MOVERESIZE`), übernimmt das Plugin schon beim Start
+  (`windowStartUserMovedResized`): Ab da verschiebt es das Fenster auf der Fläche, und der Client bekommt
+  sein Loslassen sofort. KWins Verschieben wird abgebrochen (`cancelInteractiveMoveResize`), sobald KWin
+  es fertig gestartet hat (`QTimer::singleShot(0)`). Bis dahin bleibt das Fenster ein Flächenfenster
+  (`ManagedWindow::moveTakenOver`). Sonst würde KWin das geparkte Fenster in Originalgröße unter den Zeiger
+  holen, und das Ende des Verschiebens würde seine Flächenposition überschreiben.
+- Bei X11-Clients setzt KWin den Zeiger vor dem Start dorthin, wo der Client ihn vermutet: auf das geparkte
+  Fenster, also an den Bildschirmrand. Solange eine Taste auf einem verkleinerten Fenster gedrückt ist,
+  geht ein solcher Warp nicht an den Client. Das Plugin rechnet mit der Position davor und setzt den
+  Zeiger dorthin zurück.
 - Die Tastatur folgt dem aktiven Fenster; ein Klick aktiviert es.
 - Noch nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
   arbeitet mit physischen Positionen) und Touch.
@@ -434,7 +438,7 @@ Geprüft werden:
   Fenster geparkt sind; Klick während des Nachgleitens.
 - Herausgezoomt arbeiten (Szenario 6): Ein Testfenster (`probe.qml`) meldet Klicks, Mausrad und
   Tastatureingaben mit Position. Geprüft wird, dass sie bei 50 % pixelgenau ankommen, dass ein
-  Rechtsklick-Popup am Mauszeiger aufgeht und Klicks annimmt, dass die Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete, die `xdg_toplevel.move` anfordert), der Doppelklick zu 100 % führt und die Inhaltsskalierung gesetzt und
+  Rechtsklick-Popup am Mauszeiger aufgeht und Klicks annimmt, dass die Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete, unter Wayland und X11), der Doppelklick zu 100 % führt und die Inhaltsskalierung gesetzt und
   zurückgesetzt wird. Außerdem: Markierungen und ihr Klick, und kein Nachgleiten nach Kreisbewegungen.
 - Verträglichkeit (`compat-session.sh`): eingebaute Unschärfe oder Better Blur DX, im Container gegen
   dieselbe KWin-Version gebaut, dazu Transparenz, Wobbly Windows und Magic Lamp. Szenario 5 prüft Pannen,
