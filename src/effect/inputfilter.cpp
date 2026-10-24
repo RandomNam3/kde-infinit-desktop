@@ -11,12 +11,14 @@
 #include "core/output.h"
 #include "effect/effecthandler.h"
 #include "input_event.h"
+#include "main.h"
 #include "options.h"
 #include "pointer_input.h"
 #include "wayland/seat.h"
 #include "wayland_server.h"
 #include "window.h"
 
+#include <QAction>
 #include <QGuiApplication>
 #include <QLineF>
 #include <QStyleHints>
@@ -81,6 +83,9 @@ QPointF CanvasInputFilter::clampInto(const QPointF &pos, const QRectF &rect)
 
 bool CanvasInputFilter::pointerMotion(KWin::PointerMotionEvent *event)
 {
+    if (m_shortcutPass.action && !event->warp) {
+        m_shortcutPass = {};
+    }
     if (m_drag.kind != DragKind::None) {
         return handleDragMotion(event);
     }
@@ -432,6 +437,18 @@ void CanvasInputFilter::cancelDrag()
 
 bool CanvasInputFilter::pointerButton(KWin::PointerButtonEvent *event)
 {
+    if (!handleButton(event)) {
+        return false;
+    }
+    // KWin compares all held buttons, and ignores releases.
+    if (event->state == KWin::PointerButtonState::Pressed && event->buttons == event->button) {
+        return consumeUsed(event->modifiers, event->button);
+    }
+    return true;
+}
+
+bool CanvasInputFilter::handleButton(KWin::PointerButtonEvent *event)
+{
     if (event->state == KWin::PointerButtonState::Released) {
         if (m_swallowRelease != Qt::NoButton && event->button == m_swallowRelease) {
             m_swallowRelease = Qt::NoButton;
@@ -636,6 +653,11 @@ bool CanvasInputFilter::pointerButton(KWin::PointerButtonEvent *event)
 
 bool CanvasInputFilter::pointerAxis(KWin::PointerAxisEvent *event)
 {
+    return handleAxis(event) && consumeUsed(event->modifiers);
+}
+
+bool CanvasInputFilter::handleAxis(KWin::PointerAxisEvent *event)
+{
     m_metaAlone = false;
     if (m_drag.kind == DragKind::Pan) {
         return true;
@@ -751,6 +773,43 @@ bool CanvasInputFilter::pointerAxis(KWin::PointerAxisEvent *event)
         return panFinger();
     }
     return false;
+}
+
+bool CanvasInputFilter::consumeUsed(Qt::KeyboardModifiers modifiers, std::optional<Qt::MouseButton> button)
+{
+#if KWIN_BUILD_GLOBALSHORTCUTS
+    // Plasma opens the launcher when Meta is pressed and released on its own. KWin's global
+    // shortcut filter, which comes right after this one, cancels that when a button or the
+    // wheel is used with a modifier held. So an event the plugin used with a modifier held
+    // (Meta + wheel zooms) goes on to it, and a shortcut that does nothing stops it there.
+    // The shortcuts are removed with the next motion or key.
+    if (relevantModifiers(modifiers) == Qt::NoModifier || !KWin::kwinApp()->supportsGlobalShortcuts()) {
+        return true;
+    }
+    if (m_shortcutPass.action && m_shortcutPass.modifiers != modifiers) {
+        m_shortcutPass = {};
+    }
+    if (!m_shortcutPass.action) {
+        m_shortcutPass.action = std::make_unique<QAction>();
+        m_shortcutPass.modifiers = modifiers;
+    }
+    if (!button) {
+        if (!m_shortcutPass.axis) {
+            for (KWin::PointerAxisDirection direction : {KWin::PointerAxisUp, KWin::PointerAxisDown, KWin::PointerAxisLeft, KWin::PointerAxisRight}) {
+                KWin::input()->registerAxisShortcut(modifiers, direction, m_shortcutPass.action.get());
+            }
+            m_shortcutPass.axis = true;
+        }
+    } else if (!(m_shortcutPass.buttons & *button)) {
+        KWin::input()->registerPointerShortcut(modifiers, *button, m_shortcutPass.action.get());
+        m_shortcutPass.buttons |= *button;
+    }
+    return false;
+#else
+    Q_UNUSED(modifiers)
+    Q_UNUSED(button)
+    return true;
+#endif
 }
 
 void CanvasInputFilter::scrollPan(Canvas &canvas, const QPointF &screenDelta, std::chrono::microseconds time)
@@ -877,6 +936,7 @@ bool CanvasInputFilter::handleInteractiveMove(KWin::PointerMotionEvent *event)
 
 bool CanvasInputFilter::keyboardKey(KWin::KeyboardKeyEvent *event)
 {
+    m_shortcutPass = {};
     const bool metaKey = event->key == Qt::Key_Meta || event->key == Qt::Key_Super_L || event->key == Qt::Key_Super_R;
     if (event->state == KWin::KeyboardKeyState::Released) {
         if (metaKey) {

@@ -259,6 +259,15 @@ Verschieben/Skalieren.
 | Navigationsmodus: Rand/Ecke (8 px) eines Fensters, oder Meta + rechte Taste | Größe ändern (`DragKind::Resize`). Das Plugin ruft `Window::resize()` am geparkten Fenster auf. Die Gegenecke ist in `ManagedWindow::resizeAnchor` festgehalten, und `slotFrameGeometryChanged` setzt die Flächenposition passend zur Größe, die der Client tatsächlich wählt (Mindestgröße, Zellraster). Den Größen-Mauszeiger zeigt KWin nur während einer Maus-Interception; das Plugin startet sie deshalb nur, solange der Zeiger über einer Randzone steht. |
 | Tastatur | Esc/Enter im Navigationsmodus; Super-Taste allein bzw. Alt+F1 merkt die Mausposition für das Startmenü |
 
+**Meta allein:** Plasma öffnet das Startmenü, wenn Meta allein gedrückt und losgelassen wird. KWins Filter
+für globale Kürzel läuft direkt nach dem des Plugins und bricht das ab, sobald dazwischen eine Maustaste oder
+das Mausrad benutzt wird. Ereignisse, die das Plugin bei gedrückter Modifikatortaste selbst verwendet, gibt
+es deshalb an diesen Filter weiter, etwa Meta + Mausrad (Zoom) oder Meta + Ziehen herausgezoomt. Ein Kürzel,
+das nichts tut, hält sie dort an (`registerAxisShortcut`/`registerPointerShortcut`). KWins eigene
+Abbruch-Funktion ist nicht exportiert. Die Kürzel verschwinden mit der nächsten Bewegung oder Taste wieder
+(die `QAction` wird gelöscht). Ohne globale Kürzel in KWin (`KWIN_BUILD_GLOBALSHORTCUTS`,
+`--no-global-shortcuts`) bleibt es beim Verbrauchen im Plugin.
+
 **Herausgezoomt benutzen:** KWin stellt die Zeigerfokussierung im Navigationsmodus auf das, was *physisch*
 unter dem Zeiger liegt, also meist den Desktop, denn die Fenster sind geparkt. Das Plugin gibt den Zeiger
 deshalb selbst an das Fenster, das *sichtbar* darunter liegt: `SeatInterface::notifyPointerEnter(surface,

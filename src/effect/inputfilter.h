@@ -15,7 +15,10 @@
 #include <QTimer>
 
 #include <chrono>
+#include <memory>
 #include <optional>
+
+class QAction;
 
 namespace KWin
 {
@@ -108,6 +111,11 @@ private:
     static Qt::KeyboardModifiers relevantModifiers(Qt::KeyboardModifiers modifiers);
     static QPointF clampInto(const QPointF &pos, const QRectF &rect);
 
+    bool handleButton(KWin::PointerButtonEvent *event);
+    bool handleAxis(KWin::PointerAxisEvent *event);
+    /// What the filter returns for an event the plugin used: true, or false when KWin's global
+    /// shortcut filter is to stop it (a modifier is held, see the implementation).
+    bool consumeUsed(Qt::KeyboardModifiers modifiers, std::optional<Qt::MouseButton> button = std::nullopt);
     void startPan(Canvas &canvas, const QPointF &pos, Qt::MouseButton button, bool passRelease);
     bool handleDragMotion(KWin::PointerMotionEvent *event);
     void updateResizeCursor(const QPointF &pos);
@@ -186,6 +194,15 @@ private:
         QPointer<KWin::EffectWindow> window;
         std::chrono::microseconds time{0};
     } m_lastTitleClick;
+    /// Shortcuts that do nothing, registered with KWin for events used with a modifier held
+    /// (see consumeUsed()). Deleting the action unregisters them.
+    struct
+    {
+        std::unique_ptr<QAction> action;
+        Qt::KeyboardModifiers modifiers;
+        bool axis = false;
+        Qt::MouseButtons buttons;
+    } m_shortcutPass;
 };
 
 } // namespace InfinitDesktop
