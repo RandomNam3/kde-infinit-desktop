@@ -41,7 +41,7 @@ provides=(kwin-effect-infinitdesktop)
 conflicts=(kde-infinit-desktop-git)
 install=kde-infinit-desktop.install
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-# Replace with the real checksum (updpkgsums) once release tarballs exist.
+# Replace with the real checksum (updpkgsums) before publishing to the AUR.
 sha256sums=('SKIP')
 
 build() {

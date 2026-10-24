@@ -553,6 +553,11 @@ install_deps() {
             run_root dnf install -y "${missing[@]}"
             ;;
         zypper)
+            # Container images (and distrobox) ship busybox-gawk, which conflicts with
+            # the gawk that rpm-build needs (pulled in by qt6-base-devel).
+            if rpm -q busybox-gawk >/dev/null 2>&1; then
+                run_root zypper --non-interactive install --force-resolution --no-recommends gawk
+            fi
             run_root zypper --non-interactive --gpg-auto-import-keys install --no-recommends "${missing[@]}"
             ;;
         emerge)

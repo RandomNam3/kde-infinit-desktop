@@ -12,12 +12,6 @@ Systemeinstellungen und eine eigene Einstellungs-App.
 - KDE Plasma mit **KWin 6.8 oder neuer** (ältere Versionen haben eine andere Plugin-Schnittstelle)
 - eine **Wayland**-Sitzung („Plasma (Wayland)“ im Anmeldebildschirm). Unter X11 wird der Effekt nicht unterstützt.
 
-> Quellcode: <https://github.com/RandomNam3/kde-infinit-desktop> (Branch `main`).
-> Ein Release-Tag `v0.1.0` gibt es noch nicht – die Release-Pakete
-> (`packaging/arch/PKGBUILD`, Spec-Dateien) erwarten
-> `https://github.com/RandomNam3/kde-infinit-desktop/archive/refs/tags/v0.1.0.tar.gz`;
-> bis der Tag angelegt ist, baut man aus dem Git-Klon (`./install.sh`, `./build.sh --package`).
-
 ---
 
 ## Inhalt
@@ -250,9 +244,9 @@ cd packaging/arch-git      # Entwicklungsversion direkt von GitHub (Branch main)
 makepkg -si
 # aus dem lokalen Klon statt von GitHub:
 KID_GIT_URL=file:///pfad/zum/klon makepkg -si
-# Release-Tarball (erst, wenn der Tag v0.1.0 existiert):
+# Release-Tarball (aktuelles Release):
 cd packaging/arch && makepkg -si
-# oder ohne Tag aus dem Quellbaum:
+# oder aus dem Quellbaum:
 ./build.sh --package && sudo pacman -U ./dist/kde-infinit-desktop-*.pkg.tar.zst
 ```
 

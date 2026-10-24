@@ -79,7 +79,7 @@ jobs:
             tumbleweed) zypper --non-interactive install git-core tar gzip curl ;;
           esac
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install build dependencies
         run: bash scripts/install.sh --deps-only --yes --no-auto-rebuild
@@ -122,7 +122,7 @@ jobs:
           : > "dist/${{ steps.kwin.outputs.marker }}"
           ls -l dist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: steps.kwin.outputs.supported == 'true' && (inputs.force || steps.exists.outputs.found != 'true')
         with:
           name: packages-${{ matrix.distro }}
@@ -135,7 +135,7 @@ jobs:
     if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.publish) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: packages-*
           path: dist

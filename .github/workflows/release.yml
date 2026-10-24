@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Creates the GitHub release for a version tag (vX.Y.Z). The tag has to match
+# the project version in CMakeLists.txt; the release notes are the body of the
+# annotated tag (git tag -a --cleanup=verbatim -F notes.md vX.Y.Z). GitHub adds
+# the source archive the packages build from (archive/refs/tags/vX.Y.Z.tar.gz).
+# Prebuilt packages per KWin version come from packages.yml ("kwin-builds").
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Tag matches the project version
+        run: |
+          ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          echo "tag: $GITHUB_REF_NAME, project version: $ver"
+          [ "v$ver" = "$GITHUB_REF_NAME" ] || { echo "::error::tag $GITHUB_REF_NAME does not match the project version $ver"; exit 1; }
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # the checkout may not carry the annotated tag object, fetch it explicitly
+          git fetch --force --no-tags origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
+          git for-each-ref "refs/tags/$GITHUB_REF_NAME" --format='%(contents:body)' > notes.md
+          [ -s notes.md ] || echo "KDE Infinit Desktop ${GITHUB_REF_NAME#v}" > notes.md
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
+              --title "KDE Infinit Desktop ${GITHUB_REF_NAME#v}" --notes-file notes.md
+          fi

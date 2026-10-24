@@ -97,11 +97,10 @@ NixOS bauen bei KWin-Updates ohnehin alles Abhängige neu). Voraussetzung:
 1. **Jetzt:** `scripts/install.sh` als Standardweg für Nutzer – ein Befehl,
    automatischer Neubau auf allen Distributionen mit pacman, apt, dnf, zypper
    oder apk, sonst Rückfrage beim Anmelden.
-2. **Mit dem ersten Release-Tag:** AUR-Pakete veröffentlichen,
+2. **Mit den Releases** (Tags `vX.Y.Z`, ab `v0.1.0`): AUR-Pakete veröffentlichen,
    OBS-Projekt für openSUSE/Fedora/Debian/Ubuntu (+ neon als DoD) einrichten,
    optional COPR; `packages.yml` für Testpakete aktiv lassen.
-3. Vor dem ersten Release: Tag `v0.1.0` auf
-   <https://github.com/RandomNam3/kde-infinit-desktop> anlegen, dann in
-   `packaging/arch/PKGBUILD` die Prüfsumme eintragen (`updpkgsums`) und eine
-   echte Maintainer-Adresse in `packaging/debian/` (`maintainers@kde-infinit-desktop.invalid`)
+3. Vor dem Veröffentlichen in AUR/OBS: in `packaging/arch/PKGBUILD` die
+   Prüfsumme des Release-Tarballs eintragen (`updpkgsums`) und eine echte
+   Maintainer-Adresse in `packaging/debian/` (`maintainers@kde-infinit-desktop.invalid`)
    und `packaging/gentoo/…/metadata.xml` setzen.
