@@ -60,7 +60,9 @@ Der Installer
 4. baut in einem temporären Verzeichnis und installiert mit `sudo`,
 5. legt eine Kopie des Quellcodes in `/usr/src/kde-infinit-desktop-<version>`
    ab und richtet den **automatischen Neubau nach KWin-Updates** ein,
-6. aktiviert den Effekt in der laufenden Sitzung.
+6. aktiviert den Effekt in der laufenden Sitzung. War schon eine ältere Version
+   geladen, behält die laufende KWin-Instanz diese im Speicher. Der Installer
+   sagt dann, dass man sich einmal ab- und wieder anmelden muss.
 
 Danach muss man sich um nichts mehr kümmern: Nach einem Plasma-Update wird der
 Effekt automatisch neu gebaut; man meldet sich nur – wie nach jedem
@@ -213,7 +215,8 @@ kwin-dev libwayland-dev libepoxy-dev libdrm-dev libvulkan-dev libxkbcommon-dev
 
 Laufzeit (Einstellungs-App): `qml6-module-qtquick qml6-module-qtquick-controls
 qml6-module-qtquick-layouts qml6-module-qtquick-effects qml6-module-qtquick-shapes
-qml6-module-qtquick-window qml6-module-qtqml-workerscript qt6-svg-plugins`.
+qml6-module-qtquick-window qml6-module-qtqml-workerscript qt6-svg-plugins` (KDE neon:
+`qt6-svg`, dort gibt es kein `qt6-svg-plugins`).
 
 Automatischer Neubau: `/etc/apt/apt.conf.d/99kde-infinit-desktop`
 (`DPkg::Post-Invoke`, vergleicht nur zwei Versionsnummern, solange sich KWin

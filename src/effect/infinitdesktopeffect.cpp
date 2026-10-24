@@ -862,6 +862,7 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
 
     if (newlyMapped && canvas.navigation && isCurrentCanvas(canvas) && modeOf(window) == WindowMode::Canvas) {
         if (m_settings.newWindowsExitZoom) {
+            qCDebug(KWIN_INFINITDESKTOP) << "new window" << w->caption() << "ends the zoom";
             animateTo(canvas, reference);
         } else {
             parkWindow(window, output);
@@ -964,6 +965,7 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
     }
     // Borderless fullscreen begins and ends with the geometry (fullscreen has its own signal).
     if (const bool borderless = coversScreenBorderless(*managed); borderless != managed->borderlessFullScreen) {
+        qCDebug(KWIN_INFINITDESKTOP) << w->caption() << (borderless ? "is" : "is no longer") << "borderless fullscreen";
         const bool wasFullScreen = isFullScreen(*managed);
         managed->borderlessFullScreen = borderless;
         if (isFullScreen(*managed) != wasFullScreen) {
@@ -1003,6 +1005,8 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
             // XMoveWindow instead of asking KWin to move it. Like for a move through KWin,
             // the plugin moves it on the canvas from now on, and the client gets its release.
             qCDebug(KWIN_INFINITDESKTOP) << "client moved itself while used zoomed out, taking over:" << w->caption();
+        } else if (moved) {
+            qCDebug(KWIN_INFINITDESKTOP) << "parked window" << w->caption() << "was moved to" << geometry.topLeft() << "- parking it again";
         }
         // The window stays where it is on the canvas and is parked again (with its new size).
         // Parked windows are outside of every screen, so KWin likes to "rescue" them when it
@@ -1049,6 +1053,7 @@ void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
         return;
     }
     managed->moveTakenOver = false;
+    qCDebug(KWIN_INFINITDESKTOP) << "KWin starts to" << (w->isUserMove() ? "move" : "resize") << w->caption();
     if (w->isUserMove() && m_inputFilter && m_inputFilter->takeOverClientMove(*managed)) {
         // A window used while zoomed out moves itself (client side title bar). KWin would drag
         // the parked window around at 100 %, so the plugin moves it on the canvas instead.

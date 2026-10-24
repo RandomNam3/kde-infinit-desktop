@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Start page: plugin status, a short "getting around" guide that follows the
-// current settings and shortcuts, and tiles for all categories.
+// Start page: plugin status, the update check, a short "getting around" guide that
+// follows the current settings and shortcuts, and tiles for all categories.
 import QtQuick
 import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
@@ -249,6 +249,11 @@ PageScaffold {
                 live: page.visible
             }
         }
+    }
+
+    // --- Updates ----------------------------------------------------------------
+    UpdatesCard {
+        Layout.fillWidth: true
     }
 
     // --- Getting around -------------------------------------------------------

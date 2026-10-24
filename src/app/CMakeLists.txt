@@ -5,7 +5,7 @@
 # (plain QtQuick + QtQuick.Controls.Basic, no Kirigami). QML, icons and the app
 # icon are compiled into the executable.
 
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Qml Quick QuickControls2)
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Network Qml Quick QuickControls2)
 
 # Module resources under :/qt/qml/<URI>.
 qt_policy(SET QTP0001 NEW)
@@ -73,6 +73,7 @@ set(qml_files
     UiText.qml
     UiTextField.qml
     UiToolTip.qml
+    UpdatesCard.qml
 )
 set(qml_paths)
 foreach(file IN LISTS qml_files)
@@ -99,6 +100,8 @@ qt_add_qml_module(kde-infinit-desktop-settings
         shortcutmodel.h
         themecontroller.cpp
         themecontroller.h
+        updatechecker.cpp
+        updatechecker.h
         windowplacements.cpp
         windowplacements.h
     DEPENDENCIES
@@ -115,6 +118,7 @@ target_link_libraries(kde-infinit-desktop-settings PRIVATE
     infinitdesktop_shared
     Qt6::DBus
     Qt6::Gui
+    Qt6::Network
     Qt6::Qml
     Qt6::Quick
     Qt6::QuickControls2
