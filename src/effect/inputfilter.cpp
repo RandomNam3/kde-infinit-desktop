@@ -135,6 +135,8 @@ void CanvasInputFilter::forwardEnter(const ZoomedTarget &target, const QPointF &
         return;
     }
     m_forward.window = target.window;
+    // An X11 window first goes where Xwayland can deliver the pointer to it.
+    m_effect->setZoomedInputWindow(target.managed ? target.managed->effectWindow : nullptr);
     KWin::waylandServer()->seat()->notifyPointerEnter(window->surface(), pos, target.inputTransform);
 }
 
@@ -143,6 +145,7 @@ void CanvasInputFilter::forwardLeave(const QPointF &pos)
     m_forward.window.clear();
     m_forward.buttons = {};
     m_forward.nativeButtons.clear();
+    m_effect->setZoomedInputWindow(nullptr);
     // Back to whatever KWin has under the pointer (the desktop, a panel, ...).
     KWin::SeatInterface *seat = KWin::waylandServer()->seat();
     KWin::Window *focus = KWin::input()->pointer()->focus();
@@ -192,6 +195,10 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
     if (m_forward.window != target->window) {
         forwardEnter(*target, pos);
     } else {
+        if (target->managed) {
+            // Keeps an X11 window from ending up physically under the pointer.
+            m_effect->setZoomedInputWindow(target->managed->effectWindow);
+        }
         seat->setFocusedPointerSurfaceTransformation(target->inputTransform);
     }
     send();

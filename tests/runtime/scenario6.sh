@@ -108,6 +108,14 @@ dbuscall setZoom 0.5; sleep 1.2      # a new window may have ended the zoom
 kwin_js 'for (const w of workspace.windowList()) if (w.caption == "ProbeX11") print("PROBEX11GEO " + (w.clientGeometry.x - w.frameGeometry.x) + " " + (w.clientGeometry.y - w.frameGeometry.y));'
 read -r XOX XOY <<<"$(grep 'PROBEX11GEO' /tmp/kwin.log | tail -1 | sed 's/.*PROBEX11GEO //')"
 echo "ProbeX11 before the client side move: $(win ProbeX11)"
+# Xwayland keeps the pointer of X11 clients inside the screen: a click must not end at the edge
+read -r PX PY <<<"$(probe_point 200 120 ProbeX11 "$XOX" "$XOY")"
+input abs $((PX + 4)) "$PY" sleep 60 abs "$PX" "$PY" sleep 60
+input drag "$PX" "$PY" "$PX" "$PY" 1 40 left sleep 300
+read -r CX CY _ <<<"$(grep PRESS /tmp/probe-x11.log | tail -1 | sed 's/.*PRESS //')"
+echo "click into ProbeX11 at screen $PX,$PY arrived at $CX,$CY (expected about 200,120)"
+if [ -n "$CX" ] && [ $((CX > 200 ? CX - 200 : 200 - CX)) -le 3 ] && [ $((CY > 120 ? CY - 120 : 120 - CY)) -le 3 ]; then echo "PASS: a click into a zoomed out X11 window reaches it at the right position"; else echo "FAIL: click into the X11 window arrived at '$CX,$CY'"; FAILURES=$((FAILURES+1)); fi
+check "the X11 window used zoomed out is still a canvas window, at the zoom" '(.windows[] | select(.caption=="ProbeX11") | .mode == "canvas" and .parked == true) and ([.canvases[] | select(.current)][0] | .camera.zoom == 0.5)'
 CX0=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .canvasX')
 CY0=$(state | jq '.windows[] | select(.caption=="ProbeX11") | .canvasY')
 read -r SX SY <<<"$(probe_point 300 380 ProbeX11 "$XOX" "$XOY")"
