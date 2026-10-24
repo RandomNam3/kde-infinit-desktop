@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- KDE Infinit Desktop application icon, simplified for 16-32 px (source of the small PNGs).
+       SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+       SPDX-License-Identifier: GPL-3.0-or-later -->
+  <defs>
+    <linearGradient id="background" x1="8" y1="4" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3b9cf5"/>
+      <stop offset="0.55" stop-color="#4f6cf0"/>
+      <stop offset="1" stop-color="#7a4fe6"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#background)"/>
+  <path d="M64 64c-8-11-14.5-17-22-17a17 17 0 0 0 0 34c7.5 0 14-6 22-17zm0 0c8 11 14.5 17 22 17a17 17 0 0 0 0-34c-7.5 0-14 6-22 17z" fill="none" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

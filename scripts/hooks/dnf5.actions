@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# dnf5 "actions" plugin (package libdnf5-plugin-actions): rebuild KDE Infinit
+# Desktop after KWin updates. Installed by scripts/install.sh as
+# /etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions
+# Log: /var/log/kde-infinit-desktop-rebuild.log
+post_transaction:kwin*:in::/usr/lib/kde-infinit-desktop/kwin-update-hook.sh dnf

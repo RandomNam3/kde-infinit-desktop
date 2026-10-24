@@ -1,0 +1,40 @@
+# KDE Infinit Desktop - interactive demo / test session (Arch Linux, current Plasma)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# A complete Plasma Wayland session (KWin + plasmashell) that runs headless on
+# a virtual output and is reachable over RDP (KRdp). Built and started by
+# start-demo.ps1 (Windows/Podman) or start-demo.sh (Linux/Podman or Docker).
+
+FROM docker.io/library/archlinux:latest
+
+# The Arch base image drops all translations (NoExtract); keep them so that the session can
+# run in German (or any other language), and generate the locales for it.
+RUN sed -i '/^NoExtract.*locale/d; /^NoExtract.*i18n/d' /etc/pacman.conf \
+ && pacman -Syu --noconfirm glibc \
+ && sed -i 's/^#\(de_DE.UTF-8\)/\1/; s/^#\(en_US.UTF-8\)/\1/' /etc/locale.gen && locale-gen \
+ && pacman -Scc --noconfirm
+
+RUN pacman -Syu --noconfirm --needed \
+        base-devel cmake ninja extra-cmake-modules git \
+        kwin plasma-workspace plasma-desktop krdp pipewire wireplumber openssl \
+        qt6-base qt6-declarative qt6-tools qt6-wayland qt6-svg qt6-translations vulkan-headers \
+        kcmutils kconfig kglobalaccel ki18n kcoreaddons kwindowsystem kxmlgui kwidgetsaddons \
+        konsole dolphin kate systemsettings kde-cli-tools breeze breeze-icons plasma-integration \
+        xdg-desktop-portal-kde kscreen foot xorg-xwayland mesa \
+        ttf-dejavu noto-fonts ttf-liberation jq python-dbus python-pillow \
+        mpv ffmpeg gst-plugin-pipewire gst-plugins-good gst-plugins-base \
+ && pacman -Scc --noconfirm
+# Session services plasmashell needs (normally started by the session manager).
+RUN pacman -Sy --noconfirm --needed kactivitymanagerd kded polkit-kde-agent plasma5support \
+ && pacman -Scc --noconfirm
+
+# Rootless containers cannot grant the cap_sys_nice file capability of kwin_wayland.
+RUN for b in /usr/bin/kwin_wayland /usr/bin/kwin_wayland_wrapper; do \
+        [ -f "$b" ] && cp "$b" "$b.nocap" && mv -f "$b.nocap" "$b" && chmod 755 "$b"; \
+    done; true
+
+COPY demo-session.sh /usr/local/bin/demo-session.sh
+RUN chmod 755 /usr/local/bin/demo-session.sh
+
+EXPOSE 3389
+ENTRYPOINT ["dbus-run-session", "--", "/usr/local/bin/demo-session.sh"]

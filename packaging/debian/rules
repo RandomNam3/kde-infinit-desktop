@@ -1,0 +1,58 @@
+#!/usr/bin/make -f
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Build profiles (DEB_BUILD_PROFILES):
+#   pkg.kde-infinit-desktop.noeffect  without the KWin effect and its KCM
+#                                     (no kwin-dev needed, e.g. KWin < 6.8)
+#   pkg.kde-infinit-desktop.noapp     without the settings app
+#   nocheck                           do not build/run the unit tests
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export QT_QPA_PLATFORM = offscreen
+
+CONFIGURE_FLAGS = -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
+
+ifneq (,$(filter pkg.kde-infinit-desktop.noeffect,$(DEB_BUILD_PROFILES)))
+  CONFIGURE_FLAGS += -DBUILD_EFFECT=OFF -DBUILD_KCM=OFF
+else
+  CONFIGURE_FLAGS += -DBUILD_EFFECT=ON -DBUILD_KCM=ON
+  # KWin only loads plugins built for exactly its version (the plugin IID
+  # contains MAJOR.MINOR.PATCH). Depend on the upstream version of the
+  # kwin-dev we build against: ">= 4:6.8.1, << 4:6.8.1.1~" accepts every
+  # Debian/Ubuntu/neon revision of KWin 6.8.1, but no other KWin release.
+  KWIN_DEB_VERSION := $(shell dpkg-query -W -f='$${Version}' kwin-dev 2>/dev/null)
+  KWIN_UPSTREAM := $(shell echo '$(KWIN_DEB_VERSION)' | sed -E 's/-[^-]*$$//')
+endif
+
+ifneq (,$(filter pkg.kde-infinit-desktop.noapp,$(DEB_BUILD_PROFILES)))
+  CONFIGURE_FLAGS += -DBUILD_SETTINGS_APP=OFF
+else
+  CONFIGURE_FLAGS += -DBUILD_SETTINGS_APP=ON
+endif
+
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS) $(DEB_BUILD_PROFILES)))
+  CONFIGURE_FLAGS += -DBUILD_TESTING=OFF
+else
+  CONFIGURE_FLAGS += -DBUILD_TESTING=ON
+endif
+
+%:
+	dh $@ --buildsystem=cmake+ninja
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(CONFIGURE_FLAGS)
+
+override_dh_install:
+	dh_install
+	# translations only exist once po/ has been added
+	if [ -d debian/tmp/usr/share/locale ]; then \
+		dh_install -pkde-infinit-desktop-data usr/share/locale; \
+	fi
+
+override_dh_gencontrol:
+ifneq (,$(KWIN_UPSTREAM))
+	dh_gencontrol -- -Vkwin:Version=$(KWIN_UPSTREAM) -Vkwin:NextVersion=$(KWIN_UPSTREAM).1~
+else
+	dh_gencontrol
+endif

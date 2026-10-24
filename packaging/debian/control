@@ -1,0 +1,98 @@
+Source: kde-infinit-desktop
+Section: kde
+Priority: optional
+Maintainer: KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>
+Build-Depends: debhelper-compat (= 13),
+               cmake (>= 3.22),
+               ninja-build,
+               pkgconf,
+               gettext,
+               extra-cmake-modules (>= 6.0.0),
+               qt6-base-dev (>= 6.6.0),
+               qt6-base-private-dev,
+               qt6-declarative-dev <!pkg.kde-infinit-desktop.noapp>,
+               qt6-svg-dev <!pkg.kde-infinit-desktop.noapp>,
+               libkf6config-dev,
+               libkf6coreaddons-dev,
+               libkf6globalaccel-dev,
+               libkf6i18n-dev,
+               libkf6kcmutils-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libkf6configwidgets-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libkf6xmlgui-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libkf6widgetsaddons-dev <!pkg.kde-infinit-desktop.noeffect>,
+               kwin-dev (>= 4:6.8.0~) <!pkg.kde-infinit-desktop.noeffect>,
+               libwayland-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libepoxy-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libdrm-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libvulkan-dev <!pkg.kde-infinit-desktop.noeffect>,
+               libxkbcommon-dev <!pkg.kde-infinit-desktop.noeffect>,
+Standards-Version: 4.7.0
+Homepage: https://github.com/RandomNam3/kde-infinit-desktop
+Rules-Requires-Root: no
+
+Package: kde-infinit-desktop
+Architecture: all
+Build-Profiles: <!pkg.kde-infinit-desktop.noeffect !pkg.kde-infinit-desktop.noapp>
+Depends: kwin-effect-infinitdesktop (>= ${source:Version}),
+         kde-infinit-desktop-settings (>= ${source:Version}),
+         ${misc:Depends},
+Description: infinite canvas for KDE Plasma (metapackage)
+ KDE Infinit Desktop turns every monitor into an infinite canvas: windows
+ are placed on a plane that can be panned and zoomed freely with the mouse,
+ the touchpad, a touchscreen or the keyboard.
+ .
+ This metapackage installs the KWin effect and the settings app.
+
+Package: kwin-effect-infinitdesktop
+Architecture: linux-any
+Build-Profiles: <!pkg.kde-infinit-desktop.noeffect>
+Depends: kde-infinit-desktop-data (= ${source:Version}),
+         kwin-wayland (>= ${kwin:Version}),
+         kwin-wayland (<< ${kwin:NextVersion}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Recommends: kde-infinit-desktop-settings,
+Description: infinite pannable and zoomable canvas - KWin effect
+ KDE Infinit Desktop turns every monitor into an infinite canvas: windows
+ are placed on a plane that can be panned and zoomed freely with the mouse,
+ the touchpad, a touchscreen or the keyboard.
+ .
+ This package contains the KWin effect (Plasma 6, Wayland) and its System
+ Settings module. KWin only loads plugins built for exactly its version, so
+ this package depends on the KWin version it was built against and has to
+ be rebuilt for every KWin update.
+
+Package: kde-infinit-desktop-settings
+Architecture: linux-any
+Build-Profiles: <!pkg.kde-infinit-desktop.noapp>
+Depends: kde-infinit-desktop-data (= ${source:Version}),
+         qml6-module-qtquick,
+         qml6-module-qtquick-controls,
+         qml6-module-qtquick-layouts,
+         qml6-module-qtquick-effects,
+         qml6-module-qtquick-shapes,
+         qml6-module-qtquick-window,
+         qml6-module-qtqml-workerscript,
+         qt6-svg-plugins | libqt6svg6,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Recommends: kwin-effect-infinitdesktop,
+Description: infinite pannable and zoomable canvas - settings app
+ KDE Infinit Desktop turns every monitor into an infinite canvas: windows
+ are placed on a plane that can be panned and zoomed freely with the mouse,
+ the touchpad, a touchscreen or the keyboard.
+ .
+ This package contains the standalone settings app
+ kde-infinit-desktop-settings.
+
+Package: kde-infinit-desktop-data
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+Description: infinite pannable and zoomable canvas - shared data
+ KDE Infinit Desktop turns every monitor into an infinite canvas: windows
+ are placed on a plane that can be panned and zoomed freely with the mouse,
+ the touchpad, a touchscreen or the keyboard.
+ .
+ This package contains the settings schema, the D-Bus interface description
+ and the translations shared by the effect and the settings app.

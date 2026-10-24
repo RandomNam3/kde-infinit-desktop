@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# dnf4 post-transaction-actions plugin (python3-dnf-plugin-post-transaction-actions,
+# RHEL/Alma/Rocky): rebuild KDE Infinit Desktop after KWin updates. Installed as
+# /etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action
+# Log: /var/log/kde-infinit-desktop-rebuild.log
+kwin*:in:/usr/lib/kde-infinit-desktop/kwin-update-hook.sh dnf

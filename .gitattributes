@@ -1,0 +1,6 @@
+# Scripts run in Linux containers, also from a Windows checkout: keep LF everywhere.
+* text=auto eol=lf
+
+*.png binary
+*.webp binary
+*.ico binary

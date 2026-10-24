@@ -1,0 +1,35 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: kde-infinit-desktop
+Upstream-Contact: KDE Infinit Desktop contributors
+Source: https://github.com/RandomNam3/kde-infinit-desktop
+
+Files: *
+Copyright: 2026 KDE Infinit Desktop contributors
+License: GPL-3.0-or-later
+
+Files: data/org.kde.infinitdesktop.metainfo.xml
+Copyright: 2026 KDE Infinit Desktop contributors
+License: CC0-1.0
+ To the extent possible under law, the author(s) have dedicated all
+ copyright and related and neighboring rights to this software to the
+ public domain worldwide. This software is distributed without any warranty.
+ .
+ On Debian systems, the complete text of the CC0 1.0 Universal license can be
+ found in "/usr/share/common-licenses/CC0-1.0".
+
+License: GPL-3.0-or-later
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 3 can be found in "/usr/share/common-licenses/GPL-3".

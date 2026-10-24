@@ -1,0 +1,4 @@
+usr/bin/kde-infinit-desktop-settings
+usr/share/applications/kde-infinit-desktop-settings.desktop
+usr/share/icons/hicolor/*/apps/org.kde.infinitdesktop.*
+usr/share/metainfo/org.kde.infinitdesktop.metainfo.xml

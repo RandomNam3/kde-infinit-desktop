@@ -1,0 +1,155 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Prebuilt packages per KWin version.
+#
+# KWin only loads plugins built for exactly its version (MAJOR.MINOR.PATCH),
+# so a package is only useful for one KWin release. Once a day this workflow
+# looks at the current KWin version of every distribution below; if no
+# package for "<distro> + <project version> + <KWin version>" exists yet in
+# the GitHub release "kwin-builds", it builds one (./build.sh --package) and
+# uploads it. The KWin version is part of the package version / file name:
+#
+#   kwin-effect-infinitdesktop_0.1.0-1+kwin6.8.1_amd64.deb      (KDE neon)
+#   kde-infinit-desktop-0.1.0-1.kwin6.8.1.fc46.x86_64.rpm      (Fedora)
+#   kde-infinit-desktop-0.1.0-1.kwin6.8.1.x86_64.rpm           (openSUSE Tumbleweed)
+#   kde-infinit-desktop-0.1.0+kwin6.8.1-1-x86_64.pkg.tar.zst   (Arch, pinned kwin=6.8.1)
+#
+# Distributions whose KWin is older than 6.8 (e.g. Fedora 44 today) are
+# skipped automatically and picked up as soon as they ship KWin 6.8.
+# See docs/PAKETE.md for repositories that rebuild automatically (OBS, COPR).
+
+name: Packages
+
+on:
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even if packages for the current KWin versions already exist
+        type: boolean
+        default: false
+      publish:
+        description: Upload the packages to the GitHub release "kwin-builds"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+env:
+  RELEASE_TAG: kwin-builds
+
+jobs:
+  package:
+    name: ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: arch
+            image: docker.io/library/archlinux:latest
+          - distro: fedora
+            image: docker.io/library/fedora:latest
+          - distro: tumbleweed
+            image: registry.opensuse.org/opensuse/tumbleweed:latest
+          - distro: neon
+            image: docker.io/library/ubuntu:24.04
+    env:
+      # Arch: prebuilt package pinned to kwin=X.Y.Z (no self-rebuild hook)
+      KID_AUTOREBUILD: '0'
+    steps:
+      - name: Base tools (+ KDE neon repository)
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          case "${{ matrix.distro }}" in
+            neon)
+              apt-get update
+              apt-get install -y --no-install-recommends curl gnupg ca-certificates git tar
+              curl -fsSL https://archive.neon.kde.org/public.key | gpg --dearmor -o /usr/share/keyrings/neon.gpg
+              echo "deb [signed-by=/usr/share/keyrings/neon.gpg] http://archive.neon.kde.org/user noble main" > /etc/apt/sources.list.d/neon.list
+              apt-get update ;;
+            arch) pacman -Syu --noconfirm --needed git tar curl ;;
+            fedora) dnf install -y git-core tar gzip curl ;;
+            tumbleweed) zypper --non-interactive install git-core tar gzip curl ;;
+          esac
+
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: bash scripts/install.sh --deps-only --yes --no-auto-rebuild
+
+      - name: Current KWin version
+        id: kwin
+        run: |
+          kwin=$(bash scripts/check-kwin-update.sh --print-installed-kwin || true)
+          ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          supported=false
+          if [ -n "$kwin" ] && printf '6.8\n%s\n' "$kwin" | sort -V -C; then supported=true; fi
+          echo "KWin: ${kwin:-none}, project: $ver, supported: $supported"
+          {
+            echo "kwin=$kwin"
+            echo "supported=$supported"
+            echo "marker=${{ matrix.distro }}-$ver-kwin$kwin.built"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Already built?
+        id: exists
+        if: steps.kwin.outputs.supported == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARKER: ${{ steps.kwin.outputs.marker }}
+        run: |
+          found=false
+          if curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+               "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" -o release.json; then
+            grep -q "\"name\": *\"$MARKER\"" release.json && found=true
+          fi
+          echo "found=$found" >> "$GITHUB_OUTPUT"
+          echo "marker $MARKER exists: $found"
+
+      - name: Build package
+        if: steps.kwin.outputs.supported == 'true' && (inputs.force || steps.exists.outputs.found != 'true')
+        env:
+          KID_DIST_DIR: ${{ github.workspace }}/dist
+        run: |
+          bash build.sh --package --deps
+          : > "dist/${{ steps.kwin.outputs.marker }}"
+          ls -l dist
+
+      - uses: actions/upload-artifact@v4
+        if: steps.kwin.outputs.supported == 'true' && (inputs.force || steps.exists.outputs.found != 'true')
+        with:
+          name: packages-${{ matrix.distro }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish to release "kwin-builds"
+    needs: package
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.publish) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          path: dist
+          merge-multiple: true
+      - name: Upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          files=(dist/*)
+          if [ ${#files[@]} -eq 0 ]; then echo "nothing new to publish"; exit 0; fi
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --prerelease \
+              --title "Prebuilt packages per KWin version" \
+              --notes "Packages built automatically for the current KWin version of each distribution. Pick the file whose name contains your KWin version (kwin_wayland --version). See docs/PAKETE.md."
+          fi
+          gh release upload "$RELEASE_TAG" "${files[@]}" --repo "$GITHUB_REPOSITORY" --clobber

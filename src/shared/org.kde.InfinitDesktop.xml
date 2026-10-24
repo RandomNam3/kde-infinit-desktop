@@ -1,0 +1,59 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+    D-Bus interface of the KDE Infinit Desktop KWin effect.
+    Service: org.kde.KWin   Object path: /InfinitDesktop
+    SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<node>
+  <interface name="org.kde.InfinitDesktop">
+    <!-- Version string of the loaded plugin, e.g. "0.1.0". -->
+    <method name="version">
+      <arg type="s" direction="out"/>
+    </method>
+    <!-- True while the crash guard keeps the plugin inactive. -->
+    <property name="safeMode" type="b" access="read"/>
+    <!-- True while the canvas is paused (shortcut "Pause / Resume"). -->
+    <property name="paused" type="b" access="read"/>
+    <method name="leaveSafeMode"/>
+    <method name="setPaused">
+      <arg name="paused" type="b" direction="in"/>
+    </method>
+    <!-- Re-read the configuration, same as org.kde.kwin.Effects.reconfigureEffect. -->
+    <method name="reloadSettings"/>
+    <!-- JSON document describing outputs, canvases, cameras and managed windows. -->
+    <method name="state">
+      <arg type="s" direction="out"/>
+    </method>
+    <!-- Navigation on the screen under the mouse pointer. Distances in screen pixels. -->
+    <method name="pan">
+      <arg name="dx" type="d" direction="in"/>
+      <arg name="dy" type="d" direction="in"/>
+    </method>
+    <method name="zoomBy">
+      <arg name="factor" type="d" direction="in"/>
+    </method>
+    <method name="setZoom">
+      <arg name="zoom" type="d" direction="in"/>
+    </method>
+    <!-- Camera of the canvas under the pointer: centre in canvas coordinates and zoom (1 = 100 %). -->
+    <method name="setCamera">
+      <arg name="x" type="d" direction="in"/>
+      <arg name="y" type="d" direction="in"/>
+      <arg name="zoom" type="d" direction="in"/>
+    </method>
+    <method name="zoomToFit"/>
+    <method name="resetZoom"/>
+    <method name="goHome"/>
+    <!-- Remembered window placements (application, screen, size) as JSON, and forgetting them. -->
+    <method name="windowPlacements">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="forgetWindowPlacements"/>
+    <!-- Forgets the placements of one application (a key of "applications" in windowPlacements). -->
+    <method name="forgetApplicationPlacements">
+      <arg name="application" type="s" direction="in"/>
+    </method>
+    <!-- Emitted when safeMode or paused change. -->
+    <signal name="statusChanged"/>
+  </interface>
+</node>

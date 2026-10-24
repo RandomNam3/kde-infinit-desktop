@@ -1,0 +1,25 @@
+KDE Infinit Desktop for Debian / Ubuntu / KDE neon
+==================================================
+
+This directory lives in packaging/debian/ of the upstream sources. Build with
+
+  ./build.sh --package            (puts the .deb files into ./dist/)
+
+or by hand:
+
+  cp -r packaging/debian debian
+  chmod 0755 debian/rules         # other files in debian/ must not be executable
+  sudo apt build-dep ./           # or: mk-build-deps -ir
+  dpkg-buildpackage -us -uc -b
+
+The effect needs KWin >= 6.8 (KDE neon today; Debian/Ubuntu once they ship
+Plasma 6.8). Without it only the settings app and the data can be built:
+
+  DEB_BUILD_PROFILES=pkg.kde-infinit-desktop.noeffect dpkg-buildpackage -us -uc -b
+
+KWin only loads plugins built for exactly its version. kwin-effect-infinitdesktop
+therefore depends on the upstream KWin version it was built against
+(kwin-wayland >= X.Y.Z, << X.Y.Z.1~). After a KWin update apt keeps the KWin
+update back until a matching rebuild is installed (a repository that rebuilds
+automatically, e.g. the openSUSE Build Service, does that for you). The
+from-source installer scripts/install.sh rebuilds automatically instead.

@@ -1,0 +1,18 @@
+_msg() {
+    printf '%b\n' "\e[1;33m==> KDE Infinit Desktop:\e[0m enable it in System Settings > Window Management > Desktop Effects,"
+    printf '%b\n' "    or: kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled true --notify"
+    if [ -e /usr/share/libalpm/hooks/kde-infinit-desktop.hook ]; then
+        printf '%b\n' "    KWin updates: the plugin is rebuilt automatically (log: /var/log/kde-infinit-desktop-rebuild.log)."
+    else
+        printf '%b\n' "    This build only works with the KWin version it was built for - rebuild it after KWin updates."
+    fi
+    printf '%b\n' "    After installing or updating, log out and back in so KWin loads the new plugin."
+}
+
+post_install() {
+    _msg
+}
+
+post_upgrade() {
+    _msg
+}

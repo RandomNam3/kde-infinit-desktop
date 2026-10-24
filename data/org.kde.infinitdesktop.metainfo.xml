@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    SPDX-License-Identifier: CC0-1.0
+
+    AppStream metadata of KDE Infinit Desktop.
+-->
+<component type="desktop-application">
+  <id>org.kde.infinitdesktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>KDE Infinit Desktop</name>
+  <name xml:lang="de">KDE Infinit Desktop</name>
+  <summary>Turn every monitor into an infinite canvas you can pan and zoom</summary>
+  <summary xml:lang="de">Macht jeden Monitor zu einer unendlichen Arbeitsfläche zum Verschieben und Zoomen</summary>
+
+  <developer id="org.kde.infinitdesktop">
+    <name>KDE Infinit Desktop contributors</name>
+  </developer>
+
+  <description>
+    <p>
+      KDE Infinit Desktop is an effect for KWin, the compositor of KDE Plasma 6 on Wayland.
+      It turns every monitor into an infinite canvas: windows are placed on a plane that
+      you can pan and zoom freely, with the mouse, the touchpad, a touchscreen or the keyboard.
+    </p>
+    <p xml:lang="de">
+      KDE Infinit Desktop ist ein Effekt für KWin, den Compositor von KDE Plasma 6 unter Wayland.
+      Er macht jeden Monitor zu einer unendlichen Arbeitsfläche: Fenster liegen auf einer Ebene,
+      die du mit Maus, Touchpad, Touchscreen oder Tastatur frei verschieben und zoomen kannst.
+    </p>
+    <p>Features:</p>
+    <p xml:lang="de">Funktionen:</p>
+    <ul>
+      <li>Pan by dragging the empty desktop, with the middle mouse button or with touchpad gestures</li>
+      <li xml:lang="de">Verschieben durch Ziehen des leeren Desktops, mit der mittleren Maustaste oder mit Touchpad-Gesten</li>
+      <li>Zoom with the mouse wheel, pinch gestures or keyboard shortcuts</li>
+      <li xml:lang="de">Zoomen mit dem Mausrad, Pinch-Gesten oder Tastenkürzeln</li>
+      <li>A separate canvas for every monitor and, optionally, for every virtual desktop</li>
+      <li xml:lang="de">Eine eigene Arbeitsfläche pro Monitor und optional pro virtuellem Desktop</li>
+      <li>Momentum, edge panning, background grid and a zoom indicator</li>
+      <li xml:lang="de">Schwung, Verschieben am Bildschirmrand, Hintergrundraster und Zoom-Anzeige</li>
+      <li>Safe mode that keeps the desktop usable if something goes wrong</li>
+      <li xml:lang="de">Sicherheitsmodus, der den Desktop benutzbar hält, falls etwas schiefgeht</li>
+    </ul>
+    <p>
+      The effect needs KDE Plasma 6.8 or newer on Wayland. It has to be rebuilt after every
+      KWin update, because KWin only loads plugins built for its exact version.
+    </p>
+    <p xml:lang="de">
+      Der Effekt benötigt KDE Plasma 6.8 oder neuer unter Wayland. Nach jedem KWin-Update muss
+      er neu gebaut werden, weil KWin nur Plugins lädt, die für genau seine Version gebaut wurden.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">kde-infinit-desktop-settings.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Zoomed out: every window live and readable, wallpaper and panel stay still</caption>
+      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/docs/images/overview.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The settings app</caption>
+      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/docs/screenshots/light-overview.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/RandomNam3/kde-infinit-desktop</url>
+  <url type="bugtracker">https://github.com/RandomNam3/kde-infinit-desktop/issues</url>
+  <url type="vcs-browser">https://github.com/RandomNam3/kde-infinit-desktop</url>
+
+  <categories>
+    <category>Settings</category>
+    <category>DesktopSettings</category>
+  </categories>
+
+  <keywords>
+    <keyword>infinite canvas</keyword>
+    <keyword>zoom</keyword>
+    <keyword>pan</keyword>
+    <keyword>kwin</keyword>
+    <keyword>effect</keyword>
+    <keyword>wayland</keyword>
+    <keyword>workspace</keyword>
+    <keyword xml:lang="de">unendliche Arbeitsfläche</keyword>
+    <keyword xml:lang="de">Zoom</keyword>
+  </keywords>
+
+  <provides>
+    <binary>kde-infinit-desktop-settings</binary>
+  </provides>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="0.1.0" date="2026-10-24">
+      <description>
+        <p>First release: infinite canvas effect, System Settings module and settings app.</p>
+      </description>
+    </release>
+  </releases>
+</component>

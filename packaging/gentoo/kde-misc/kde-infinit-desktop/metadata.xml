@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<!-- maintainer-needed -->
+	<longdescription lang="en">
+		KDE Infinit Desktop turns every monitor into an infinite canvas: windows
+		are placed on a plane that can be panned and zoomed freely with the mouse,
+		the touchpad, a touchscreen or the keyboard. It is an effect for KWin
+		(KDE Plasma 6 on Wayland) with a System Settings module and a settings app.
+		It has to be rebuilt after every kde-plasma/kwin update.
+	</longdescription>
+	<use>
+		<flag name="gui">Build the standalone settings app (kde-infinit-desktop-settings)</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">RandomNam3/kde-infinit-desktop</remote-id>
+		<bugs-to>https://github.com/RandomNam3/kde-infinit-desktop/issues</bugs-to>
+	</upstream>
+</pkgmetadata>

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=KDE Infinit Desktop
+Name[de]=KDE Infinit Desktop
+GenericName=Infinite Canvas Settings
+GenericName[de]=Einstellungen der unendlichen Arbeitsfläche
+Comment=Configure the infinite, pannable and zoomable desktop canvas
+Comment[de]=Die unendliche, verschieb- und zoombare Arbeitsfläche einrichten
+Exec=kde-infinit-desktop-settings
+Icon=org.kde.infinitdesktop
+Terminal=false
+StartupNotify=true
+Categories=Settings;DesktopSettings;Qt;KDE;
+Keywords=canvas;infinite;zoom;pan;desktop;kwin;effect;shortcuts;
+Keywords[de]=Arbeitsfläche;unendlich;Zoom;verschieben;Desktop;KWin;Effekt;Tastenkürzel;

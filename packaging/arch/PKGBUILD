@@ -1,0 +1,84 @@
+# Maintainer: RandomNam3 <https://github.com/RandomNam3>
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# KDE Infinit Desktop - release tarball (Arch Linux, CachyOS, Manjaro, EndeavourOS).
+# For the development version see ../arch-git/PKGBUILD.
+#
+# KWin only loads plugins built for exactly its version (the plugin IID
+# contains MAJOR.MINOR.PATCH), so every KWin update needs a rebuild. Two modes:
+#
+#   _autorebuild=1 (default, AUR): the package keeps its sources in
+#     /usr/src/kde-infinit-desktop-<ver> and installs a pacman hook that
+#     rebuilds the plugin after every kwin update (like DKMS). kwin itself is
+#     not pinned, so "pacman -Syu" is never blocked. The build tools stay
+#     installed for that (depends).
+#   _autorebuild=0 (prebuilt binary packages, e.g. GitHub releases):
+#     depends on exactly the kwin version it was built against
+#     (depends=(kwin=X.Y.Z)), no hook. Set KID_AUTOREBUILD=0 in the
+#     environment of makepkg to select it.
+#
+# NOTE: the release tag v$pkgver still has to be created on GitHub; until then
+# build from a local checkout with ./build.sh --package (uses a local tarball).
+
+pkgname=kde-infinit-desktop
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect for Plasma 6 on Wayland)"
+arch=(x86_64 aarch64)
+url="https://github.com/RandomNam3/kde-infinit-desktop"
+license=(GPL-3.0-or-later)
+_autorebuild=${KID_AUTOREBUILD:-1}
+depends=(kwin qt6-base qt6-declarative qt6-svg
+         kconfig kcoreaddons kglobalaccel ki18n kcmutils kconfigwidgets kxmlgui kwidgetsaddons
+         gcc-libs glibc)
+makedepends=(cmake ninja extra-cmake-modules vulkan-headers)
+if ((_autorebuild)); then
+    # needed by the automatic rebuild after kwin updates
+    depends+=(cmake ninja extra-cmake-modules vulkan-headers gcc make)
+fi
+provides=(kwin-effect-infinitdesktop)
+conflicts=(kde-infinit-desktop-git)
+install=kde-infinit-desktop.install
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+# Replace with the real checksum (updpkgsums) once release tarballs exist.
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -S "$pkgname-$pkgver" -G Ninja \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+        -DBUILD_TESTING=ON
+    cmake --build build
+}
+
+check() {
+    QT_QPA_PLATFORM=offscreen ctest --test-dir build --output-on-failure
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+
+    if ((_autorebuild)); then
+        local _src="$pkgdir/usr/src/$pkgname-$pkgver" _lib="$pkgdir/usr/lib/$pkgname"
+        # sources for the rebuild (no network needed)
+        mkdir -p "$_src"
+        tar -C "$srcdir/$pkgname-$pkgver" --exclude=./build --exclude=./.git --exclude=./dist -cf - . |
+            tar -C "$_src" -xf -
+        install -Dm755 -t "$_lib" "$srcdir/$pkgname-$pkgver"/scripts/{check-kwin-update.sh,kwin-update-hook.sh}
+        install -Dm644 "$srcdir/$pkgname-$pkgver/scripts/hooks/pacman.hook" \
+            "$pkgdir/usr/share/libalpm/hooks/kde-infinit-desktop.hook"
+        # settings for the rebuild (read by kwin-update-hook.sh / install.sh --rebuild)
+        printf '%s\n' prefix=/usr "source_dir=/usr/src/$pkgname-$pkgver" "version=$pkgver" \
+            build_type=Release effect=ON kcm=ON app=ON update_check=0 auto_rebuild=1 \
+            >"$pkgdir/usr/share/$pkgname/install-info"
+        # written by a rebuild - owned by the package so that pacman removes it
+        : >"$pkgdir/usr/share/$pkgname/install_manifest.txt"
+    else
+        # Pin the exact KWin version (any pkgrel): kwin=6.8.1
+        local _kwinver
+        _kwinver=$(pacman -Q kwin | sed 's/^kwin //; s/-[^-]*$//')
+        depends+=("kwin=$_kwinver")
+    fi
+}

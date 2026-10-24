@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Rebuild KDE Infinit Desktop after KWin updates (KWin only loads plugins
+# built for its exact version). Installed by scripts/install.sh to
+# /etc/pacman.d/hooks/ and by the AUR package to /usr/share/libalpm/hooks/.
+# The hook never fails the transaction; log: /var/log/kde-infinit-desktop-rebuild.log
+
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = kwin
+
+[Action]
+Description = Rebuilding KDE Infinit Desktop for the new KWin version...
+When = PostTransaction
+Exec = /usr/lib/kde-infinit-desktop/kwin-update-hook.sh pacman

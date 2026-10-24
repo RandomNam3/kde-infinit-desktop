@@ -1,0 +1,19 @@
+# KDE Infinit Desktop - runtime test environment (Arch Linux, current KWin)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# A headless KWin (virtual backend, software OpenGL) with Wayland/X11 test
+# clients, a fake-input driver and screenshot tooling. See README.md.
+FROM docker.io/library/archlinux:latest
+
+RUN pacman -Syu --noconfirm --needed \
+        base-devel cmake ninja extra-cmake-modules gdb \
+        kwin qt6-base qt6-declarative qt6-tools qt6-wayland kwayland plasma-wayland-protocols vulkan-headers \
+        kconfig kcoreaddons kglobalaccel ki18n kwindowsystem \
+        xorg-xwayland mesa foot xterm ttf-dejavu noto-fonts breeze-icons \
+        python-dbus python-pillow jq \
+ && pacman -Scc --noconfirm
+
+# Rootless containers cannot grant the cap_sys_nice file capability of kwin_wayland.
+RUN for b in /usr/bin/kwin_wayland /usr/bin/kwin_wayland_wrapper; do \
+        [ -f "$b" ] && cp "$b" "$b.nocap" && mv -f "$b.nocap" "$b" && chmod 755 "$b"; \
+    done; true

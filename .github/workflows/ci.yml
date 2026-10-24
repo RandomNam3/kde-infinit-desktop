@@ -1,0 +1,150 @@
+# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Build + unit tests on several distributions (in containers), a sanitizer
+# build, a Debian package build and shellcheck for the scripts.
+#
+# The build dependencies are installed with scripts/install.sh --deps-only,
+# so the installer's package lists are tested on every run. The effect is only
+# built where the distribution ships KWin >= 6.8 ("--effect auto"); the job
+# log says which KWin version was found.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Arch Linux
+            image: docker.io/library/archlinux:latest
+            experimental: false
+          - name: KDE neon (Ubuntu 24.04 + neon user repo)
+            image: docker.io/library/ubuntu:24.04
+            neon: true
+            experimental: false
+          - name: openSUSE Tumbleweed
+            image: registry.opensuse.org/opensuse/tumbleweed:latest
+            experimental: false
+          - name: Fedora (latest)
+            image: docker.io/library/fedora:latest
+            experimental: false
+          - name: Fedora Rawhide
+            image: docker.io/library/fedora:rawhide
+            experimental: true
+          - name: Debian sid
+            image: docker.io/library/debian:sid
+            experimental: false
+    steps:
+      - name: Add the KDE neon repository
+        if: matrix.neon
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends curl gnupg ca-certificates
+          curl -fsSL https://archive.neon.kde.org/public.key | gpg --dearmor -o /usr/share/keyrings/neon.gpg
+          echo "deb [signed-by=/usr/share/keyrings/neon.gpg] http://archive.neon.kde.org/user noble main" > /etc/apt/sources.list.d/neon.list
+
+      - name: Install git and tar (for actions/checkout)
+        run: |
+          if command -v apt-get >/dev/null; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git tar ca-certificates
+          elif command -v pacman >/dev/null; then pacman -Syu --noconfirm --needed git tar
+          elif command -v zypper >/dev/null; then zypper --non-interactive install git-core tar gzip
+          elif command -v dnf >/dev/null; then dnf install -y git-core tar gzip
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies (scripts/install.sh --deps-only)
+        run: bash scripts/install.sh --deps-only --yes
+
+      - name: Install appstreamcli (metainfo validation test)
+        continue-on-error: true
+        run: |
+          if command -v apt-get >/dev/null; then DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends appstream
+          elif command -v pacman >/dev/null; then pacman -S --noconfirm --needed appstream
+          elif command -v zypper >/dev/null; then zypper --non-interactive install AppStream
+          elif command -v dnf >/dev/null; then dnf install -y appstream
+          fi
+
+      - name: Configure, build, test, install (DESTDIR)
+        env:
+          KID_BUILD_ROOT: ${{ runner.temp }}/build
+        run: bash scripts/dev/container-build.sh --inside --effect auto --build-type RelWithDebInfo
+
+  sanitizers:
+    name: ASan + UBSan (Arch Linux)
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/library/archlinux:latest
+    steps:
+      - name: Install git
+        run: pacman -Syu --noconfirm --needed git tar
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: bash scripts/install.sh --deps-only --yes
+      - name: Build and test with sanitizers
+        env:
+          KID_BUILD_ROOT: ${{ runner.temp }}/build
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:strict_string_checks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: bash scripts/dev/container-build.sh --inside --sanitizers --effect auto
+
+  debian-package:
+    name: Debian package (KDE neon)
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/library/ubuntu:24.04
+    steps:
+      - name: Add the KDE neon repository
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends curl gnupg ca-certificates git tar
+          curl -fsSL https://archive.neon.kde.org/public.key | gpg --dearmor -o /usr/share/keyrings/neon.gpg
+          echo "deb [signed-by=/usr/share/keyrings/neon.gpg] http://archive.neon.kde.org/user noble main" > /etc/apt/sources.list.d/neon.list
+      - uses: actions/checkout@v4
+      - name: Build the .deb packages
+        env:
+          KID_DIST_DIR: ${{ github.workspace }}/dist
+        run: bash build.sh --package --deps
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debs-neon
+          path: dist/*.deb
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n
+        run: for f in install.sh build.sh scripts/*.sh scripts/dev/*.sh scripts/hooks/*.sh; do bash -n "$f"; done
+      - name: shellcheck
+        run: shellcheck -x install.sh build.sh scripts/*.sh scripts/dev/*.sh scripts/hooks/*.sh
+      - name: Scripts are executable in git
+        run: |
+          bad=$(git ls-files -s install.sh build.sh scripts packaging/debian/rules | grep -v '^100755' | grep -E '\.sh$|/rules$|install\.sh$|build\.sh$' || true)
+          if [ -n "$bad" ]; then echo "not executable (git update-index --chmod=+x ...):"; echo "$bad"; exit 1; fi
+      - name: install.sh --dry-run on the runner (Ubuntu)
+        run: bash install.sh --dry-run --force
