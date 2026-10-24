@@ -929,7 +929,7 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
         // Menus of Steam (CEF) and Wine are override-redirect windows without
         // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
         // screen, so it is the one that opened this.
-        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << w->frameGeometry() << "belongs to" << m_x11Input->caption();
+        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << toQRectF(w->frameGeometry()) << "belongs to" << m_x11Input->caption();
         m_x11Popups.insert(w, m_x11Input);
     }
 }
