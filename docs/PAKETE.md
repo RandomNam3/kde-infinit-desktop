@@ -104,3 +104,19 @@ NixOS bauen bei KWin-Updates ohnehin alles Abhängige neu). Voraussetzung:
    Prüfsumme des Release-Tarballs eintragen (`updpkgsums`) und eine echte
    Maintainer-Adresse in `packaging/debian/` (`maintainers@kde-infinit-desktop.invalid`)
    und `packaging/gentoo/…/metadata.xml` setzen.
+
+## Neue Version veröffentlichen
+
+Jede Version bekommt einen Tag `vX.Y.Z` und ein GitHub-Release. Der Update-Check der
+Einstellungs-App liest genau diese Releases.
+
+1. Version in `CMakeLists.txt` (`project(... VERSION X.Y.Z)`), `src/effect/metadata.json`,
+   AppStream (`data/org.kde.infinitdesktop.metainfo.xml`) und den Paketen unter `packaging/`
+   erhöhen.
+2. Patchnotes nach `docs/releases/X.Y.Z.md` schreiben (Markdown, ohne Titelzeile). Das CI
+   bricht ab, wenn die Datei zur Projektversion fehlt.
+3. Nach `main` übernehmen. `.github/workflows/release.yml` legt dann den Tag auf diesem
+   Commit an und veröffentlicht das Release mit den Patchnotes.
+
+Fehlt das Release einer schon übernommenen Version, den Workflow „Release“ von Hand
+starten und den Commit dieser Version angeben.
