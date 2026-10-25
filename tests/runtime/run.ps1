@@ -2,13 +2,13 @@
     Runs the runtime scenarios in a headless KWin inside a container (Windows / podman machine).
     SPDX-License-Identifier: GPL-3.0-or-later
 
-    Usage: .\tests\runtime\run.ps1 [-Asan] [-Scenarios 1,2,3,4,5] [-BetterBlur <checkout>]
+    Usage: .\tests\runtime\run.ps1 [-Asan] [-Scenarios 1,2,3,4,5,6,7] [-BetterBlur <checkout>]
     Scenario 5 runs with other KWin effects enabled; -BetterBlur points to a checkout of
     Better Blur DX (github.com/xarblu/kwin-effects-better-blur-dx) to test with it.
 #>
 param(
     [switch]$Asan,
-    [int[]]$Scenarios = @(1, 2, 3, 4, 5, 6),
+    [int[]]$Scenarios = @(1, 2, 3, 4, 5, 6, 7),
     [string]$BetterBlur = ''
 )
 $ErrorActionPreference = 'Continue'

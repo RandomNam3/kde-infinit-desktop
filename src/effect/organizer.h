@@ -14,6 +14,7 @@
 #include <QColor>
 #include <QElapsedTimer>
 #include <QHash>
+#include <QJsonObject>
 #include <QObject>
 #include <QPointer>
 #include <QRectF>
@@ -137,6 +138,8 @@ public:
     void setNotePinned(const QString &id, bool pinned, bool keepAbove);
     void forgetNote(const QString &id);
     void retainNotes(const QStringList &existing);
+    /// For the state over D-Bus (runtime tests): open overlay and the textures it holds.
+    QJsonObject debugState() const;
 
 Q_SIGNALS:
     void groupsChanged();

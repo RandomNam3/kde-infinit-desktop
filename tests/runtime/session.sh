@@ -9,7 +9,7 @@ OUTPUTS=${2:-1}
 # --- build & install plugin and test helper (incremental, build dirs are volumes)
 if [ -z "${SKIP_BUILD:-}" ]; then
   cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
-        -DBUILD_KCM=OFF -DBUILD_SETTINGS_APP=OFF -DBUILD_TESTING=OFF ${CMAKE_EXTRA:-} > /tmp/cfg.log 2>&1 || { tail -30 /tmp/cfg.log; exit 1; }
+        -DBUILD_KCM=OFF -DBUILD_SETTINGS_APP=OFF -DBUILD_COMPANION=ON -DBUILD_TESTING=OFF ${CMAKE_EXTRA:-} > /tmp/cfg.log 2>&1 || { tail -30 /tmp/cfg.log; exit 1; }
   cmake --build /build > /tmp/build.log 2>&1 || { grep -E "error" /tmp/build.log | head -30; exit 1; }
 fi
 cmake --install /build > /dev/null 2>&1 || { echo "install failed"; exit 1; }
@@ -62,6 +62,9 @@ run() {
     sleep 0.1
   done
   export DISPLAY=${DISPLAY:-:0}
+  # Services started by D-Bus (the companion) see the session like a login would set it up.
+  dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR HOME XDG_CONFIG_HOME XDG_STATE_HOME \
+      QT_LOGGING_RULES QT_FORCE_STDERR_LOGGING 2>/dev/null
   sleep 1
   echo "--- effect loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop)"
   bash "$SCENARIO"

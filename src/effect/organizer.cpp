@@ -1050,6 +1050,17 @@ void Organizer::retainNotes(const QStringList &existing)
     }
 }
 
+QJsonObject Organizer::debugState() const
+{
+    static const char *const overlayNames[] = {"none", "menu", "selection", "map"};
+    return QJsonObject{
+        {QStringLiteral("overlay"), QLatin1String(overlayNames[int(m_overlay)])},
+        {QStringLiteral("menuTexture"), bool(m_menuTexture)},
+        {QStringLiteral("labelTextures"), int(m_labels.size())},
+        {QStringLiteral("iconTextures"), int(m_icons.size())},
+    };
+}
+
 // ============================================================================
 // Overlays
 // ============================================================================
