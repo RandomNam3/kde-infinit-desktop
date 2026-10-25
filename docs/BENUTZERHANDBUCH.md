@@ -245,8 +245,11 @@ Notizen sind kleine Zettel, die wie Fenster auf der Fläche liegen. Neu anlegen 
 - über das Menü der Arbeitsfläche;
 - über das **Notiz-Symbol in der Systemleiste**.
 
-- **Schreiben:** Klick in die Notiz zeigt den Text zum Bearbeiten, sonst ist er formatiert. Markdown geht:
-  `# Überschrift`, `**fett**`, `*kursiv*`, `- Liste`, `[Link](https://…)`. Links lassen sich anklicken.
+- **Schreiben:** Eine Notiz öffnet sich mit ihrem Text zum Bearbeiten. Markdown geht: `# Überschrift`,
+  `**fett**`, `*kursiv*`, `- Liste`, `[Link](https://…)`.
+- **Formatiert ansehen:** Der Stift ✎ in der Kopfzeile oder **Strg + E** zeigt den Text formatiert, mit
+  anklickbaren Links; nochmal schaltet zurück zum Bearbeiten, ebenso ein Doppelklick in den Text. Jede
+  Notiz merkt sich ihre Ansicht.
 - **Speichern** passiert automatisch, kurz nach dem Tippen. Jede Notiz ist eine Markdown-Datei unter
   `~/.local/share/kde-infinit-desktop/notes/` und lässt sich auch dort lesen.
 - **Verschieben** an der Kopfzeile, **Größe ändern** an der Ecke rechts unten. Notizen öffnen sich wieder
@@ -255,7 +258,14 @@ Notizen sind kleine Zettel, die wie Fenster auf der Fläche liegen. Neu anlegen 
   die Kamera weiterzieht – praktisch für eine Einkaufsliste oder Aufgaben, die immer sichtbar sein sollen.
 - **Ausblenden:** ✕ blendet eine Notiz aus (sie bleibt erhalten), **Meta + Alt + Umschalt + N** blendet
   alle aus und wieder ein. Ein Klick auf das Notiz-Symbol in der Systemleiste macht dasselbe.
-- **Farbe, löschen** und mehr im Menü der Notiz (⋯ oder Rechtsklick auf die Kopfzeile).
+- **Menü der Notiz:** ⋯ in der Kopfzeile oder ein **Rechtsklick irgendwo in die Notiz** öffnet es:
+  Bearbeiten, neue Notiz, anheften, *Farbe …*, ausblenden, Karte und löschen. Im Text bietet der
+  Rechtsklick zusätzlich Rückgängig, Wiederholen, Ausschneiden, Kopieren, Einfügen und Alles auswählen.
+  Menüs und Tooltips folgen dem Farbschema von Plasma.
+
+| Formatiert und beim Schreiben | Menü der Notiz |
+|---|---|
+| ![Eine formatierte Notiz und eine beim Schreiben](images/notes.png) | ![Das Menü einer Notiz nach einem Rechtsklick in den Text](images/note-menu.png) |
 
 Notizen stehen nicht in der Taskleiste und nicht in Alt+Tab.
 

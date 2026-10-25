@@ -117,6 +117,21 @@ def type_char(ch):
         inp("key", KEYS[ch])
 
 
+def type_text(text):
+    """Like type_char, plus the Markdown characters # * - and digits (German or US layout)."""
+    for ch in text:
+        if ch == "#":
+            inp("key", 43) if GERMAN else inp("keydown", KEY_SHIFT, "key", 4, "keyup", KEY_SHIFT)
+        elif ch == "*":
+            inp("keydown", KEY_SHIFT, "key", 27 if GERMAN else 9, "keyup", KEY_SHIFT)
+        elif ch == "-":
+            inp("key", 53 if GERMAN else 12)
+        elif ch.isdigit():
+            inp("key", 2 + (int(ch) + 9) % 10)
+        else:
+            type_char(ch)
+
+
 def capture():
     r, w = os.pipe()
     chunks = []
@@ -168,8 +183,10 @@ class Clip:
         print("[media] %s: %d frames, %d kB" % (target, self.count, os.path.getsize(target) // 1024), flush=True)
 
 
-def still(name, width=1600):
+def still(name, width=1600, crop=None):
     image = capture()
+    if crop:
+        image = image.crop(crop)
     if width:
         image = image.resize((width, width * image.height // image.width), Image.LANCZOS)
     target = os.path.join(OUT, name + ".png")
@@ -391,6 +408,51 @@ def scene_fullscreen_tile():
         player.terminate()
 
 
+def note_windows():
+    return [w for w in state()["windows"] if w.get("note")]
+
+
+def scene_notes():
+    """Two notes, one formatted and one being written, and the menu of a note."""
+    layout()
+    subprocess.Popen(["kde-infinit-desktop-companion"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(2.0)
+    texts = [
+        ((1120, 700), ["# Einkauf", "- Milch und **frisches** Brot", "- Kaffee"] if GERMAN else ["# Shopping", "- Milk and **fresh** bread", "- Coffee"], True),
+        ((1500, 660), ["Termin Do 10 Uhr", "Unterlagen mitbringen"] if GERMAN else ["Meeting Thu 10 am", "Bring the documents"], False),
+    ]
+    note = None
+    for (x, y), lines, formatted in texts:
+        before = {w["frame"]["x"] for w in note_windows()}
+        inp("abs", x, y, "sleep", 50)
+        effect.newNote()
+        end = time.time() + 15
+        note = None
+        while time.time() < end and not note:
+            time.sleep(0.2)
+            note = next((w for w in note_windows() if w["frame"]["x"] not in before), None)
+        if not note:
+            print("[media] no note window appeared", flush=True)
+            return
+        time.sleep(0.8)
+        f = note["frame"]
+        inp("abs", int(f["x"] + 80), int(f["y"] + 80), "sleep", 50, "click", "left", "sleep", 150)
+        for i, line in enumerate(lines):
+            type_text(line)
+            if i < len(lines) - 1:
+                inp("key", KEY_ENTER)
+        if formatted:
+            inp("keydown", 29, "key", KEYS["e"], "keyup", 29, "sleep", 300)
+    inp("abs", 1880, 300, "sleep", 300)
+    time.sleep(0.6)
+    still("notes", width=920, crop=(1000, 560, 1920, 1040))
+    # the menu of the note being written: right click into its text
+    f = note["frame"]
+    inp("abs", int(f["x"] + 100), int(f["y"] + 120), "sleep", 80, "click", "right", "sleep", 800)
+    still("note-menu", width=920, crop=(1000, 300, 1920, 1080))
+    inp("key", 1, "sleep", 300)  # Esc
+
+
 SCENES = {
     "overview": scene_overview_still,
     "pan": scene_pan,
@@ -400,6 +462,7 @@ SCENES = {
     "markers": scene_markers,
     "pin": scene_pin,
     "fullscreen": scene_fullscreen_tile,
+    "notes": scene_notes,
 }
 
 

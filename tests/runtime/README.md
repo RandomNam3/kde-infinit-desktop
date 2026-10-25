@@ -21,6 +21,7 @@ Unter Windows mit Podman: `.\tests\runtime\run.ps1 [-Asan] [-Scenarios 1,2]`.
 | 4 | Belastung: zufällige Navigation mit kommenden/gehenden Fenstern, Prozesse beenden während ihre Fenster geparkt sind, Klick während des Nachgleitens, neues Fenster beendet den Zoom, ein Fenster außerhalb der Taskleiste (Startbildschirm eines Launchers) nicht |
 | 5 | Verträglichkeit mit anderen Effekten: Unschärfe (eingebaut oder Better Blur DX), Transparenz, Wabernde Fenster, Wunderlampe. Pannen, Zoom, Ziehen, Minimieren |
 | 6 | Herausgezoomt arbeiten: Klick, Mausrad und Tastatur kommen im Fenster an der richtigen Stelle an (Testfenster `probe.qml`), Kontextmenü (xdg-Popup) geht am Mauszeiger auf und nimmt Klicks an, Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete wie Browser-Tabs, unter Wayland und X11, und ein X11-Fenster, das sich selbst verschiebt wie Steam), Doppelklick führt zu 100 %, scharfe Inhalte (Bruchteilskalierung). Markierungen für Fenster außerhalb des Bildes. Kein Nachgleiten nach Kreisbewegungen |
+| 7 | Notizen, Gruppen, Bereiche und Karte mit der echten Begleit-App: neue Notiz an der Mausposition, Tippen in den Markdown-Text, Strg + E für formatiert und zurück, Rechtsklick-Menü, Anheften; Gruppe öffnen; Fenster in einem dynamischen Bereich; Karte und Menü der Arbeitsfläche öffnen und schließen, danach keine Overlay-Texturen mehr |
 
 Szenario 5 startet über `compat-session.sh`. Die Datei schaltet die Effekte ein und setzt
 `KWIN_EFFECTS_FORCE_ANIMATIONS=1`, denn auf llvmpipe gilt das Rendern als Software-Emulation, und KWin

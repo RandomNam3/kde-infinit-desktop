@@ -101,6 +101,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.5.1" date="2026-10-25">
+      <description>
+        <p>Notes open with their Markdown source and a pencil button switches to the formatted text, right click opens the note's own menu everywhere, the hint text wraps, and menus and tool tips follow the color scheme.</p>
+      </description>
+    </release>
     <release version="0.5.0" date="2026-10-25">
       <description>
         <p>Notes with Markdown on the canvas, groups of applications that open together at their place, areas that grow with their windows, a map of the canvas and a canvas menu.</p>

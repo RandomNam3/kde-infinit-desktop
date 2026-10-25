@@ -453,7 +453,7 @@ Dienst `org.kde.KWin`, Objekt `/InfinitDesktop`, Schnittstelle `org.kde.InfinitD
 |---|---|
 | `safeMode`, `paused` (Eigenschaften), `statusChanged` | Status für die App |
 | `leaveSafeMode()`, `setPaused(b)`, `reloadSettings()` | Steuerung |
-| `state()` | JSON: Ausgänge, Canvases, Kameras, alle Fenster mit Modus/Position |
+| `state()` | JSON: Ausgänge, Canvases, Kameras, alle Fenster mit Modus/Position, Programm, Notiz, Gruppe und Bereich; `organizer` nennt das offene Overlay (`none`, `menu`, `selection`, `map`) und die Texturen, die es hält |
 | `pan(dx,dy)`, `zoomBy(f)`, `setZoom(z)`, `zoomToFit()`, `resetZoom()`, `goHome()` | Navigation auf dem Bildschirm unter dem Zeiger, sofort (für Skripte und Tests) |
 | `setCamera(x,y,zoom)` | Kamera direkt setzen: Mitte in Flächenkoordinaten und Zoom (für Skripte, Tests und `tools/docs-media`) |
 | `windowPlacements()`, `forgetWindowPlacements()`, `forgetApplicationPlacements(app)` | Fensterplatz-Gedächtnis: lesen, alles bzw. ein Programm vergessen |
@@ -487,6 +487,16 @@ Geprüft werden:
   Tastatureingaben mit Position. Geprüft wird, dass sie bei 50 % pixelgenau ankommen, dass ein
   Rechtsklick-Popup am Mauszeiger aufgeht und Klicks annimmt, dass die Titelleiste verschiebt (auch eine vom Programm selbst gezeichnete, unter Wayland und X11), dass ein X11-Fenster, das sich selbst verschiebt (wie Steam), auf der Fläche mitgeht, der Doppelklick zu 100 % führt und die Inhaltsskalierung gesetzt und
   zurückgesetzt wird. Außerdem: Markierungen und ihr Klick, und kein Nachgleiten nach Kreisbewegungen.
+- Notizen, Gruppen, Bereiche und Karte (Szenario 7) mit der echten Begleit-App: Eine neue Notiz erscheint
+  als Notiz an der Mausposition, Getipptes landet im Markdown-Text und in der Datei, Strg + E schaltet
+  auf formatiert und zurück (in `index.json` gespeichert), ein Rechtsklick öffnet ihr Menü und Esc
+  schließt es, Anheften über D-Bus hält sie beim Pannen fest. Eine Gruppe öffnet ihr Fenster an ihrem
+  Ort, ein Fenster, das in einem dynamischen Bereich aufgeht, gehört dazu und der Bereich passt sich
+  an. Karte und Menü der Arbeitsfläche (Meta + Rechtsklick) öffnen sich, Esc schließt sie, danach hält
+  der Effekt keine Overlay-Texturen mehr.
+- Die Laufzeit-Sitzung baut die Begleit-App mit und gibt der D-Bus-Aktivierung die Umgebung der
+  Sitzung (`dbus-update-activation-environment`). Den X11-Bildschirm von Xwayland liest sie aus dessen
+  Befehlszeile, denn KWin 6.8 schreibt ihn nicht mehr ins Protokoll.
 - Verträglichkeit (`compat-session.sh`): eingebaute Unschärfe oder Better Blur DX, im Container gegen
   dieselbe KWin-Version gebaut, dazu Transparenz, Wobbly Windows und Magic Lamp. Szenario 5 prüft Pannen,
   Zoom, Ziehen und Minimieren sowie die Freigabe geparkt geschlossener Fenster. Die Szenarien 1–4 laufen
@@ -571,8 +581,19 @@ Desktop-Datei).
 - **Start:** über D-Bus-Aktivierung (`.service`-Datei) oder Autostart. Ein zweiter Start reicht
   `--new-note` an die laufende App weiter.
 - **Speicher:** `~/.local/share/kde-infinit-desktop/notes/<id>.md` und `index.json` (Farbe, Größe,
-  ausgeblendet). Gespeichert wird 600 ms nach der letzten Änderung, atomar per `QSaveFile`. Ids sind
-  geprüfte UUIDs, weil sie in Dateinamen stehen.
+  ausgeblendet, formatiert). Gespeichert wird 600 ms nach der letzten Änderung, atomar per `QSaveFile`.
+  Ids sind geprüfte UUIDs, weil sie in Dateinamen stehen.
+- **Notizfenster** (`qml/NoteWindow.qml`, gleich wie in der Windows-Version bis auf die Fensterart):
+  - Eine Notiz zeigt standardmäßig den Markdown-Text zum Bearbeiten. Der Stift in der Kopfzeile oder
+    Strg + E schaltet auf den formatierten Text und zurück; `formatted` merkt sich das pro Notiz.
+  - Menüs sind `Menu` mit `popupType: Popup.Native` (Qt 6.8): unter Plasma `QMenu` der Begleit-App
+    (sie ist eine `QApplication`), mit Stil und Farbschema von Plasma. Rechtsklick öffnet überall das
+    Menü der Notiz; im Text kommen die Textbefehle dazu. Die Farben sind ein eigenes Menü statt eines
+    Untermenüs, weil Qt 6.8 native Untermenüs unter Windows teils weglässt.
+  - Tooltips der Kopfzeile sind eigene Fenster (`Popup.Window`) unter dem Knopf: Über der Kopfzeile
+    würde die kleine Notiz sie abschneiden, unter dem Mauszeiger würden sie den Hover beenden.
+  - Links im formatierten Text liegen auf hellem Papier, auch bei dunklem Farbschema. Der Markdown-Leser
+    nimmt ihre Farbe aus der Palette der Anwendung; `main.cpp` setzt dort `QPalette::Link`.
 - **Ressourcen:**
   - Ein Fenster gibt es nur für sichtbare Notizen; ausgeblendete Notizen geben ihr Fenster sofort frei.
   - Alle Fenster zeichnen nacheinander im GUI-Thread (`QSG_RENDER_LOOP=basic`), ohne eigenen Render-Thread

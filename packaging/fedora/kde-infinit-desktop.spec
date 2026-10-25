@@ -29,7 +29,7 @@
 %endif
 
 Name:           kde-infinit-desktop
-Version:        0.5.0
+Version:        0.5.1
 Release:        1%{?kwin_tag}%{?dist}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -164,6 +164,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infini
 %endif
 
 %changelog
+* Sun Oct 25 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.5.1-1
+- Update to 0.5.1
+
 * Sun Oct 25 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.5.0-1
 - Update to 0.5.0
 

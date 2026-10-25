@@ -15,6 +15,8 @@ Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
 | ![Die Fläche verschieben](docs/images/canvas-pan.webp) | ![Herausgezoomt eine Notiz eintragen](docs/images/work-while-zoomed.webp) |
 | **Fenster außerhalb des Bildes wiederfinden** | **Anpinnen** |
 | ![Markierungen am Bildschirmrand](docs/images/offscreen-markers.webp) | ![Ein angepinntes Fenster bleibt stehen](docs/images/pin-window.webp) |
+| **Notizen** | **Menü einer Notiz** |
+| ![Eine formatierte Notiz und eine beim Schreiben](docs/images/notes.png) | ![Das Menü einer Notiz](docs/images/note-menu.png) |
 
 ## Funktionen
 
