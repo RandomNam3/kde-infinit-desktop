@@ -27,7 +27,7 @@
 %endif
 
 Name:           kde-infinit-desktop
-Version:        0.5.0
+Version:        0.5.1
 Release:        1%{?kwin_tag}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -42,7 +42,7 @@ BuildRequires:  cmake(KF6Config)
 BuildRequires:  cmake(KF6CoreAddons)
 BuildRequires:  cmake(KF6GlobalAccel)
 BuildRequires:  cmake(KF6I18n)
-BuildRequires:  cmake(Qt6Core) >= 6.6
+BuildRequires:  cmake(Qt6Core) >= 6.8
 BuildRequires:  cmake(Qt6DBus)
 BuildRequires:  cmake(Qt6Gui)
 BuildRequires:  cmake(Qt6Widgets)

@@ -26,6 +26,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QIcon>
+#include <QPalette>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickStyle>
@@ -65,6 +66,12 @@ int main(int argc, char *argv[])
 
     NoteStore store;
     store.load();
+    // Links in the formatted text lie on light paper with every color scheme; the Markdown
+    // reader takes their color from the application palette.
+    QPalette palette = QApplication::palette();
+    palette.setColor(QPalette::Link, QColor(0x1d, 0x64, 0xb8));
+    palette.setColor(QPalette::LinkVisited, QColor(0x1d, 0x64, 0xb8));
+    QApplication::setPalette(palette);
     QQuickStyle::setStyle(QStringLiteral("Basic"));
     QQmlEngine engine;
 #if KI18N_VERSION >= QT_VERSION_CHECK(6, 8, 0)

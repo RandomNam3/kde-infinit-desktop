@@ -21,6 +21,7 @@ Unter Linux: `tools/docs-media/record.sh [--scenes …] [--output DIR] [--lang d
 | `markers` | `offscreen-markers.webp` | Markierungen am Rand, Klick fliegt zum Fenster |
 | `pin` | `pin-window.webp` | angepinntes Fenster bleibt beim Verschieben stehen |
 | `fullscreen` | `fullscreen-tile.png` | minimiertes Vollbild-Video als Live-Kachel |
+| `notes` | `notes.png`, `note-menu.png` | eine formatierte Notiz und eine beim Schreiben, das Menü einer Notiz (Rechtsklick in den Text) |
 
 ## Wie es funktioniert
 

@@ -2,7 +2,7 @@
 # Runs the runtime scenarios in a headless KWin inside a container.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# usage: tests/runtime/run.sh [--asan] [scenario numbers...]   (default: 1 2 3 4 5 6)
+# usage: tests/runtime/run.sh [--asan] [scenario numbers...]   (default: 1 2 3 4 5 6 7)
 # Results (screenshots, sanitizer logs) go to ${OUT:-/tmp/kid-runtime-tests}/s<N>/.
 # Scenario 5 runs with other KWin effects enabled. Set BETTER_BLUR_SRC to a checkout of
 # Better Blur DX (github.com/xarblu/kwin-effects-better-blur-dx) to test with it instead
@@ -23,7 +23,7 @@ for arg in "$@"; do
         *) scenarios+=("$arg") ;;
     esac
 done
-[ ${#scenarios[@]} -eq 0 ] && scenarios=(1 2 3 4 5 6)
+[ ${#scenarios[@]} -eq 0 ] && scenarios=(1 2 3 4 5 6 7)
 
 # KWin needs a DRM render node; the virtual GEM driver provides one without a GPU.
 [ -e /dev/dri ] || sudo modprobe vgem

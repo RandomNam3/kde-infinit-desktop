@@ -1,3 +1,12 @@
+kde-infinit-desktop (0.5.1-1) unstable; urgency=medium
+
+  * Notes open with their Markdown source; a pencil button and Ctrl+E switch
+    to the formatted text, kept per note. Right click opens the note's own
+    menu everywhere. Menus and tool tips follow the color scheme.
+  * Qt 6.8 or newer is required.
+
+ -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sun, 25 Oct 2026 14:00:00 +0100
+
 kde-infinit-desktop (0.5.0-1) unstable; urgency=medium
 
   * New features: notes with Markdown on the canvas (companion app with a

@@ -15,6 +15,8 @@ Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
 | ![Die Fläche verschieben](docs/images/canvas-pan.webp) | ![Herausgezoomt eine Notiz eintragen](docs/images/work-while-zoomed.webp) |
 | **Fenster außerhalb des Bildes wiederfinden** | **Anpinnen** |
 | ![Markierungen am Bildschirmrand](docs/images/offscreen-markers.webp) | ![Ein angepinntes Fenster bleibt stehen](docs/images/pin-window.webp) |
+| **Notizen** | **Menü einer Notiz** |
+| ![Eine formatierte Notiz und eine beim Schreiben](docs/images/notes.png) | ![Das Menü einer Notiz](docs/images/note-menu.png) |
 
 ## Funktionen
 
@@ -100,7 +102,7 @@ Alles Weitere, auch fertige Pakete und die Anleitung je Distribution, steht in [
 ./build.sh --help     # alle Optionen (Pakete bauen, Container-Builds, Sanitizer, …)
 ```
 
-Abhängigkeiten: CMake ≥ 3.22, ECM, Qt ≥ 6.6 (Core, Gui, DBus, Widgets, Quick, QuickControls2),
+Abhängigkeiten: CMake ≥ 3.22, ECM, Qt ≥ 6.8 (Core, Gui, DBus, Widgets, Quick, QuickControls2),
 KF6 (Config, CoreAddons, GlobalAccel, I18n, KCMUtils, XmlGui, WidgetsAddons) und die KWin-Entwicklungsdateien
 in genau der installierten Version.
 

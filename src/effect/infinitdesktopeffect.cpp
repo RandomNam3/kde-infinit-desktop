@@ -2940,6 +2940,10 @@ QString InfinitDesktopEffect::stateJson() const
             {QStringLiteral("contentScale"), managed->contentScale},
             {QStringLiteral("mode"), modeName(modeOf(*managed))},
             {QStringLiteral("frame"), rectJson(toQRectF(w->frameGeometry()))},
+            {QStringLiteral("app"), managed->appKey},
+            {QStringLiteral("note"), managed->noteId},
+            {QStringLiteral("group"), managed->groupId},
+            {QStringLiteral("area"), managed->areaId},
         };
         if (managed->tilePos) {
             object.insert(QStringLiteral("tileX"), managed->tilePos->x());
@@ -2956,6 +2960,7 @@ QString InfinitDesktopEffect::stateJson() const
         {QStringLiteral("outputs"), outputs},
         {QStringLiteral("canvases"), canvases},
         {QStringLiteral("windows"), windows},
+        {QStringLiteral("organizer"), m_organizer ? m_organizer->debugState() : QJsonObject()},
     };
     return QString::fromUtf8(QJsonDocument(root).toJson(QJsonDocument::Indented));
 }
