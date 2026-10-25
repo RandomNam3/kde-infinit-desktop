@@ -326,7 +326,7 @@ Fensters (Verschiebung zur sichtbaren Position, Skalierung 1/Zoom, Versatz der P
   dieses steht auf dem Bildschirm. Es wird dann wie ein Popup um das gezeichnete Elternfenster
   verkleinert und verschoben. Solange es offen ist, bleibt das Elternfenster, wo es ist.
 - Die Tastatur folgt dem aktiven Fenster; ein Klick aktiviert es.
-- Noch nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
+- Nicht unterstützt: Drag & Drop zwischen verkleinerten Fenstern (KWins DnD-Filter läuft vorher und
   arbeitet mit physischen Positionen) und Touch.
 
 **Nachgleiten:** Nur ein *Wisch* gleitet nach (`VelocityTracker::flingVelocity`). Dafür muss die

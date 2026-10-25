@@ -130,7 +130,7 @@ kleinere Größe neu (Wayland-Bruchteilskalierung). Text bleibt dadurch lesbar, 
 werden. Das können alle aktuellen Qt-6-, GTK-4-, Firefox- und Chromium-Programme. Ältere Programme und
 X11-Programme werden nur verkleinert. Einstellung: *„Programme zeichnen herausgezoomt scharf neu“*.
 
-Noch nicht möglich: Drag & Drop zwischen zwei verkleinerten Fenstern, und Touch-Eingaben in verkleinerte
+Nicht möglich: Drag & Drop zwischen zwei verkleinerten Fenstern, und Touch-Eingaben in verkleinerte
 Fenster (Touch verschiebt und zoomt dort weiterhin die Fläche).
 
 ### Fenster außerhalb des Bildes wiederfinden

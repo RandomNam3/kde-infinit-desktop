@@ -60,9 +60,9 @@ Was passiert, wenn KWin aktualisiert wird, das passende Paket aber noch fehlt?
 
 - Baut `packaging/fedora/kde-infinit-desktop.spec` für alle Fedora-Versionen
   und EPEL 10.
-- **Kein automatischer Neubau bei Abhängigkeitsänderungen.** Lösung: der
-  geplante GitHub-Workflow (siehe 4.) erkennt eine neue KWin-Version und löst
-  per COPR-Webhook bzw. `copr-cli build-package` einen Neubau aus.
+- **Kein automatischer Neubau bei Abhängigkeitsänderungen.** `packages.yml`
+  (siehe 4.) erkennt eine neue KWin-Version; ein Neubau lässt sich per
+  COPR-Webhook bzw. `copr-cli build-package` auslösen.
 - Nutzer: `sudo dnf copr enable <user>/kde-infinit-desktop && sudo dnf install kde-infinit-desktop`.
 
 ### 3. AUR – für Arch, CachyOS, Manjaro, EndeavourOS
@@ -88,22 +88,9 @@ Was passiert, wenn KWin aktualisiert wird, das passende Paket aber noch fehlt?
 
 ### 5. Distributionen selbst
 
-Langfristig das Beste (Debian/Ubuntu, Fedora, openSUSE, Arch `extra`, Gentoo,
-NixOS bauen bei KWin-Updates ohnehin alles Abhängige neu). Voraussetzung:
-öffentliches Repository, Release-Tarballs, stabile Versionen.
-
-## Empfehlung
-
-1. **Jetzt:** `scripts/install.sh` als Standardweg für Nutzer – ein Befehl,
-   automatischer Neubau auf allen Distributionen mit pacman, apt, dnf, zypper
-   oder apk, sonst Rückfrage beim Anmelden.
-2. **Mit den Releases** (Tags `vX.Y.Z`, ab `v0.1.0`): AUR-Pakete veröffentlichen,
-   OBS-Projekt für openSUSE/Fedora/Debian/Ubuntu (+ neon als DoD) einrichten,
-   optional COPR; `packages.yml` für Testpakete aktiv lassen.
-3. Vor dem Veröffentlichen in AUR/OBS: in `packaging/arch/PKGBUILD` die
-   Prüfsumme des Release-Tarballs eintragen (`updpkgsums`) und eine echte
-   Maintainer-Adresse in `packaging/debian/` (`maintainers@kde-infinit-desktop.invalid`)
-   und `packaging/gentoo/…/metadata.xml` setzen.
+Debian/Ubuntu, Fedora, openSUSE, Arch `extra`, Gentoo und NixOS bauen bei
+KWin-Updates ohnehin alles Abhängige neu. Grundlage sind die Release-Tarballs
+der Tags `vX.Y.Z`.
 
 ## Neue Version veröffentlichen
 
