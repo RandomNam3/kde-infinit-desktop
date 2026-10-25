@@ -9,6 +9,8 @@ ecm_add_tests(
     test_parking.cpp
     test_navigation.cpp
     test_placementmemory.cpp
+    test_groups.cpp
+    test_areas.cpp
     LINK_LIBRARIES infinitdesktop_core Qt6::Test
 )
 
@@ -23,4 +25,12 @@ if(BUILD_SETTINGS_APP)
         LINK_LIBRARIES Qt6::Network Qt6::Qml KF6::ConfigCore KF6::I18n Qt6::Test
     )
     target_include_directories(test_updatechecker PRIVATE ${PROJECT_SOURCE_DIR}/src/app)
+endif()
+
+if(BUILD_COMPANION)
+    ecm_add_test(test_notestore.cpp ${PROJECT_SOURCE_DIR}/src/companion/notestore.cpp
+        TEST_NAME test_notestore
+        LINK_LIBRARIES Qt6::Test
+    )
+    target_include_directories(test_notestore PRIVATE ${PROJECT_SOURCE_DIR}/src/companion)
 endif()

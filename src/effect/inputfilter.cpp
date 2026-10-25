@@ -7,6 +7,7 @@
 #include "infinitdesktopeffect.h"
 #include "launcherpositioner.h"
 #include "logging.h"
+#include "organizer.h"
 
 #include "core/output.h"
 #include "effect/effecthandler.h"
@@ -85,6 +86,10 @@ bool CanvasInputFilter::pointerMotion(KWin::PointerMotionEvent *event)
 {
     if (m_shortcutPass.action && !event->warp) {
         m_shortcutPass = {};
+    }
+    if (Organizer *organizer = m_effect->organizer(); organizer && organizer->overlayActive()) {
+        // Canvas menu, selection or map: they get the pointer.
+        return organizer->pointerMotion(event->position);
     }
     if (m_drag.kind == DragKind::Window && m_drag.takenOver) {
         if (event->warp) {
@@ -436,6 +441,12 @@ bool CanvasInputFilter::finishDrag(KWin::PointerButtonEvent *event)
             m_effect->setZoomedInputWindow(nullptr);
             forwardMotion(event->position, event->timestamp);
         }
+        if (drag.moved) {
+            // Re-look the window up: committing may have changed the bookkeeping.
+            if (ManagedWindow *moved = drag.window ? m_effect->findManaged(drag.window.data()) : nullptr) {
+                m_effect->windowArranged(*moved);
+            }
+        }
         return true;
     }
     case DragKind::Resize: {
@@ -485,6 +496,10 @@ bool CanvasInputFilter::pointerButton(KWin::PointerButtonEvent *event)
 
 bool CanvasInputFilter::handleButton(KWin::PointerButtonEvent *event)
 {
+    if (Organizer *organizer = m_effect->organizer(); organizer && organizer->overlayActive()) {
+        m_swallowRelease = Qt::NoButton;
+        return organizer->pointerButton(event);
+    }
     if (event->state == KWin::PointerButtonState::Released) {
         if (m_swallowRelease != Qt::NoButton && event->button == m_swallowRelease) {
             m_swallowRelease = Qt::NoButton;
@@ -651,7 +666,11 @@ bool CanvasInputFilter::handleButton(KWin::PointerButtonEvent *event)
             startPan(*canvas, pos, event->button, false);
             return true;
         }
-        // Right click on the empty canvas opens the desktop menu, everything else is ours.
+        if (event->button == Qt::RightButton && hit.kind == CanvasHit::Kind::Nothing && m_effect->organizer()) {
+            // Right click on the empty canvas opens the canvas menu (notes, groups, areas, map).
+            m_effect->organizer()->showCanvasMenu(output, pos);
+            return true;
+        }
         return hit.kind != CanvasHit::Kind::Nothing;
     }
 
@@ -670,6 +689,11 @@ bool CanvasInputFilter::handleButton(KWin::PointerButtonEvent *event)
         if (event->button == Qt::LeftButton) {
             startWindowDrag(DragKind::Tile);
         }
+        return true;
+    }
+    if (event->button == Qt::RightButton && hit.kind == CanvasHit::Kind::Nothing && modifiers == Qt::MetaModifier && m_effect->organizer()) {
+        // At 100 % the desktop keeps its own menu; Meta + right click opens the canvas menu.
+        m_effect->organizer()->showCanvasMenu(output, pos);
         return true;
     }
     if (hit.kind == CanvasHit::Kind::Nothing && gesturesEnabled() && modifiers == Qt::NoModifier
@@ -695,6 +719,9 @@ bool CanvasInputFilter::pointerAxis(KWin::PointerAxisEvent *event)
 bool CanvasInputFilter::handleAxis(KWin::PointerAxisEvent *event)
 {
     m_metaAlone = false;
+    if (Organizer *organizer = m_effect->organizer(); organizer && organizer->overlayActive()) {
+        return organizer->pointerAxis(event);
+    }
     if (m_drag.kind == DragKind::Pan) {
         return true;
     }
@@ -992,6 +1019,9 @@ bool CanvasInputFilter::keyboardKey(KWin::KeyboardKeyEvent *event)
         return false;
     }
     m_metaAlone = false;
+    if (Organizer *organizer = m_effect->organizer(); organizer && organizer->overlayActive() && organizer->keyboardKey(event)) {
+        return true;
+    }
     if (event->key == Qt::Key_F1 && (event->modifiers & Qt::AltModifier) && m_effect->launcher()) {
         m_effect->launcher()->noteLauncherRequest(KWin::effects->cursorPos());
     }

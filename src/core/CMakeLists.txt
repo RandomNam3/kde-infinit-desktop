@@ -4,9 +4,13 @@
 # (see tests/) and can be run with sanitizers outside of the compositor.
 
 add_library(infinitdesktop_core STATIC
+    areas.cpp
     camera.cpp
+    groups.cpp
+    minimap.cpp
     motion.cpp
     navigation.cpp
+    noteplacements.cpp
     parking.cpp
     placementmemory.cpp
     velocitytracker.cpp

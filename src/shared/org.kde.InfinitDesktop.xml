@@ -55,5 +55,70 @@
     </method>
     <!-- Emitted when safeMode or paused change. -->
     <signal name="statusChanged"/>
+
+    <!-- Notes. The companion app (org.kde.InfinitDesktop.Companion) announces every note window
+         right before it shows it; the canvas then places it where the note was last. -->
+    <method name="expectNote">
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <!-- JSON {"id": s, "open": b, "pinned": b, "keepAbove": b}. -->
+    <method name="noteState">
+      <arg name="id" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="setNotePinned">
+      <arg name="id" type="s" direction="in"/>
+      <arg name="pinned" type="b" direction="in"/>
+      <arg name="keepAbove" type="b" direction="in"/>
+    </method>
+    <method name="forgetNote">
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <!-- Forgets the places of all notes not in the list (notes deleted elsewhere). -->
+    <method name="retainNotes">
+      <arg name="existing" type="as" direction="in"/>
+    </method>
+    <!-- A new note at the mouse pointer. -->
+    <method name="newNote"/>
+    <signal name="notePinnedChanged">
+      <arg name="id" type="s"/>
+      <arg name="pinned" type="b"/>
+      <arg name="keepAbove" type="b"/>
+    </signal>
+
+    <!-- Groups as JSON {"version": 1, "groups": [{"id", "name", "members": [{"app", "launch", "geometry"}],
+         "output", "desktop", "x", "y", "layout": "manual"|"automatic", "openWindows"}]}. setGroups replaces all
+         groups (openWindows is ignored); the position in the list is the shortcut slot (Meta+Alt+F1 ...). -->
+    <method name="groups">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="setGroups">
+      <arg name="json" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="openGroup">
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <!-- Stores the current arrangement; an empty id means the active window's group. -->
+    <method name="saveGroupLayout">
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <!-- Lets the user draw a rectangle on the screen under the pointer. -->
+    <method name="newGroupFromSelection"/>
+    <signal name="groupsChanged"/>
+
+    <!-- Areas as JSON {"version": 1, "areas": [{"id", "name", "output", "desktop", "drawn", "rect", "dynamic", "color"}]}. -->
+    <method name="areas">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="setAreas">
+      <arg name="json" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="newAreaFromSelection"/>
+    <signal name="areasChanged"/>
+
+    <!-- Shows (or hides) the map of the canvas under the pointer. -->
+    <method name="showMap"/>
   </interface>
 </node>

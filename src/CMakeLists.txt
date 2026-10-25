@@ -14,3 +14,7 @@ endif()
 if(BUILD_SETTINGS_APP AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/app/CMakeLists.txt)
     add_subdirectory(app)
 endif()
+
+if(BUILD_COMPANION AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/companion/CMakeLists.txt)
+    add_subdirectory(companion)
+endif()

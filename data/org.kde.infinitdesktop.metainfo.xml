@@ -101,6 +101,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.5.0" date="2026-10-25">
+      <description>
+        <p>Notes with Markdown on the canvas, groups of applications that open together at their place, areas that grow with their windows, a map of the canvas and a canvas menu.</p>
+      </description>
+    </release>
     <release version="0.4.2" date="2026-10-24">
       <description>
         <p>Menus and dropdowns of Steam and Wine programs appear in the right place while zoomed out, moving Steam while zoomed out works reliably, clicks no longer go astray after opening submenus, and floating panels stay floating.</p>

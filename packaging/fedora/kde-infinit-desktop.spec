@@ -29,7 +29,7 @@
 %endif
 
 Name:           kde-infinit-desktop
-Version:        0.4.2
+Version:        0.5.0
 Release:        1%{?kwin_tag}%{?dist}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -137,6 +137,7 @@ export QT_QPA_PLATFORM=offscreen
 %endif
 %if %{with app}
 desktop-file-validate %{buildroot}%{_datadir}/applications/kde-infinit-desktop-settings.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
 %endif
 
@@ -154,11 +155,18 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infini
 %files settings
 %{_bindir}/kde-infinit-desktop-settings
 %{_datadir}/applications/kde-infinit-desktop-settings.desktop
+%{_bindir}/kde-infinit-desktop-companion
+%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
+%{_datadir}/dbus-1/services/org.kde.InfinitDesktop.Companion.service
+%{_sysconfdir}/xdg/autostart/org.kde.infinitdesktop.companion.desktop
 %{_datadir}/icons/hicolor/*/apps/org.kde.infinitdesktop.*
 %{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
 %endif
 
 %changelog
+* Sun Oct 25 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.5.0-1
+- Update to 0.5.0
+
 * Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.4.2-1
 - Update to 0.4.2
 

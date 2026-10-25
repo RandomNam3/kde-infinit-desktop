@@ -164,6 +164,16 @@ PageScaffold {
         }
     }
 
+    // Groups, areas and notes on the "Notes & Groups" page.
+    Loader {
+        Layout.fillWidth: true
+        Layout.topMargin: 8
+        active: page.categoryId === "organize"
+        visible: active
+
+        sourceComponent: WorkspaceCards {}
+    }
+
     // Danger zone on the advanced page.
     Loader {
         Layout.fillWidth: true

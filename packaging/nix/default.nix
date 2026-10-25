@@ -62,7 +62,7 @@ pkgs.kdePackages.callPackage (
   }:
   stdenv.mkDerivation {
     pname = "kde-infinit-desktop";
-    version = "0.4.2";
+    version = "0.5.0";
     inherit src;
 
     nativeBuildInputs = [

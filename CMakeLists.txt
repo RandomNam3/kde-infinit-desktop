@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-project(kde-infinit-desktop VERSION 0.4.2 LANGUAGES CXX)
+project(kde-infinit-desktop VERSION 0.5.0 LANGUAGES CXX)
 
 set(QT_MIN_VERSION "6.6.0")
 set(KF6_MIN_VERSION "6.0.0")
@@ -25,6 +25,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_EFFECT "Build the KWin effect (needs KWin development files)" ON)
 option(BUILD_KCM "Build the System Settings module" ON)
 option(BUILD_SETTINGS_APP "Build the standalone settings app" ON)
+# The companion (notes, tray icon) is a GUI app like the settings app and follows it by default.
+option(BUILD_COMPANION "Build the companion app (notes, tray icon)" ${BUILD_SETTINGS_APP})
 option(ENABLE_SANITIZERS "Build with AddressSanitizer and UndefinedBehaviorSanitizer (development only)" OFF)
 
 if(ENABLE_SANITIZERS)

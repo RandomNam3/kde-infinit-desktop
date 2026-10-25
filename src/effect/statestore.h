@@ -39,6 +39,10 @@ public:
     QJsonObject loadPlacements() const;
     void savePlacements(const QJsonObject &placements) const;
 
+    /// Another JSON file next to the canvas state ("groups.json", ...); empty if missing or broken.
+    QJsonObject loadFile(const QString &fileName) const;
+    void saveFile(const QString &fileName, const QJsonObject &object) const;
+
     static QString filePath();
     static QString placementsFilePath();
 };

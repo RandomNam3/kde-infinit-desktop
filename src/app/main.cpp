@@ -24,6 +24,7 @@
 #include "themecontroller.h"
 #include "updatechecker.h"
 #include "windowplacements.h"
+#include "workspacemodel.h"
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -107,6 +108,7 @@ int main(int argc, char *argv[])
         ShortcutModel::setOffline(true);
         GlobalShortcutsModel::setDemoMode(true);
         WindowPlacements::setDemoMode(true);
+        WorkspaceModel::setDemoMode(true);
         if (QGuiApplication::platformName() == QLatin1String("offscreen")) {
             QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
         }

@@ -43,7 +43,26 @@ enum class ShortcutAction {
     TogglePin,
     TogglePinAbove,
     ToggleEnabled,
+    // Notes, groups, areas and the map
+    NewNote,
+    ToggleNotes,
+    ShowMap,
+    GroupFromSelection,
+    AreaFromSelection,
+    SaveGroupLayout,
+    OpenGroup1,
+    OpenGroup2,
+    OpenGroup3,
+    OpenGroup4,
+    OpenGroup5,
+    OpenGroup6,
+    OpenGroup7,
+    OpenGroup8,
+    OpenGroup9,
 };
+
+/// Number of groups that have an "open group" shortcut (OpenGroup1 …).
+inline constexpr int GroupShortcutCount = 9;
 
 struct ShortcutDefinition
 {
@@ -52,7 +71,7 @@ struct ShortcutDefinition
     const char *id;
     KLazyLocalizedString text;
     KLazyLocalizedString description;
-    /// Group id used by the settings UIs ("zoom", "pan", "focus", "bookmarks", "windows").
+    /// Group id used by the settings UIs ("zoom", "pan", "focus", "bookmarks", "windows", "organize", "groups").
     const char *group;
     QList<QKeySequence> defaultShortcuts;
 };

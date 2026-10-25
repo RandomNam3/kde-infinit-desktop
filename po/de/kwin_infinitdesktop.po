@@ -2139,3 +2139,702 @@ msgstr ""
 
 msgid "Look for updates when this app starts"
 msgstr "Beim Start dieser App nach Updates suchen"
+
+# ---------------------------------------------------------------------------
+# Notes, groups, areas and the map
+# ---------------------------------------------------------------------------
+
+msgid "Infinit Desktop: New Note"
+msgstr "Infinit Desktop: Neue Notiz"
+
+msgid "Put a new note on the canvas at the mouse pointer."
+msgstr "Eine neue Notiz an der Mausposition auf die Arbeitsfläche legen."
+
+msgid "Infinit Desktop: Show / Hide Notes"
+msgstr "Infinit Desktop: Notizen ein-/ausblenden"
+
+msgid "Hide all notes, or show them again."
+msgstr "Alle Notizen ausblenden oder wieder einblenden."
+
+msgid "Infinit Desktop: Show Map"
+msgstr "Infinit Desktop: Karte zeigen"
+
+msgid ""
+"Show a map of this screen's canvas with its windows, groups and areas; click"
+" or drag on it to move the view."
+msgstr ""
+"Eine Karte der Arbeitsfläche dieses Bildschirms mit Fenstern, Gruppen und "
+"Bereichen zeigen; Klicken oder Ziehen darauf verschiebt die Ansicht."
+
+msgid "Infinit Desktop: New Group from Selection"
+msgstr "Infinit Desktop: Neue Gruppe aus Auswahl"
+
+msgid ""
+"Draw a rectangle with the mouse: the windows inside become a new group."
+msgstr ""
+"Mit der Maus ein Rechteck aufziehen: Die Fenster darin werden zu einer neuen"
+" Gruppe."
+
+msgid "Infinit Desktop: New Area from Selection"
+msgstr "Infinit Desktop: Neuer Bereich aus Auswahl"
+
+msgid ""
+"Draw a rectangle with the mouse: it becomes an area of the canvas that grows"
+" and shrinks with its windows."
+msgstr ""
+"Mit der Maus ein Rechteck aufziehen: Es wird zu einem Bereich der "
+"Arbeitsfläche, der mit seinen Fenstern wächst und schrumpft."
+
+msgid "Infinit Desktop: Save Group Arrangement"
+msgstr "Infinit Desktop: Anordnung der Gruppe speichern"
+
+msgid ""
+"Remember how the windows of the active window's group are arranged now."
+msgstr ""
+"Die jetzige Anordnung der Fenster in der Gruppe des aktiven Fensters merken."
+
+msgid "Infinit Desktop: Open Group 1"
+msgstr "Infinit Desktop: Gruppe 1 öffnen"
+
+msgid ""
+"Bring the windows of group 1 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 1 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 2"
+msgstr "Infinit Desktop: Gruppe 2 öffnen"
+
+msgid ""
+"Bring the windows of group 2 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 2 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 3"
+msgstr "Infinit Desktop: Gruppe 3 öffnen"
+
+msgid ""
+"Bring the windows of group 3 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 3 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 4"
+msgstr "Infinit Desktop: Gruppe 4 öffnen"
+
+msgid ""
+"Bring the windows of group 4 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 4 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 5"
+msgstr "Infinit Desktop: Gruppe 5 öffnen"
+
+msgid ""
+"Bring the windows of group 5 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 5 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 6"
+msgstr "Infinit Desktop: Gruppe 6 öffnen"
+
+msgid ""
+"Bring the windows of group 6 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 6 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 7"
+msgstr "Infinit Desktop: Gruppe 7 öffnen"
+
+msgid ""
+"Bring the windows of group 7 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 7 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 8"
+msgstr "Infinit Desktop: Gruppe 8 öffnen"
+
+msgid ""
+"Bring the windows of group 8 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 8 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Infinit Desktop: Open Group 9"
+msgstr "Infinit Desktop: Gruppe 9 öffnen"
+
+msgid ""
+"Bring the windows of group 9 together at its place, start the missing ones, "
+"and jump there."
+msgstr ""
+"Die Fenster von Gruppe 9 an ihrem Ort zusammenholen, fehlende starten und "
+"dorthin springen."
+
+msgid "Notes & Groups"
+msgstr "Notizen und Gruppen"
+
+msgid "Notes, groups of windows, areas and the map"
+msgstr "Notizen, Fenstergruppen, Bereiche und die Karte"
+
+msgid "note,sticky,post-it,memo,markdown,text"
+msgstr "Notiz,Zettel,Haftnotiz,Memo,Markdown,Text"
+
+msgid "note,sticky,colour,paper"
+msgstr "Notiz,Zettel,Farbe,Papier"
+
+msgid "group,arrangement,layout,save,workspace,session"
+msgstr "Gruppe,Anordnung,Layout,speichern,Arbeitsbereich,Sitzung"
+
+msgid "group,launch,start,open,application"
+msgstr "Gruppe,starten,öffnen,Anwendung,Programm"
+
+msgid "group,zoom,fit,camera,jump"
+msgstr "Gruppe,Zoom,einpassen,Kamera,springen"
+
+msgid "area,region,zone,frame,section"
+msgstr "Bereich,Region,Zone,Rahmen,Abschnitt"
+
+msgid "area,region,margin,space,grow"
+msgstr "Bereich,Region,Rand,Abstand,wachsen"
+
+msgid "map,minimap,overview,navigator"
+msgstr "Karte,Minikarte,Übersicht,Navigator"
+
+msgctxt "@title shortcut group"
+msgid "Notes, Groups & Map"
+msgstr "Notizen, Gruppen und Karte"
+
+msgctxt "@title shortcut group"
+msgid "Open Groups"
+msgstr "Gruppen öffnen"
+
+msgid "The groups could not be saved."
+msgstr "Die Gruppen konnten nicht gespeichert werden."
+
+msgid "The areas could not be saved."
+msgstr "Die Bereiche konnten nicht gespeichert werden."
+
+msgctxt "@item name of a new group, %1 is a number"
+msgid "Group %1"
+msgstr "Gruppe %1"
+
+msgctxt "@item name of a new area, %1 is a number"
+msgid "Area %1"
+msgstr "Bereich %1"
+
+msgid "No more areas can be created."
+msgstr "Es können keine weiteren Bereiche angelegt werden."
+
+msgid "Area “%1” created"
+msgstr "Bereich „%1“ angelegt"
+
+msgid ""
+"There is no group %1. Create one with Meta+Alt+G or in the settings app."
+msgstr ""
+"Es gibt keine Gruppe %1. Legen Sie eine mit Meta+Alt+G oder in der "
+"Einstellungs-App an."
+
+msgid "Group “%2”: starting one application"
+msgid_plural "Group “%2”: starting %1 applications"
+msgstr[0] "Gruppe „%2“: eine Anwendung wird gestartet"
+msgstr[1] "Gruppe „%2“: %1 Anwendungen werden gestartet"
+
+msgid "Group “%1”"
+msgstr "Gruppe „%1“"
+
+msgid "No windows in the selection"
+msgstr "Keine Fenster in der Auswahl"
+
+msgid "No more groups can be created."
+msgstr "Es können keine weiteren Gruppen angelegt werden."
+
+msgid "Group “%1” created: open it with Meta+Alt+F%2"
+msgstr "Gruppe „%1“ angelegt: öffnen mit Meta+Alt+F%2"
+
+msgid "Group “%1” created"
+msgstr "Gruppe „%1“ angelegt"
+
+msgid "The active window is in no group"
+msgstr "Das aktive Fenster gehört zu keiner Gruppe"
+
+msgid "Arrangement of group “%1” saved"
+msgstr "Anordnung der Gruppe „%1“ gespeichert"
+
+msgid "Notes are switched off in the settings"
+msgstr "Notizen sind in den Einstellungen ausgeschaltet"
+
+msgctxt "@action canvas menu"
+msgid "New Note Here"
+msgstr "Neue Notiz hier"
+
+msgctxt "@action canvas menu"
+msgid "Show / Hide Notes"
+msgstr "Notizen ein-/ausblenden"
+
+msgctxt "@action canvas menu"
+msgid "New Group from Selection…"
+msgstr "Neue Gruppe aus Auswahl …"
+
+msgctxt "@action canvas menu"
+msgid "New Area from Selection…"
+msgstr "Neuer Bereich aus Auswahl …"
+
+msgctxt "@action canvas menu"
+msgid "Remove This Area"
+msgstr "Diesen Bereich entfernen"
+
+msgctxt "@action canvas menu"
+msgid "Show Map"
+msgstr "Karte zeigen"
+
+msgctxt "@action canvas menu"
+msgid "Show All Windows"
+msgstr "Alle Fenster zeigen"
+
+msgctxt "@action canvas menu"
+msgid "Zoom to 100 %"
+msgstr "Auf 100 % zoomen"
+
+msgctxt "@action canvas menu"
+msgid "Infinit Desktop Settings…"
+msgstr "Einstellungen von Infinit Desktop …"
+
+msgid "Area “%1” removed"
+msgstr "Bereich „%1“ entfernt"
+
+msgid "Draw a rectangle around the windows of the new group (Esc cancels)"
+msgstr ""
+"Ziehen Sie ein Rechteck um die Fenster der neuen Gruppe (Esc bricht ab)"
+
+msgid "Draw the new area (Esc cancels)"
+msgstr "Ziehen Sie den neuen Bereich auf (Esc bricht ab)"
+
+msgctxt "@item note color"
+msgid "Blue"
+msgstr "Blau"
+
+msgctxt "@item note color"
+msgid "Green"
+msgstr "Grün"
+
+msgctxt "@item note color"
+msgid "Pink"
+msgstr "Rosa"
+
+msgctxt "@item note color"
+msgid "Gray"
+msgstr "Grau"
+
+msgctxt "@item note color"
+msgid "Yellow"
+msgstr "Gelb"
+
+msgctxt "@info:tooltip tray icon"
+msgid "Infinit Desktop notes"
+msgstr "Notizen von Infinit Desktop"
+
+msgctxt "@action tray menu"
+msgid "New Note"
+msgstr "Neue Notiz"
+
+msgctxt "@action tray menu"
+msgid "Hide Notes"
+msgstr "Notizen ausblenden"
+
+msgctxt "@action tray menu"
+msgid "Show Notes"
+msgstr "Notizen einblenden"
+
+msgctxt "@action tray menu"
+msgid "Show Map"
+msgstr "Karte zeigen"
+
+msgctxt "@action tray menu"
+msgid "New Group from Selection…"
+msgstr "Neue Gruppe aus Auswahl …"
+
+msgctxt "@action tray menu"
+msgid "New Area from Selection…"
+msgstr "Neuer Bereich aus Auswahl …"
+
+msgctxt "@action tray menu"
+msgid "Settings…"
+msgstr "Einstellungen …"
+
+msgctxt "@action tray menu"
+msgid "Quit"
+msgstr "Beenden"
+
+msgctxt "@title application name"
+msgid "Infinit Desktop Notes"
+msgstr "Infinit-Desktop-Notizen"
+
+msgid "Notes on the infinite canvas"
+msgstr "Notizen auf der unendlichen Arbeitsfläche"
+
+msgid "Create a new note (also when the app is already running)."
+msgstr "Eine neue Notiz anlegen (auch wenn die App schon läuft)."
+
+msgctxt "@title:window untitled note"
+msgid "Note"
+msgstr "Notiz"
+
+msgctxt "@title:window"
+msgid "Note"
+msgstr "Notiz"
+
+msgctxt "@title untitled note"
+msgid "Note"
+msgstr "Notiz"
+
+msgctxt "@info:tooltip"
+msgid "Release from the screen"
+msgstr "Vom Bildschirm lösen"
+
+msgctxt "@info:tooltip"
+msgid "Pin to the screen: stays visible while the canvas moves"
+msgstr ""
+"An den Bildschirm anheften: bleibt sichtbar, während sich die Arbeitsfläche "
+"bewegt"
+
+msgctxt "@info:tooltip"
+msgid "More"
+msgstr "Mehr"
+
+msgctxt "@info:tooltip"
+msgid "Hide this note (it is kept)"
+msgstr "Diese Notiz ausblenden (sie bleibt erhalten)"
+
+msgctxt "@info:placeholder"
+msgid ""
+"Write a note… Markdown works: # heading, **bold**, - list, [link](https://…)"
+msgstr ""
+"Notiz schreiben … Markdown geht: # Überschrift, **fett**, - Liste, "
+"[Link](https://…)"
+
+msgctxt "@action note menu"
+msgid "New Note"
+msgstr "Neue Notiz"
+
+msgctxt "@action note menu"
+msgid "Show Formatted"
+msgstr "Formatiert anzeigen"
+
+msgctxt "@action note menu"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgctxt "@action note menu"
+msgid "Release from the Screen"
+msgstr "Vom Bildschirm lösen"
+
+msgctxt "@action note menu"
+msgid "Pin to the Screen"
+msgstr "An den Bildschirm anheften"
+
+msgctxt "@action note menu"
+msgid "Pinned and Always on Top"
+msgstr "Angeheftet und immer im Vordergrund"
+
+msgctxt "@action note menu"
+msgid "Color"
+msgstr "Farbe"
+
+msgctxt "@action note menu"
+msgid "Hide This Note"
+msgstr "Diese Notiz ausblenden"
+
+msgctxt "@action note menu"
+msgid "Hide All Notes"
+msgstr "Alle Notizen ausblenden"
+
+msgctxt "@action note menu"
+msgid "Show Map"
+msgstr "Karte zeigen"
+
+msgctxt "@action note menu"
+msgid "Delete Note…"
+msgstr "Notiz löschen …"
+
+msgctxt "@info"
+msgid "Delete this note? This cannot be undone."
+msgstr "Diese Notiz löschen? Das lässt sich nicht rückgängig machen."
+
+msgctxt "@action:button"
+msgid "Delete"
+msgstr "Löschen"
+
+msgctxt "@title"
+msgid "On the canvas"
+msgstr "Auf der Arbeitsfläche"
+
+msgctxt "@action:button"
+msgid "New Note"
+msgstr "Neue Notiz"
+
+msgctxt "@action:button"
+msgid "Show Map"
+msgstr "Karte zeigen"
+
+msgctxt "@action:button"
+msgid "Group from Selection"
+msgstr "Gruppe aus Auswahl"
+
+msgctxt "@action:button"
+msgid "Draw an Area"
+msgstr "Bereich aufziehen"
+
+msgid "Available while the plugin is active in KWin."
+msgstr "Verfügbar, solange das Plugin in KWin aktiv ist."
+
+msgid ""
+"%1 note. Right click on the empty canvas while zoomed out (Meta + right "
+"click at 100 %) for the canvas menu."
+msgid_plural ""
+"%1 notes. Right click on the empty canvas while zoomed out (Meta + right "
+"click at 100 %) for the canvas menu."
+msgstr[0] ""
+"%1 Notiz. Rechtsklick auf die freie Arbeitsfläche im herausgezoomten Zustand"
+" (bei 100 % Meta + Rechtsklick) öffnet das Menü der Arbeitsfläche."
+msgstr[1] ""
+"%1 Notizen. Rechtsklick auf die freie Arbeitsfläche im herausgezoomten "
+"Zustand (bei 100 % Meta + Rechtsklick) öffnet das Menü der Arbeitsfläche."
+
+msgctxt "@title"
+msgid "Groups"
+msgstr "Gruppen"
+
+msgctxt "@action:button"
+msgid "New Group"
+msgstr "Neue Gruppe"
+
+msgid ""
+"A group opens its applications together, always arranged the same way, at "
+"the place where it was last – and the view jumps there. Draw a rectangle "
+"around open windows with Meta+Alt+G, or create a group here and add "
+"applications."
+msgstr ""
+"Eine Gruppe öffnet ihre Anwendungen gemeinsam und immer gleich angeordnet "
+"dort, wo sie zuletzt war – und die Ansicht springt hin. Ziehen Sie mit "
+"Meta+Alt+G ein Rechteck um offene Fenster, oder legen Sie hier eine Gruppe "
+"an und fügen Sie Anwendungen hinzu."
+
+msgctxt "@label"
+msgid "Group name"
+msgstr "Name der Gruppe"
+
+msgctxt "@action:button"
+msgid "Move up (changes the shortcut)"
+msgstr "Nach oben (ändert den Kurzbefehl)"
+
+msgctxt "@action:button"
+msgid "Move down (changes the shortcut)"
+msgstr "Nach unten (ändert den Kurzbefehl)"
+
+msgctxt "@action:button"
+msgid "Delete group"
+msgstr "Gruppe löschen"
+
+msgctxt "@action:button %1 is an application"
+msgid "Remove “%1” from the group"
+msgstr "„%1“ aus der Gruppe entfernen"
+
+msgctxt "@action:button"
+msgid "Application…"
+msgstr "Anwendung …"
+
+msgctxt "@label"
+msgid "Arrangement is saved"
+msgstr "Anordnung wird gespeichert"
+
+msgctxt "@option group arrangement"
+msgid "When saved"
+msgstr "Beim Speichern"
+
+msgctxt "@option group arrangement"
+msgid "Automatically"
+msgstr "Automatisch"
+
+msgctxt "@info:status"
+msgid "%1 window open"
+msgid_plural "%1 windows open"
+msgstr[0] "%1 Fenster offen"
+msgstr[1] "%1 Fenster offen"
+
+msgctxt "@action:button"
+msgid "Save Arrangement"
+msgstr "Anordnung speichern"
+
+msgctxt "@action:button"
+msgid "Open"
+msgstr "Öffnen"
+
+msgctxt "@title:window"
+msgid "Add Application to the Group"
+msgstr "Anwendung zur Gruppe hinzufügen"
+
+msgctxt "@title:window"
+msgid "Delete group?"
+msgstr "Gruppe löschen?"
+
+msgid "The group “%1” is deleted. Its windows stay open where they are."
+msgstr ""
+"Die Gruppe „%1“ wird gelöscht. Ihre Fenster bleiben offen, wo sie sind."
+
+msgctxt "@title"
+msgid "Areas"
+msgstr "Bereiche"
+
+msgid ""
+"Areas divide the canvas into named parts, for example “Project” or "
+"“Reading”. Draw one with Meta+Alt+B; it grows and shrinks with the windows "
+"you drag into it."
+msgstr ""
+"Bereiche teilen die Arbeitsfläche in benannte Teile, zum Beispiel „Projekt“ "
+"oder „Lesen“. Ziehen Sie einen mit Meta+Alt+B auf; er wächst und schrumpft "
+"mit den Fenstern, die Sie hineinziehen."
+
+msgctxt "@label"
+msgid "Area name"
+msgstr "Name des Bereichs"
+
+msgctxt "@label"
+msgid "Grows with its windows"
+msgstr "Wächst mit seinen Fenstern"
+
+msgctxt "@action:button"
+msgid "Remove area"
+msgstr "Bereich entfernen"
+
+msgid "Notes on the canvas"
+msgstr "Notizen auf der Arbeitsfläche"
+
+msgid ""
+"Notes are small windows with Markdown text that lie on the canvas like other"
+" windows and are saved automatically. Create one with Meta+Alt+N, from the "
+"canvas menu (right click on the empty canvas while zoomed out, Meta + right "
+"click at 100 %) or from the notes icon in the system tray. Pin a note to "
+"keep it on the screen while the canvas moves."
+msgstr ""
+"Notizen sind kleine Fenster mit Markdown-Text, die wie andere Fenster auf "
+"der Arbeitsfläche liegen und automatisch gespeichert werden. Neue Notizen "
+"entstehen mit Meta+Alt+N, über das Menü der Arbeitsfläche (Rechtsklick auf "
+"die freie Fläche im herausgezoomten Zustand, bei 100 % Meta + Rechtsklick) "
+"oder über das Notiz-Symbol in der Systemleiste. Eine angeheftete Notiz "
+"bleibt am Bildschirm, während sich die Arbeitsfläche bewegt."
+
+msgid "Color of new notes"
+msgstr "Farbe neuer Notizen"
+
+msgid ""
+"The paper color a new note gets. Every note can get another color from its "
+"menu."
+msgstr ""
+"Die Papierfarbe einer neuen Notiz. Über ihr Menü kann jede Notiz eine andere"
+" Farbe bekommen."
+
+msgid "Yellow"
+msgstr "Gelb"
+
+msgid "Blue"
+msgstr "Blau"
+
+msgid "Green"
+msgstr "Grün"
+
+msgid "Pink"
+msgstr "Rosa"
+
+msgid "Gray"
+msgstr "Grau"
+
+msgid "Arrangement of new groups is saved"
+msgstr "Anordnung neuer Gruppen wird gespeichert"
+
+msgid ""
+"A group remembers how its windows are arranged and always opens like that. "
+"Either the arrangement only changes when you save it (Meta+Alt+Shift+G or in"
+" this app), or every move and resize of a group window while the group is "
+"open becomes the new arrangement. Each group can be switched on its own. "
+"Where the group lies on the canvas always moves with its windows."
+msgstr ""
+"Eine Gruppe merkt sich, wie ihre Fenster angeordnet sind, und öffnet sich "
+"immer so. Entweder ändert sich die Anordnung nur, wenn Sie sie speichern "
+"(Meta+Alt+Umschalt+G oder in dieser App), oder jedes Verschieben und jede "
+"Größenänderung eines Gruppenfensters bei offener Gruppe wird zur neuen "
+"Anordnung. Jede Gruppe lässt sich einzeln umstellen. Der Ort der Gruppe auf "
+"der Arbeitsfläche wandert immer mit ihren Fenstern mit."
+
+msgid "Only when saved"
+msgstr "Nur beim Speichern"
+
+msgid "Automatically when windows are moved"
+msgstr "Automatisch beim Verschieben von Fenstern"
+
+msgid "Opening a group starts missing applications"
+msgstr "Öffnen einer Gruppe startet fehlende Anwendungen"
+
+msgid ""
+"When a group is opened and one of its applications has no window, it is "
+"started and its window is placed in the group. An application in several "
+"groups, like the browser, moves along with the group you open as long as "
+"only one window of it is open."
+msgstr ""
+"Hat eine Anwendung der Gruppe beim Öffnen kein Fenster, wird sie gestartet "
+"und ihr Fenster in die Gruppe gelegt. Eine Anwendung in mehreren Gruppen, "
+"etwa der Browser, springt mit der geöffneten Gruppe mit, solange nur ein "
+"Fenster von ihr offen ist."
+
+msgid "Zoom out for groups larger than the screen"
+msgstr "Bei Gruppen größer als der Bildschirm herauszoomen"
+
+msgid ""
+"When an opened group does not fit on the screen at 100 %, the camera zooms "
+"out until all its windows are visible. Otherwise the camera centers the "
+"group at 100 %."
+msgstr ""
+"Passt eine geöffnete Gruppe bei 100 % nicht auf den Bildschirm, zoomt die "
+"Kamera heraus, bis alle ihre Fenster sichtbar sind. Sonst zeigt die Kamera "
+"die Gruppe bei 100 % in der Mitte."
+
+msgid "Show areas on the canvas"
+msgstr "Bereiche auf der Arbeitsfläche zeigen"
+
+msgid ""
+"Areas are named parts of the canvas that you draw with Meta+Alt+B. They are "
+"drawn as a colored frame above the wallpaper and below the windows."
+msgstr ""
+"Bereiche sind benannte Teile der Arbeitsfläche, die Sie mit Meta+Alt+B "
+"aufziehen. Sie erscheinen als farbiger Rahmen über dem Hintergrundbild und "
+"unter den Fenstern."
+
+msgid "Space around the windows of an area"
+msgstr "Abstand um die Fenster eines Bereichs"
+
+msgid ""
+"An area grows when you drag windows into it or make them larger, and shrinks"
+" when they leave or get smaller. It keeps this much space around its "
+"windows, in pixels at 100 %."
+msgstr ""
+"Ein Bereich wächst, wenn Sie Fenster hineinziehen oder vergrößern, und "
+"schrumpft, wenn sie ihn verlassen oder kleiner werden. Um seine Fenster "
+"lässt er so viel Platz, in Pixeln bei 100 %."
+
+msgid "Size of the map"
+msgstr "Größe der Karte"
+
+msgid "How much of the screen the map (Meta+Alt+M) covers, in percent."
+msgstr "Wie viel des Bildschirms die Karte (Meta+Alt+M) einnimmt, in Prozent."

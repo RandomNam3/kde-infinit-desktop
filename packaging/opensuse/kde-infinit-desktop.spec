@@ -27,7 +27,7 @@
 %endif
 
 Name:           kde-infinit-desktop
-Version:        0.4.2
+Version:        0.5.0
 Release:        1%{?kwin_tag}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -141,6 +141,10 @@ export QT_QPA_PLATFORM=offscreen
 %files settings
 %{_kf6_bindir}/kde-infinit-desktop-settings
 %{_kf6_applicationsdir}/kde-infinit-desktop-settings.desktop
+%{_kf6_bindir}/kde-infinit-desktop-companion
+%{_kf6_applicationsdir}/org.kde.infinitdesktop.companion.desktop
+%{_datadir}/dbus-1/services/org.kde.InfinitDesktop.Companion.service
+%{_sysconfdir}/xdg/autostart/org.kde.infinitdesktop.companion.desktop
 %{_kf6_iconsdir}/hicolor/*/apps/org.kde.infinitdesktop.*
 %{_kf6_appstreamdir}/org.kde.infinitdesktop.metainfo.xml
 %endif

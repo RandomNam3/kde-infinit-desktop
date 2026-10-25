@@ -22,6 +22,7 @@ const QList<SettingsCategory> &settingsCategories()
         {"screens", kli18n("Multiple Screens"), kli18n("One canvas per screen and moving windows between them"), "screens"},
         {"fullscreen", kli18n("Fullscreen & Games"), kli18n("Videos, games and other fullscreen windows"), "fullscreen"},
         {"appearance", kli18n("Appearance"), kli18n("Dot grid and visual feedback"), "appearance"},
+        {"organize", kli18n("Notes & Groups"), kli18n("Notes, groups of windows, areas and the map"), "note"},
         {"plasma", kli18n("Plasma"), kli18n("Integration with the task bar and launcher"), "plasma"},
         {ShortcutsCategoryId, kli18n("Shortcuts"), kli18n("Keyboard shortcuts for fast navigation"), "keyboard"},
         {"advanced", kli18n("Advanced"), kli18n("Stability, persistence and diagnostics"), "advanced"},
@@ -89,6 +90,15 @@ const QList<SettingsEntryMeta> &settingsEntries()
         {"GridColor", "appearance", nullptr, kli18n("dots,grid,colour"), "BackgroundGrid"},
         {"ZoomIndicator", "appearance", nullptr, kli18n("osd,percent,zoom level,overlay"), nullptr},
         {"OffscreenMarkers", "appearance", nullptr, kli18n("find,lost,far away,offscreen,arrow,indicator,edge,navigation"), nullptr},
+        // Notes, groups, areas and the map
+        {"NotesEnabled", "organize", nullptr, kli18n("note,sticky,post-it,memo,markdown,text"), nullptr},
+        {"NoteColor", "organize", nullptr, kli18n("note,sticky,colour,paper"), "NotesEnabled"},
+        {"GroupLayoutMode", "organize", nullptr, kli18n("group,arrangement,layout,save,workspace,session"), nullptr},
+        {"GroupStartsApplications", "organize", nullptr, kli18n("group,launch,start,open,application"), nullptr},
+        {"GroupZoomToFit", "organize", nullptr, kli18n("group,zoom,fit,camera,jump"), nullptr},
+        {"ShowAreas", "organize", nullptr, kli18n("area,region,zone,frame,section"), nullptr},
+        {"AreaPadding", "organize", "px", kli18n("area,region,margin,space,grow"), "ShowAreas"},
+        {"MapSize", "organize", "%", kli18n("map,minimap,overview,navigator"), nullptr},
         // Plasma
         {"LauncherPosition", "plasma", nullptr, kli18n("start menu,kickoff,super,windows key,application launcher,meta"), nullptr},
         // Advanced

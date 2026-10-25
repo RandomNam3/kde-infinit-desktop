@@ -660,6 +660,12 @@ QString ShortcutModel::groupTitle(const QString &group) const
     if (group == QLatin1String("windows")) {
         return i18nc("@title shortcut group", "Windows");
     }
+    if (group == QLatin1String("organize")) {
+        return i18nc("@title shortcut group", "Notes, Groups & Map");
+    }
+    if (group == QLatin1String("groups")) {
+        return i18nc("@title shortcut group", "Open Groups");
+    }
     return group;
 }
 
