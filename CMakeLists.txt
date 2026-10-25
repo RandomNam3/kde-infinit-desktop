@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(kde-infinit-desktop VERSION 0.5.0 LANGUAGES CXX)
 
-set(QT_MIN_VERSION "6.6.0")
+set(QT_MIN_VERSION "6.8.0")
 set(KF6_MIN_VERSION "6.0.0")
 set(KWIN_MIN_VERSION "6.8.0")
 

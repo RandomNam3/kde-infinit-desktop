@@ -42,7 +42,7 @@ BuildRequires:  cmake(KF6Config)
 BuildRequires:  cmake(KF6CoreAddons)
 BuildRequires:  cmake(KF6GlobalAccel)
 BuildRequires:  cmake(KF6I18n)
-BuildRequires:  cmake(Qt6Core) >= 6.6
+BuildRequires:  cmake(Qt6Core) >= 6.8
 BuildRequires:  cmake(Qt6DBus)
 BuildRequires:  cmake(Qt6Gui)
 BuildRequires:  cmake(Qt6Widgets)

@@ -5,7 +5,7 @@ EAPI=8
 
 ECM_TEST="true"
 KFMIN=6.22.0
-QTMIN=6.6.0
+QTMIN=6.8.0
 inherit ecm git-r3
 
 DESCRIPTION="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect)"

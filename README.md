@@ -100,7 +100,7 @@ Alles Weitere, auch fertige Pakete und die Anleitung je Distribution, steht in [
 ./build.sh --help     # alle Optionen (Pakete bauen, Container-Builds, Sanitizer, …)
 ```
 
-Abhängigkeiten: CMake ≥ 3.22, ECM, Qt ≥ 6.6 (Core, Gui, DBus, Widgets, Quick, QuickControls2),
+Abhängigkeiten: CMake ≥ 3.22, ECM, Qt ≥ 6.8 (Core, Gui, DBus, Widgets, Quick, QuickControls2),
 KF6 (Config, CoreAddons, GlobalAccel, I18n, KCMUtils, XmlGui, WidgetsAddons) und die KWin-Entwicklungsdateien
 in genau der installierten Version.
 

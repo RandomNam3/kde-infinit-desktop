@@ -42,7 +42,7 @@ BuildRequires:  ninja-build
 BuildRequires:  gettext
 BuildRequires:  extra-cmake-modules
 BuildRequires:  kf6-rpm-macros
-BuildRequires:  cmake(Qt6Core) >= 6.6
+BuildRequires:  cmake(Qt6Core) >= 6.8
 BuildRequires:  cmake(Qt6Gui)
 BuildRequires:  cmake(Qt6DBus)
 BuildRequires:  cmake(Qt6Widgets)
