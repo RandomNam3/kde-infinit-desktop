@@ -53,8 +53,15 @@ run() {
     sleep 0.1
   done
   export WAYLAND_DISPLAY=wayland-0
+  # Older KWin logs the display of its Xwayland; KWin 6.8 does not: it is on Xwayland's
+  # command line.
   DISPLAY=$(grep -o 'DISPLAY=:[0-9]*' /tmp/kwin.log | head -1 | cut -d= -f2)
-  export DISPLAY=${DISPLAY:-:1}
+  for _ in $(seq 1 50); do
+    [ -n "$DISPLAY" ] && break
+    DISPLAY=$(pgrep -a Xwayland | grep -o ' :[0-9]*' | head -1 | tr -d ' ')
+    sleep 0.1
+  done
+  export DISPLAY=${DISPLAY:-:0}
   sleep 1
   echo "--- effect loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop)"
   bash "$SCENARIO"
