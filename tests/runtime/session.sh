@@ -21,17 +21,17 @@ export HOME=/tmp/home
 mkdir -p "$HOME/.config"
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_STATE_HOME=$HOME/.local/state
-export QT_LOGGING_RULES="kwin_effect_infinitdesktop.debug=true"
+export QT_LOGGING_RULES="kwin_effect_infinitedesktop.debug=true"
 # Qt logs to the (missing) journal otherwise.
 export QT_FORCE_STDERR_LOGGING=1
 # KWin's internal QtQuick windows (OSD messages) cannot get a GL context on
 # llvmpipe+vgem in the container; render them in software.
 export QT_QUICK_BACKEND=software
 
-kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled true
-kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key DebugLogging true
+kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled true
+kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key DebugLogging true
 # Deterministic tests: no camera animations unless a scenario asks for them.
-kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key AnimationDuration "${ANIMATION_MS:-0}"
+kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key AnimationDuration "${ANIMATION_MS:-0}"
 [ -n "${EXTRA_CONFIG:-}" ] && eval "$EXTRA_CONFIG"
 
 run() {
@@ -66,7 +66,7 @@ run() {
   dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR HOME XDG_CONFIG_HOME XDG_STATE_HOME \
       QT_LOGGING_RULES QT_FORCE_STDERR_LOGGING 2>/dev/null
   sleep 1
-  echo "--- effect loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop)"
+  echo "--- effect loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop)"
   bash "$SCENARIO"
   local rc=$?
   kill $KWIN_PID 2>/dev/null
@@ -75,6 +75,6 @@ run() {
 }
 run
 rc=$?
-echo "--- kwin log (infinitdesktop / errors):"
+echo "--- kwin log (infinitedesktop / errors):"
 grep -iE "${LOG_FILTER:-infinit|crash|segfault|ASSERT|fatal|blocked|flung|restored|navigation}" /tmp/kwin.log | grep -v "^\[" | head -${LOG_LINES:-40}
 exit $rc

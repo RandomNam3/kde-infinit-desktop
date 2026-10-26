@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "windowplacements.h"
@@ -24,7 +24,7 @@
 
 #include <algorithm>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -34,8 +34,8 @@ WindowPlacements *s_placementsInstance = nullptr;
 bool s_demoMode = false;
 
 const QString s_service = QStringLiteral("org.kde.KWin");
-const QString s_path = QStringLiteral("/InfinitDesktop");
-const QString s_interface = QStringLiteral("org.kde.InfinitDesktop");
+const QString s_path = QStringLiteral("/InfiniteDesktop");
+const QString s_interface = QStringLiteral("org.kde.InfiniteDesktop");
 
 QString screenName(const QJsonObject &output)
 {
@@ -337,4 +337,4 @@ void WindowPlacements::forgetAll()
     });
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

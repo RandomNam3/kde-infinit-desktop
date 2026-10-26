@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -39,18 +39,18 @@ class RenderTarget;
 class RenderViewport;
 }
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
-class InfinitDesktopEffect;
+class InfiniteDesktopEffect;
 class StateStore;
 struct Canvas;
 struct ManagedWindow;
 
 /// D-Bus name of the companion app (notes, tray icon).
-inline constexpr const char *CompanionService = "org.kde.InfinitDesktop.Companion";
+inline constexpr const char *CompanionService = "org.kde.InfiniteDesktop.Companion";
 /// Desktop file name (Wayland app id) of the companion app; its note windows have it.
-inline constexpr const char *CompanionAppKey = "org.kde.infinitdesktop.companion";
+inline constexpr const char *CompanionAppKey = "org.kde.infinitedesktop.companion";
 
 /**
  * Notes, groups, areas and the map, plus the overlays that belong to them: the canvas
@@ -69,7 +69,7 @@ class Organizer : public QObject
 
 public:
     /// Owned by the effect (no QObject parent), destroyed before the state store.
-    Organizer(InfinitDesktopEffect *effect, StateStore *store);
+    Organizer(InfiniteDesktopEffect *effect, StateStore *store);
     ~Organizer() override;
 
     // ---- Hooks from the effect --------------------------------------------------------
@@ -213,7 +213,7 @@ private:
     KWin::GLTexture *labelTexture(const QString &text, int pixelHeight, const QColor &color);
     KWin::GLTexture *iconTexture(KWin::EffectWindow *window, int pixels);
 
-    InfinitDesktopEffect *const m_effect;
+    InfiniteDesktopEffect *const m_effect;
     StateStore *const m_store;
     GroupStore m_groups;
     AreaStore m_areas;
@@ -264,4 +264,4 @@ private:
     std::unordered_map<KWin::EffectWindow *, CachedTexture> m_icons;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

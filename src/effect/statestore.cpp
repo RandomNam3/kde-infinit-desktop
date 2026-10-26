@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "statestore.h"
@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -58,7 +58,7 @@ QString StateStore::filePath()
 #else
     const QString base = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 #endif
-    return base + QStringLiteral("/kde-infinit-desktop/canvas.json");
+    return base + QStringLiteral("/kde-infinite-desktop/canvas.json");
 }
 
 QString StateStore::placementsFilePath()
@@ -75,7 +75,7 @@ QJsonObject StateStore::loadPlacements() const
     QJsonParseError error;
     const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        qCWarning(KWIN_INFINITDESKTOP) << "ignoring broken placements file" << placementsFilePath() << error.errorString();
+        qCWarning(KWIN_INFINITEDESKTOP) << "ignoring broken placements file" << placementsFilePath() << error.errorString();
         return QJsonObject();
     }
     return document.object();
@@ -87,7 +87,7 @@ void StateStore::savePlacements(const QJsonObject &placements) const
     QDir().mkpath(QFileInfo(path).absolutePath());
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        qCWarning(KWIN_INFINITDESKTOP) << "cannot write placements file" << path;
+        qCWarning(KWIN_INFINITEDESKTOP) << "cannot write placements file" << path;
         return;
     }
     file.write(QJsonDocument(placements).toJson(QJsonDocument::Compact));
@@ -105,7 +105,7 @@ QJsonObject StateStore::loadFile(const QString &fileName) const
     QJsonParseError error;
     const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        qCWarning(KWIN_INFINITDESKTOP) << "ignoring broken file" << path << error.errorString();
+        qCWarning(KWIN_INFINITEDESKTOP) << "ignoring broken file" << path << error.errorString();
         return QJsonObject();
     }
     return document.object();
@@ -117,7 +117,7 @@ void StateStore::saveFile(const QString &fileName, const QJsonObject &object) co
     QDir().mkpath(QFileInfo(path).absolutePath());
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        qCWarning(KWIN_INFINITDESKTOP) << "cannot write" << path;
+        qCWarning(KWIN_INFINITEDESKTOP) << "cannot write" << path;
         return;
     }
     file.write(QJsonDocument(object).toJson(QJsonDocument::Compact));
@@ -134,7 +134,7 @@ QHash<QString, StoredCanvas> StateStore::load() const
     QJsonParseError error;
     const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        qCWarning(KWIN_INFINITDESKTOP) << "ignoring broken state file" << filePath() << error.errorString();
+        qCWarning(KWIN_INFINITEDESKTOP) << "ignoring broken state file" << filePath() << error.errorString();
         return result;
     }
     const QJsonObject canvases = document.object().value(QStringLiteral("canvases")).toObject();
@@ -175,11 +175,11 @@ void StateStore::save(const QHash<QString, StoredCanvas> &canvases) const
     QDir().mkpath(QFileInfo(path).absolutePath());
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        qCWarning(KWIN_INFINITDESKTOP) << "cannot write state file" << path;
+        qCWarning(KWIN_INFINITEDESKTOP) << "cannot write state file" << path;
         return;
     }
     file.write(QJsonDocument(root).toJson(QJsonDocument::Compact));
     file.commit();
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

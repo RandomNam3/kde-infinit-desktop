@@ -1,11 +1,11 @@
 #!/usr/bin/make -f
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Build profiles (DEB_BUILD_PROFILES):
-#   pkg.kde-infinit-desktop.noeffect  without the KWin effect and its KCM
+#   pkg.kde-infinite-desktop.noeffect  without the KWin effect and its KCM
 #                                     (no kwin-dev needed, e.g. KWin < 6.8)
-#   pkg.kde-infinit-desktop.noapp     without the settings app
+#   pkg.kde-infinite-desktop.noapp     without the settings app
 #   nocheck                           do not build/run the unit tests
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
@@ -13,7 +13,7 @@ export QT_QPA_PLATFORM = offscreen
 
 CONFIGURE_FLAGS = -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
 
-ifneq (,$(filter pkg.kde-infinit-desktop.noeffect,$(DEB_BUILD_PROFILES)))
+ifneq (,$(filter pkg.kde-infinite-desktop.noeffect,$(DEB_BUILD_PROFILES)))
   CONFIGURE_FLAGS += -DBUILD_EFFECT=OFF -DBUILD_KCM=OFF
 else
   CONFIGURE_FLAGS += -DBUILD_EFFECT=ON -DBUILD_KCM=ON
@@ -25,7 +25,7 @@ else
   KWIN_UPSTREAM := $(shell echo '$(KWIN_DEB_VERSION)' | sed -E 's/-[^-]*$$//')
 endif
 
-ifneq (,$(filter pkg.kde-infinit-desktop.noapp,$(DEB_BUILD_PROFILES)))
+ifneq (,$(filter pkg.kde-infinite-desktop.noapp,$(DEB_BUILD_PROFILES)))
   CONFIGURE_FLAGS += -DBUILD_SETTINGS_APP=OFF
 else
   CONFIGURE_FLAGS += -DBUILD_SETTINGS_APP=ON
@@ -47,7 +47,7 @@ override_dh_install:
 	dh_install
 	# translations only exist once po/ has been added
 	if [ -d debian/tmp/usr/share/locale ]; then \
-		dh_install -pkde-infinit-desktop-data usr/share/locale; \
+		dh_install -pkde-infinite-desktop-data usr/share/locale; \
 	fi
 
 override_dh_gencontrol:

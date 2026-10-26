@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -9,7 +9,7 @@
 #include <QString>
 #include <QTimer>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /**
@@ -58,4 +58,4 @@ private:
     bool m_armed = false;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

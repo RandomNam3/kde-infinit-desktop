@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Build + unit tests on several distributions (in containers), a sanitizer
@@ -144,7 +144,7 @@ jobs:
         run: shellcheck -x install.sh build.sh scripts/*.sh scripts/dev/*.sh scripts/hooks/*.sh
       - name: Release notes for the project version (docs/releases/X.Y.Z.md)
         run: |
-          ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          ver=$(sed -n 's/^project(kde-infinite-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
           [ -s "docs/releases/$ver.md" ] || { echo "::error::docs/releases/$ver.md is missing: every version gets a release with notes"; exit 1; }
       - name: Scripts are executable in git
         run: |

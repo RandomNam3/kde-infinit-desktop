@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -18,7 +18,7 @@ class QDBusServiceWatcher;
 class QJSEngine;
 class QQmlEngine;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /**
@@ -122,4 +122,4 @@ private:
     KConfigWatcher::Ptr m_configWatcher;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

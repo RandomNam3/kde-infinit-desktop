@@ -3,9 +3,9 @@
 OUT=/out
 mkdir -p "$OUT"
 
-state() { qdbus6 org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.state; }
+state() { qdbus6 org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.state; }
 shot() { python3 /th/screenshot.py "$OUT/$1.png" ${2:-} 2>&1 | tail -1; }
-dbuscall() { local method=$1; shift; qdbus6 org.kde.KWin /InfinitDesktop "org.kde.InfinitDesktop.$method" "$@"; }
+dbuscall() { local method=$1; shift; qdbus6 org.kde.KWin /InfiniteDesktop "org.kde.InfiniteDesktop.$method" "$@"; }
 input() { /usr/local/bin/kid-input "$@"; }
 win() { state | jq -c ".windows[] | select(.caption | test(\"$1\")) | {caption, mode, parked, canvasX, canvasY, frame}"; }
 canvases() { state | jq -c '.canvases[] | select(.current) | {key, camera, committed, navigation}'; }

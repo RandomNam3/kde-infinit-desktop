@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -19,13 +19,13 @@ class KConfigSkeletonItem;
 class QJSEngine;
 class QQmlEngine;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 struct SettingsEntryMeta;
 
 /**
- * All entries of infinitdesktop.kcfg as a list model.
+ * All entries of infinitedesktop.kcfg as a list model.
  *
  * Changes are applied live: the item is updated immediately, the skeleton is
  * saved (with KConfig::Notify) after a short debounce and the effect is asked
@@ -215,4 +215,4 @@ public:
     Q_INVOKABLE QStringList ids() const;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

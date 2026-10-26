@@ -1,13 +1,13 @@
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# KDE Infinit Desktop for NixOS / nixpkgs.
+# KDE Infinite Desktop for NixOS / nixpkgs.
 #
 #   nix-build packaging/nix                 # build from this source tree
 #
 # NixOS configuration (Plasma 6, nixpkgs with KWin >= 6.8):
 #
-#   environment.systemPackages = [ (pkgs.callPackage /path/to/kde-infinit-desktop/packaging/nix { }) ];
+#   environment.systemPackages = [ (pkgs.callPackage /path/to/kde-infinite-desktop/packaging/nix { }) ];
 #
 # KWin finds the effect through the system profile's Qt plugin path. Because
 # nixpkgs rebuilds every dependent package when kwin changes, the plugin always
@@ -61,8 +61,8 @@ pkgs.kdePackages.callPackage (
     gettext,
   }:
   stdenv.mkDerivation {
-    pname = "kde-infinit-desktop";
-    version = "0.5.1";
+    pname = "kde-infinite-desktop";
+    version = "0.6.0";
     inherit src;
 
     nativeBuildInputs = [
@@ -108,7 +108,7 @@ pkgs.kdePackages.callPackage (
 
     meta = {
       description = "Turns every monitor into an infinite pannable and zoomable canvas (KWin effect)";
-      homepage = "https://github.com/RandomNam3/kde-infinit-desktop";
+      homepage = "https://github.com/RandomNam3/kde-infinite-desktop";
       license = lib.licenses.gpl3Plus;
       platforms = lib.platforms.linux;
     };

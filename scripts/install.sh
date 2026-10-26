@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# KDE Infinit Desktop - one-command installer
-# ("If it runs KDE Plasma, it runs KDE Infinit Desktop").
+# KDE Infinite Desktop - one-command installer
+# ("If it runs KDE Plasma, it runs KDE Infinite Desktop").
 #
 #   ./install.sh  or  ./scripts/install.sh    (from the source tree)
-#   curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/install.sh | bash
 #                                             (downloads the sources itself)
 #
 #  1. detects the distribution (/etc/os-release: ID and ID_LIKE)
@@ -14,7 +14,7 @@
 #  3. installs the build dependencies with the native package manager
 #     (asks first, unless --yes)
 #  4. builds out of tree in a temporary directory, installs with sudo
-#  5. keeps a copy of the sources in /usr/src/kde-infinit-desktop-<version>
+#  5. keeps a copy of the sources in /usr/src/kde-infinite-desktop-<version>
 #     and installs a package manager hook (pacman, apt, dnf, zypper, apk) that
 #     rebuilds the plugin automatically after every KWin update - KWin only
 #     loads plugins built for exactly its version (MAJOR.MINOR.PATCH)
@@ -26,12 +26,12 @@
 set -eu
 set -o pipefail
 
-readonly PROJECT=kde-infinit-desktop
-readonly EFFECT_ID=infinitdesktop
+readonly PROJECT=kde-infinite-desktop
+readonly EFFECT_ID=infinitedesktop
 readonly KWIN_MIN=6.8
-readonly AUTOSTART_FILE=/etc/xdg/autostart/kde-infinit-desktop-kwin-check.desktop
+readonly AUTOSTART_FILE=/etc/xdg/autostart/kde-infinite-desktop-kwin-check.desktop
 # Sources for "curl ... | bash" (branch main; override with --source-url).
-readonly DEFAULT_SOURCE_URL=https://github.com/RandomNam3/kde-infinit-desktop/archive/refs/heads/main.tar.gz
+readonly DEFAULT_SOURCE_URL=https://github.com/RandomNam3/kde-infinite-desktop/archive/refs/heads/main.tar.gz
 
 if ! SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-.}")" 2>/dev/null && pwd -P); then
     SCRIPT_DIR=$(pwd -P)
@@ -68,7 +68,7 @@ usage() {
     cat <<EOF
 Usage: install.sh [OPTIONS]
 
-Builds KDE Infinit Desktop from source, installs it, enables the effect and
+Builds KDE Infinite Desktop from source, installs it, enables the effect and
 sets up the automatic rebuild after KWin updates.
 
 Options:
@@ -600,14 +600,14 @@ install_deps() {
 
 # ------------------------------------------------------- source handling --
 is_source_tree() {
-    [ -r "$1/CMakeLists.txt" ] && grep -q '^project(kde-infinit-desktop' "$1/CMakeLists.txt"
+    [ -r "$1/CMakeLists.txt" ] && grep -q '^project(kde-infinite-desktop' "$1/CMakeLists.txt"
 }
 
 TMP_SOURCE=''
 resolve_source() {
     if [ -n "$SOURCE_ARG" ]; then
         SOURCE_DIR=$(cd -- "$SOURCE_ARG" && pwd -P) || die "--source: $SOURCE_ARG not found"
-        is_source_tree "$SOURCE_DIR" || die "$SOURCE_DIR is not a KDE Infinit Desktop source tree"
+        is_source_tree "$SOURCE_DIR" || die "$SOURCE_DIR is not a KDE Infinite Desktop source tree"
         return 0
     fi
     if is_source_tree "$SCRIPT_DIR/.."; then
@@ -629,12 +629,12 @@ resolve_source() {
     else
         die "neither curl nor wget found"
     fi
-    is_source_tree "$TMP_SOURCE" || die "the download does not contain the KDE Infinit Desktop sources"
+    is_source_tree "$TMP_SOURCE" || die "the download does not contain the KDE Infinite Desktop sources"
     SOURCE_DIR=$TMP_SOURCE
 }
 
 project_version() {
-    sed -n 's/^project(kde-infinit-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$SOURCE_DIR/CMakeLists.txt" 2>/dev/null | head -n1
+    sed -n 's/^project(kde-infinite-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$SOURCE_DIR/CMakeLists.txt" 2>/dev/null | head -n1
 }
 
 # Keep a copy of the sources for the automatic rebuild (like DKMS).
@@ -719,13 +719,13 @@ running_plugin_version() {
     local q
     for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
         if have "$q"; then
-            "$q" org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.version 2>/dev/null
+            "$q" org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.version 2>/dev/null
             return
         fi
     done
     if have gdbus; then
-        gdbus call --session --dest org.kde.KWin --object-path /InfinitDesktop \
-            --method org.kde.InfinitDesktop.version 2>/dev/null | sed -n "s/^('\(.*\)',)\$/\1/p"
+        gdbus call --session --dest org.kde.KWin --object-path /InfiniteDesktop \
+            --method org.kde.InfiniteDesktop.version 2>/dev/null | sed -n "s/^('\(.*\)',)\$/\1/p"
         return
     fi
     return 127
@@ -785,6 +785,144 @@ enable_effect() {
     fi
 }
 
+# ----------------------------------------- the old name (up to 0.5.1) --
+# Up to version 0.5.1 the project was called "KDE Infinit Desktop" (plugin id
+# "infinitdesktop"). Its settings are taken over for the user and its files are
+# removed, so the old and the new plugin never run side by side. Notes, canvases
+# and the app settings move to the new folders when the new version first starts.
+readonly LEGACY_PROJECT=kde-infinit-desktop
+readonly LEGACY_EFFECT_ID=infinitdesktop
+
+kreadconfig() {
+    local k
+    for k in kreadconfig6 /usr/lib/kf6/bin/kreadconfig6 /usr/lib64/kf6/bin/kreadconfig6; do
+        if have "$k"; then
+            "$k" "$@"
+            return
+        fi
+    done
+    return 127
+}
+
+# legacy_packages: installed distribution packages of the old name, one per line
+legacy_packages() {
+    local p
+    # shellcheck disable=SC2016 # ${Status} is a dpkg-query format, not a shell expansion
+    if have dpkg-query; then
+        for p in kde-infinit-desktop kwin-effect-infinitdesktop kde-infinit-desktop-settings kde-infinit-desktop-data; do
+            if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q 'ok installed'; then printf '%s\n' "$p"; fi
+        done
+    elif have pacman; then
+        for p in kde-infinit-desktop kde-infinit-desktop-git; do
+            if pacman -Qq "$p" >/dev/null 2>&1; then printf '%s\n' "$p"; fi
+        done
+    elif have apk; then
+        if apk info -e "$LEGACY_PROJECT" >/dev/null 2>&1; then printf '%s\n' "$LEGACY_PROJECT"; fi
+    elif have rpm; then
+        for p in kde-infinit-desktop kde-infinit-desktop-settings; do
+            if rpm -q "$p" >/dev/null 2>&1; then printf '%s\n' "$p"; fi
+        done
+    fi
+    if compgen -G "/var/db/pkg/kde-misc/$LEGACY_PROJECT-[0-9]*" >/dev/null 2>&1; then
+        printf '%s\n' "kde-misc/$LEGACY_PROJECT"
+    fi
+    return 0
+}
+
+remove_legacy_packages() {
+    local pkgs=("$@")
+    if have apt-get && have dpkg-query; then
+        run_root apt-get remove -y "${pkgs[@]}"
+    elif have pacman; then
+        run_root pacman -R --noconfirm "${pkgs[@]}"
+    elif have emerge && [[ ${pkgs[0]} == */* ]]; then
+        run_root emerge --unmerge "${pkgs[@]}"
+    elif have apk; then
+        run_root apk del "${pkgs[@]}"
+    elif have dnf5 || have dnf; then
+        run_root "$(have dnf5 && echo dnf5 || echo dnf)" remove -y "${pkgs[@]}"
+    elif have zypper; then
+        run_root zypper --non-interactive remove "${pkgs[@]}"
+    elif have rpm; then
+        run_root rpm -e "${pkgs[@]}"
+    else
+        return 1
+    fi
+}
+
+# Copy [Effect-infinitdesktop] to [Effect-infinitedesktop] and the enabled
+# state, unless the new name has settings already (the plugin does the same at
+# its first start; this runs before the old plugin is switched off).
+migrate_legacy_config() {
+    local cfg="${XDG_CONFIG_HOME:-$HOME/.config}/kwinrc" old_enabled new_enabled lines
+    if [ -r "$cfg" ] && grep -q "^\[Effect-$LEGACY_EFFECT_ID\]" "$cfg" && ! grep -q "^\[Effect-$EFFECT_ID\]" "$cfg"; then
+        info "Taking over the settings of KDE Infinit Desktop ([Effect-$LEGACY_EFFECT_ID] in kwinrc)"
+        lines=$(awk -v group="[Effect-$LEGACY_EFFECT_ID]" '
+            $0 == group { inside = 1; next }
+            /^\[/ { inside = 0 }
+            inside && NF { print }' "$cfg")
+        print_cmd "append [Effect-$EFFECT_ID] to $cfg"
+        if [ "$DRY_RUN" -eq 0 ] && [ -n "$lines" ]; then
+            printf '\n[Effect-%s]\n%s\n' "$EFFECT_ID" "$lines" >>"$cfg"
+        fi
+    fi
+    old_enabled=$(kreadconfig --file kwinrc --group Plugins --key "${LEGACY_EFFECT_ID}Enabled" 2>/dev/null || true)
+    new_enabled=$(kreadconfig --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" 2>/dev/null || true)
+    if [ -n "$old_enabled" ] && [ -z "$new_enabled" ]; then
+        print_cmd kwriteconfig6 --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" "$old_enabled"
+        [ "$DRY_RUN" -eq 1 ] || kwriteconfig --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" "$old_enabled" || true
+    fi
+}
+
+# quit_legacy_companion: the notes app of the old name keeps its icon until
+# logout otherwise. Only if it runs (a call would start it by D-Bus activation).
+quit_legacy_companion() {
+    local q service=org.kde.InfinitDesktop.Companion
+    for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
+        if have "$q"; then
+            if "$q" 2>/dev/null | grep -qx " *$service"; then
+                print_cmd "$q" "$service" /Companion "$service.quit"
+                [ "$DRY_RUN" -eq 1 ] || "$q" "$service" /Companion "$service.quit" >/dev/null 2>&1 || true
+            fi
+            return 0
+        fi
+    done
+}
+
+migrate_legacy_install() {
+    local pkgs=() p prefixes=() uninstall_args=(--legacy --yes)
+    mapfile -t pkgs < <(legacy_packages)
+    for p in "$PREFIX" /usr /usr/local; do
+        if [ -r "$p/share/$LEGACY_PROJECT/install_manifest.txt" ] || [ -r "$p/share/$LEGACY_PROJECT/install-info" ]; then
+            case " ${prefixes[*]} " in *" $p "*) ;; *) prefixes+=("$p") ;; esac
+        fi
+    done
+    if [ "${#pkgs[@]}" -eq 0 ] && [ "${#prefixes[@]}" -eq 0 ] && ! compgen -G "/usr/src/$LEGACY_PROJECT-*" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    info "Found KDE Infinit Desktop (the name up to 0.5.1): taking over its settings, removing its files"
+    if [ "$IS_ROOT" -eq 0 ]; then
+        migrate_legacy_config
+        quit_legacy_companion
+    fi
+    if [ "${#pkgs[@]}" -gt 0 ]; then
+        confirm "Remove the packages of the old name (${pkgs[*]})?" || die "aborted"
+        remove_legacy_packages "${pkgs[@]}" || warn "could not remove ${pkgs[*]} - remove them with your package manager"
+    fi
+    [ "$DRY_RUN" -eq 1 ] && uninstall_args+=(--dry-run)
+    for p in "${prefixes[@]}"; do
+        if [ -d "$p/share/$LEGACY_PROJECT" ]; then
+            bash "$SOURCE_DIR/scripts/uninstall.sh" "${uninstall_args[@]}" --prefix "$p" ||
+                warn "could not remove everything of KDE Infinit Desktop in $p"
+        fi
+    done
+    # copies of the sources the old automatic rebuild used
+    for p in /usr/src/"$LEGACY_PROJECT"-*; do
+        if [ -d "$p" ]; then run_root rm -rf -- "$p"; fi
+    done
+}
+
 # ------------------------------------------------------ install metadata --
 read_install_info() {
     # read_install_info FILE: load prefix/options of a previous installation
@@ -822,29 +960,29 @@ select_hook() {
     case $FAMILY in
         arch)
             HOOK_SRC=pacman.hook
-            HOOK_DEST=/etc/pacman.d/hooks/kde-infinit-desktop.hook
+            HOOK_DEST=/etc/pacman.d/hooks/kde-infinite-desktop.hook
             ;;
         debian)
             HOOK_SRC=apt.conf
-            HOOK_DEST=/etc/apt/apt.conf.d/99kde-infinit-desktop
+            HOOK_DEST=/etc/apt/apt.conf.d/99kde-infinite-desktop
             ;;
         fedora | rhel | rpm-generic)
             if dnf_is_dnf5; then
                 HOOK_SRC=dnf5.actions
-                HOOK_DEST=/etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions
+                HOOK_DEST=/etc/dnf/libdnf5-plugins/actions.d/kde-infinite-desktop.actions
             else
                 HOOK_SRC=dnf4.action
-                HOOK_DEST=/etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action
+                HOOK_DEST=/etc/dnf/plugins/post-transaction-actions.d/kde-infinite-desktop.action
             fi
             ;;
         suse)
             HOOK_SRC=zypp-commit-plugin.sh
-            HOOK_DEST=/usr/lib/zypp/plugins/commit/kde-infinit-desktop
+            HOOK_DEST=/usr/lib/zypp/plugins/commit/kde-infinite-desktop
             HOOK_MODE_BITS=0755
             ;;
         alpine)
             HOOK_SRC=apk-commit-hook.sh
-            HOOK_DEST=/etc/apk/commit_hooks.d/kde-infinit-desktop.post-commit
+            HOOK_DEST=/etc/apk/commit_hooks.d/kde-infinite-desktop.post-commit
             HOOK_MODE_BITS=0755
             ;;
     esac
@@ -877,10 +1015,10 @@ install_helpers() {
         cat >"$tmp" <<EOF
 [Desktop Entry]
 Type=Application
-Name=KDE Infinit Desktop: KWin update check
-Comment=Rebuilds KDE Infinit Desktop for a new KWin version if the automatic rebuild did not run
+Name=KDE Infinite Desktop: KWin update check
+Comment=Rebuilds KDE Infinite Desktop for a new KWin version if the automatic rebuild did not run
 Exec=$libdir/check-kwin-update.sh --notify --offer-rebuild --quiet
-Icon=org.kde.infinitdesktop
+Icon=org.kde.infinitedesktop
 OnlyShowIn=KDE;
 NoDisplay=true
 X-KDE-autostart-phase=2
@@ -956,7 +1094,7 @@ main() {
     detect_family || FAMILY=unknown
 
     if [ "$HOOK_MODE" -eq 0 ]; then
-        info "KDE Infinit Desktop installer - ${OS_NAME:-unknown system} (family: $FAMILY)"
+        info "KDE Infinite Desktop installer - ${OS_NAME:-unknown system} (family: $FAMILY)"
         [ "$DRY_RUN" -eq 1 ] && info "dry run: nothing will be changed"
     fi
 
@@ -967,7 +1105,7 @@ main() {
         if [ "$FORCE" -eq 0 ]; then
             die "this system has a read-only /usr (Fedora Kinoite/Atomic, SteamOS, openSUSE Kalpa, ...).
 A from-source install into /usr is not possible. Build an RPM with ./build.sh --package and
-layer it (rpm-ostree install ./dist/kde-infinit-desktop-*.rpm), see docs/INSTALL.md."
+layer it (rpm-ostree install ./dist/kde-infinite-desktop-*.rpm), see docs/INSTALL.md."
         fi
         warn "read-only /usr detected, continuing because of --force"
     fi
@@ -1001,13 +1139,13 @@ layer it (rpm-ostree install ./dist/kde-infinit-desktop-*.rpm), see docs/INSTALL
     if [ "$DEPS_ONLY" -eq 0 ] && [ "$HOOK_MODE" -eq 0 ]; then
         if [ -z "$kwin_version" ]; then
             if [ "$FORCE" -eq 0 ] && [ "$DRY_RUN" -eq 0 ] && [ "$WITH_EFFECT" = ON ] && [ "$INSTALL_DEPS" -eq 0 ]; then
-                die "KWin is not installed. KDE Infinit Desktop is a KWin plugin and needs KDE Plasma >= ${KWIN_MIN} (Wayland)."
+                die "KWin is not installed. KDE Infinite Desktop is a KWin plugin and needs KDE Plasma >= ${KWIN_MIN} (Wayland)."
             fi
             warn "could not determine the installed KWin version (is KDE Plasma installed?)"
         else
             info "Installed KWin: $kwin_version"
             if ! version_ge "$kwin_version" "$KWIN_MIN"; then
-                msg="KWin $kwin_version is too old - KDE Infinit Desktop needs KWin/Plasma >= ${KWIN_MIN}.
+                msg="KWin $kwin_version is too old - KDE Infinite Desktop needs KWin/Plasma >= ${KWIN_MIN}.
 See the version table in docs/INSTALL.md (KDE neon, Arch/CachyOS, openSUSE Tumbleweed,
 Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
                 if [ "$FORCE" -eq 1 ] || [ "$WITH_EFFECT" = OFF ] || [ "$DRY_RUN" -eq 1 ]; then
@@ -1019,7 +1157,7 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
         fi
         case $SESSION_TYPE in
             wayland) ok "Wayland session" ;;
-            x11) warn "you are running an X11 session. KDE Infinit Desktop targets Plasma on Wayland - log into 'Plasma (Wayland)' to use it." ;;
+            x11) warn "you are running an X11 session. KDE Infinite Desktop targets Plasma on Wayland - log into 'Plasma (Wayland)' to use it." ;;
             *) warn "no graphical session detected (SSH/container?) - the effect will be enabled for the next login" ;;
         esac
     fi
@@ -1073,7 +1211,7 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
     fi
 
     # --- install ---
-    confirm "Install KDE Infinit Desktop to $PREFIX (and the KWin plugin into the Qt plugin directory)?" || die "aborted"
+    confirm "Install KDE Infinite Desktop to $PREFIX (and the KWin plugin into the Qt plugin directory)?" || die "aborted"
     info "Installing"
     run_root cmake --install "$BUILD_DIR"
 
@@ -1117,6 +1255,9 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
         return 0
     fi
 
+    # --- the old name (KDE Infinit Desktop, up to 0.5.1) ---
+    migrate_legacy_install
+
     # --- enable ---
     if [ "$ENABLE_EFFECT" -eq 1 ] && [ "$WITH_EFFECT" = ON ]; then
         if [ "$IS_ROOT" -eq 1 ]; then
@@ -1135,15 +1276,15 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
     if [ "$RELOGIN_NEEDED" -eq 1 ]; then
         echo "  * Log out and back in: KWin only loads the new build at login"
     fi
-    echo "  * Configure: System Settings > Window Management > Desktop Effects > KDE Infinit Desktop"
+    echo "  * Configure: System Settings > Window Management > Desktop Effects > KDE Infinite Desktop"
     if [ "$WITH_APP" = ON ]; then
-        echo "    or run: kde-infinit-desktop-settings"
+        echo "    or run: kde-infinite-desktop-settings"
     fi
     echo "  * Enable/disable: same place, or"
     echo "      kwriteconfig6 --file kwinrc --group Plugins --key ${EFFECT_ID}Enabled true|false --notify"
     if [ "$AUTO_REBUILD" -eq 1 ] && [ -n "$HOOK_DEST" ]; then
         echo "  * KWin updates: the plugin is rebuilt automatically ($HOOK_DEST);"
-        echo "    log out and back in after a Plasma update. Log: /var/log/kde-infinit-desktop-rebuild.log"
+        echo "    log out and back in after a Plasma update. Log: /var/log/kde-infinite-desktop-rebuild.log"
     else
         echo "  * After a KWin/Plasma update run:  sudo $libdir/kwin-update-hook.sh"
     fi

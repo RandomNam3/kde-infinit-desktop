@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -16,12 +16,12 @@ class QDBusMessage;
 class QJSEngine;
 class QQmlEngine;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /**
  * Groups, areas and notes of the canvas, for the "Notes & Groups" page
- * (org.kde.InfinitDesktop.groups/setGroups/areas/setAreas, and the companion app).
+ * (org.kde.InfiniteDesktop.groups/setGroups/areas/setAreas, and the companion app).
  *
  * @c groups is a list of maps: id, name, slot (1-based shortcut slot), automatic,
  * openWindows and members (list of maps: appKey, launch, name, iconName, hasIcon).
@@ -111,4 +111,4 @@ private:
     int m_noteCount = 0;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

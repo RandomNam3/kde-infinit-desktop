@@ -1,13 +1,13 @@
 [Desktop Entry]
 Type=Application
-Name=KDE Infinit Desktop
-Name[de]=KDE Infinit Desktop
+Name=KDE Infinite Desktop
+Name[de]=KDE Infinite Desktop
 GenericName=Infinite Canvas Settings
 GenericName[de]=Einstellungen der unendlichen Arbeitsfläche
 Comment=Configure the infinite, pannable and zoomable desktop canvas
 Comment[de]=Die unendliche, verschieb- und zoombare Arbeitsfläche einrichten
-Exec=kde-infinit-desktop-settings
-Icon=org.kde.infinitdesktop
+Exec=kde-infinite-desktop-settings
+Icon=org.kde.infinitedesktop
 Terminal=false
 StartupNotify=true
 Categories=Settings;DesktopSettings;Qt;KDE;

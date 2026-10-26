@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Every version gets its tag (vX.Y.Z) and its GitHub release, which the update
@@ -52,7 +52,7 @@ jobs:
       - name: Version, tag and notes
         id: version
         run: |
-          ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          ver=$(sed -n 's/^project(kde-infinite-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
           [ -n "$ver" ] || { echo "::error::no project version in CMakeLists.txt"; exit 1; }
           tag="v$ver"
           if [ "$GITHUB_REF_TYPE" = tag ] && [ "$GITHUB_REF_NAME" != "$tag" ]; then
@@ -76,7 +76,7 @@ jobs:
           fi
           if [ ! -s notes.md ]; then
             echo "::warning::no release notes in docs/releases/$ver.md"
-            echo "KDE Infinit Desktop $ver" > notes.md
+            echo "KDE Infinite Desktop $ver" > notes.md
           fi
 
       - name: Create the tag
@@ -89,7 +89,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          { echo "KDE Infinit Desktop ${TAG#v}"; echo; cat notes.md; } > tag-message.md
+          { echo "KDE Infinite Desktop ${TAG#v}"; echo; cat notes.md; } > tag-message.md
           git tag -a --cleanup=verbatim -F tag-message.md "$TAG" HEAD
           git push origin "refs/tags/$TAG"
 
@@ -102,5 +102,5 @@ jobs:
             gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
           else
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag \
-              --title "KDE Infinit Desktop ${TAG#v}" --notes-file notes.md
+              --title "KDE Infinite Desktop ${TAG#v}" --notes-file notes.md
           fi

@@ -1,11 +1,11 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "settingsmodel.h"
 
-#include "infinitdesktopconfig.h"
+#include "infinitedesktopconfig.h"
 #include "searchutil.h"
 #include "settingsmeta.h"
 
@@ -25,15 +25,15 @@
 
 #include <algorithm>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
 {
 
 constexpr int ApplyDelayMs = 120;
-const QString s_effectId = QStringLiteral("infinitdesktop");
-const QString s_configGroup = QStringLiteral("Effect-infinitdesktop");
+const QString s_effectId = QStringLiteral("infinitedesktop");
+const QString s_configGroup = QStringLiteral("Effect-infinitedesktop");
 
 SettingsModel *s_settingsInstance = nullptr;
 CategoryModel *s_categoryInstance = nullptr;
@@ -115,8 +115,8 @@ QVariant unwrap(const QVariant &value)
 SettingsModel::SettingsModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    InfinitDesktopConfig::instance(KSharedConfig::openConfig(QStringLiteral("kwinrc")));
-    InfinitDesktopConfig *config = InfinitDesktopConfig::self();
+    InfiniteDesktopConfig::instance(KSharedConfig::openConfig(QStringLiteral("kwinrc")));
+    InfiniteDesktopConfig *config = InfiniteDesktopConfig::self();
 
     const auto items = config->items();
     for (KConfigSkeletonItem *item : items) {
@@ -534,7 +534,7 @@ void SettingsModel::flush()
 
 void SettingsModel::apply()
 {
-    InfinitDesktopConfig::self()->save();
+    InfiniteDesktopConfig::self()->save();
 
     QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"),
                                                           QStringLiteral("/Effects"),
@@ -555,7 +555,7 @@ void SettingsModel::configChangedExternally(const KConfigGroup &group, const QBy
         // Our own pending change wins.
         return;
     }
-    KConfig *config = InfinitDesktopConfig::self()->config();
+    KConfig *config = InfiniteDesktopConfig::self()->config();
     config->reparseConfiguration();
     for (int row = 0; row < m_entries.size(); ++row) {
         KConfigSkeletonItem *item = m_entries.at(row).item;
@@ -754,4 +754,4 @@ QStringList CategoryModel::ids() const
     return result;
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

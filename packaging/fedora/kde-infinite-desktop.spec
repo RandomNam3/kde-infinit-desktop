@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Fedora (and RHEL / AlmaLinux / Rocky Linux 10 with EPEL + CRB, "EPEL KDE").
 #
 #   ./build.sh --package                          (from the source tree)
-#   rpmbuild -ba kde-infinit-desktop.spec         (tarball in SOURCES)
+#   rpmbuild -ba kde-infinite-desktop.spec         (tarball in SOURCES)
 #   rpmbuild -ba --without effect ...             (KWin < 6.8: only the app)
 #
 # KWin only loads plugins built for exactly its version (the plugin IID
@@ -28,12 +28,12 @@
 %endif
 %endif
 
-Name:           kde-infinit-desktop
-Version:        0.5.1
+Name:           kde-infinite-desktop
+Version:        0.6.0
 Release:        1%{?kwin_tag}%{?dist}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
-URL:            https://github.com/RandomNam3/kde-infinit-desktop
+URL:            https://github.com/RandomNam3/kde-infinite-desktop
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc-c++
@@ -85,13 +85,16 @@ Requires:       kwin%{?_isa} = %{kwin_version}
 %else
 Requires:       kwin%{?_isa} >= 6.8
 %endif
+# Up to 0.5.1 the package was called kde-infinit-desktop.
+Obsoletes:      kde-infinit-desktop < 0.6.0
+Provides:       kde-infinit-desktop = %{version}-%{release}
 %endif
 %if %{with app}
 Recommends:     %{name}-settings = %{version}-%{release}
 %endif
 
 %description
-KDE Infinit Desktop turns every monitor into an infinite canvas: windows are
+KDE Infinite Desktop turns every monitor into an infinite canvas: windows are
 placed on a plane that can be panned and zoomed freely with the mouse, the
 touchpad, a touchscreen or the keyboard. It is an effect for KWin, the
 compositor of KDE Plasma 6 on Wayland, plus a System Settings module.
@@ -101,13 +104,15 @@ KWin update.
 
 %if %{with app}
 %package settings
-Summary:        Settings app for KDE Infinit Desktop
+Summary:        Settings app for KDE Infinite Desktop
+Obsoletes:      kde-infinit-desktop-settings < 0.6.0
+Provides:       kde-infinit-desktop-settings = %{version}-%{release}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       qt6-qtdeclarative%{?_isa}
 Requires:       qt6-qtsvg%{?_isa}
 
 %description settings
-Standalone settings app (kde-infinit-desktop-settings) for KDE Infinit
+Standalone settings app (kde-infinite-desktop-settings) for KDE Infinite
 Desktop, the infinite canvas for KDE Plasma.
 %endif
 
@@ -127,8 +132,8 @@ Desktop, the infinite canvas for KDE Plasma.
 %cmake_install
 # Translations (po/) are optional while the project is young; without them give
 # "%files -f" a (harmless, duplicate) entry, an empty file list is an error.
-%find_lang kwin_infinitdesktop || :
-[ -s kwin_infinitdesktop.lang ] || echo '%{_datadir}/config.kcfg/infinitdesktop.kcfg' > kwin_infinitdesktop.lang
+%find_lang kwin_infinitedesktop || :
+[ -s kwin_infinitedesktop.lang ] || echo '%{_datadir}/config.kcfg/infinitedesktop.kcfg' > kwin_infinitedesktop.lang
 
 %check
 %if %{with tests}
@@ -136,54 +141,57 @@ export QT_QPA_PLATFORM=offscreen
 %ctest
 %endif
 %if %{with app}
-desktop-file-validate %{buildroot}%{_datadir}/applications/kde-infinit-desktop-settings.desktop
-desktop-file-validate %{buildroot}%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
-appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
+desktop-file-validate %{buildroot}%{_datadir}/applications/kde-infinite-desktop-settings.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/org.kde.infinitedesktop.companion.desktop
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infinitedesktop.metainfo.xml
 %endif
 
-%files -f kwin_infinitdesktop.lang
-%{_datadir}/config.kcfg/infinitdesktop.kcfg
-%{_datadir}/dbus-1/interfaces/org.kde.InfinitDesktop.xml
+%files -f kwin_infinitedesktop.lang
+%{_datadir}/config.kcfg/infinitedesktop.kcfg
+%{_datadir}/dbus-1/interfaces/org.kde.InfiniteDesktop.xml
 %if %{with effect}
-%{_kf6_qtplugindir}/kwin/effects/plugins/infinitdesktop.so
-%{_kf6_qtplugindir}/kwin/effects/configs/kwin_infinitdesktop_config.so
-%dir %{_datadir}/kde-infinit-desktop
-%{_datadir}/kde-infinit-desktop/built-for-kwin
+%{_kf6_qtplugindir}/kwin/effects/plugins/infinitedesktop.so
+%{_kf6_qtplugindir}/kwin/effects/configs/kwin_infinitedesktop_config.so
+%dir %{_datadir}/kde-infinite-desktop
+%{_datadir}/kde-infinite-desktop/built-for-kwin
 %endif
 
 %if %{with app}
 %files settings
-%{_bindir}/kde-infinit-desktop-settings
-%{_datadir}/applications/kde-infinit-desktop-settings.desktop
-%{_bindir}/kde-infinit-desktop-companion
-%{_datadir}/applications/org.kde.infinitdesktop.companion.desktop
-%{_datadir}/dbus-1/services/org.kde.InfinitDesktop.Companion.service
-%{_sysconfdir}/xdg/autostart/org.kde.infinitdesktop.companion.desktop
-%{_datadir}/icons/hicolor/*/apps/org.kde.infinitdesktop.*
-%{_metainfodir}/org.kde.infinitdesktop.metainfo.xml
+%{_bindir}/kde-infinite-desktop-settings
+%{_datadir}/applications/kde-infinite-desktop-settings.desktop
+%{_bindir}/kde-infinite-desktop-companion
+%{_datadir}/applications/org.kde.infinitedesktop.companion.desktop
+%{_datadir}/dbus-1/services/org.kde.InfiniteDesktop.Companion.service
+%{_sysconfdir}/xdg/autostart/org.kde.infinitedesktop.companion.desktop
+%{_datadir}/icons/hicolor/*/apps/org.kde.infinitedesktop.*
+%{_metainfodir}/org.kde.infinitedesktop.metainfo.xml
 %endif
 
 %changelog
-* Sun Oct 25 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.5.1-1
+* Mon Oct 26 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.6.0-1
+- Update to 0.6.0: new name KDE Infinite Desktop (was KDE Infinit Desktop)
+
+* Sun Oct 25 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.5.1-1
 - Update to 0.5.1
 
-* Sun Oct 25 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.5.0-1
+* Sun Oct 25 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.5.0-1
 - Update to 0.5.0
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.4.2-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.4.2-1
 - Update to 0.4.2
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.4.1-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.4.1-1
 - Update to 0.4.1
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.4.0-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.4.0-1
 - Update to 0.4.0
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.3.0-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.3.0-1
 - Update to 0.3.0
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.2.0-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.2.0-1
 - Update to 0.2.0
 
-* Sat Oct 24 2026 KDE Infinit Desktop contributors <maintainers@kde-infinit-desktop.invalid> - 0.1.0-1
+* Sat Oct 24 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.1.0-1
 - Initial package

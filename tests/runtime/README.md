@@ -1,7 +1,7 @@
 # Laufzeit-Tests in einer echten KWin-Sitzung
 
 Diese Tests starten KWin selbst (`kwin_wayland --virtual`, OpenGL ES per Mesa llvmpipe) in einem Container,
-laden KDE Infinit Desktop, öffnen Wayland- und X11-Testfenster und steuern alles mit echten Eingaben.
+laden KDE Infinite Desktop, öffnen Wayland- und X11-Testfenster und steuern alles mit echten Eingaben.
 Die Eingaben laufen über KWins Fake-Input-Protokoll (`kid-input`). Geprüft wird über den D-Bus-Zustand
 des Plugins und über Screenshots (`org.kde.KWin.ScreenShot2`).
 

@@ -1,6 +1,6 @@
 # Interaktive Demo
 
-Startet eine vollständige **Plasma-6-Wayland-Sitzung** in einem Container: KWin mit KDE Infinit Desktop,
+Startet eine vollständige **Plasma-6-Wayland-Sitzung** in einem Container: KWin mit KDE Infinite Desktop,
 plasmashell (Hintergrund, Taskleiste, Startmenü), Konsole, Dolphin, Kate, die Einstellungs-App. Du öffnest
 sie per Remotedesktop (KRdp). Der aktuelle Quellcode des Projekts wird beim Start im Container gebaut.
 
@@ -16,7 +16,7 @@ Gedacht zum Ausprobieren ohne eigenes Plasma-System und für schnelle Tests wäh
 ```
 
 Eine Anmeldung ist nicht nötig. Das Skript schreibt die Verbindungsdatei
-`%TEMP%\kde-infinit-desktop-demo.rdp` und öffnet sie. Die Datei sorgt für zwei Dinge:
+`%TEMP%\kde-infinite-desktop-demo.rdp` und öffnet sie. Die Datei sorgt für zwei Dinge:
 - Sie nutzt TLS ohne NLA. So kommt die Verbindung ohne NTLM aus, das unter Windows oft
   deaktiviert ist (Fehler „…da die NTLM-Authentifizierung deaktiviert wurde“).
 - Tastenkürzel mit der Windows-Taste (Meta) gehen an Plasma.
@@ -53,7 +53,7 @@ Benutzername `root`, das Passwort ist beliebig. Es wird keine Anmeldung geprüft
   Änderungen daran gelten deshalb beim nächsten Start ohne Neubau des Images.
 - Diagnose:
   - `podman exec kid-demo tail -f /tmp/kwin.log`
-  - `podman exec kid-demo bash -c '. /tmp/demo-env; qdbus6 org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.state'`
+  - `podman exec kid-demo bash -c '. /tmp/demo-env; qdbus6 org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.state'`
 
 Einschränkungen: Touchpad-Gesten (Wischen, Pinch) überträgt RDP nicht. Software-Rendering ist langsamer
 als echte Hardware.

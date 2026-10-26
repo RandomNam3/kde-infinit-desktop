@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "effectstatus.h"
@@ -19,7 +19,7 @@
 #include <QJSEngine>
 #include <QRegularExpression>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -27,15 +27,15 @@ namespace
 
 EffectStatus *s_statusInstance = nullptr;
 
-const QString s_effectId = QStringLiteral("infinitdesktop");
+const QString s_effectId = QStringLiteral("infinitedesktop");
 const QString s_kwinService = QStringLiteral("org.kde.KWin");
 const QString s_effectsPath = QStringLiteral("/Effects");
 const QString s_effectsInterface = QStringLiteral("org.kde.kwin.Effects");
-const QString s_pluginPath = QStringLiteral("/InfinitDesktop");
-const QString s_pluginInterface = QStringLiteral("org.kde.InfinitDesktop");
+const QString s_pluginPath = QStringLiteral("/InfiniteDesktop");
+const QString s_pluginInterface = QStringLiteral("org.kde.InfiniteDesktop");
 const QString s_propertiesInterface = QStringLiteral("org.freedesktop.DBus.Properties");
 const QString s_pluginsGroup = QStringLiteral("Plugins");
-const QString s_enabledKey = QStringLiteral("infinitdesktopEnabled");
+const QString s_enabledKey = QStringLiteral("infinitedesktopEnabled");
 
 constexpr int PollIntervalMs = 5000;
 
@@ -160,7 +160,7 @@ QString EffectStatus::kwinVersion() const
 
 QString EffectStatus::appVersion() const
 {
-    return QStringLiteral(INFINITDESKTOP_VERSION_STRING);
+    return QStringLiteral(INFINITEDESKTOP_VERSION_STRING);
 }
 
 bool EffectStatus::configEnabled(bool *hasKey) const
@@ -391,4 +391,4 @@ void EffectStatus::setDemoState(const QString &state)
     Q_EMIT changed();
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

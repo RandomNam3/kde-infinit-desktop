@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Update check on the start page: newer versions with their release notes. The
@@ -6,7 +6,7 @@
 // plugin after logging out and back in.
 import QtQuick
 import QtQuick.Layouts
-import InfinitDesktop.Settings
+import InfiniteDesktop.Settings
 
 Card {
     id: card

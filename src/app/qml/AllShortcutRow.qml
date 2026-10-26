@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // One global shortcut of any application (GlobalShortcutsFilter delegate).
 // Rows of one application are drawn as one continuous card.
 import QtQuick
 import QtQuick.Layouts
-import InfinitDesktop.Settings
+import InfiniteDesktop.Settings
 
 Item {
     id: row
@@ -136,7 +136,7 @@ Item {
                             UiText {
                                 id: badgeText
                                 anchors.centerIn: parent
-                                text: i18nc("@label badge for actions of this plugin", "Infinit Desktop")
+                                text: i18nc("@label badge for actions of this plugin", "Infinite Desktop")
                                 color: Theme.accentText
                                 font.pointSize: Theme.fontCaption
                                 font.weight: Font.DemiBold

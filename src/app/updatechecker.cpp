@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "updatechecker.h"
@@ -24,7 +24,7 @@
 
 #include <algorithm>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -32,7 +32,7 @@ namespace
 
 UpdateChecker *s_updateInstance = nullptr;
 
-const QString s_repository = QStringLiteral("RandomNam3/kde-infinit-desktop");
+const QString s_repository = QStringLiteral("RandomNam3/kde-infinite-desktop");
 const QString s_configGroup = QStringLiteral("Updates");
 const QString s_checkOnStartKey = QStringLiteral("CheckOnStart");
 constexpr int TimeoutMs = 15000;
@@ -85,7 +85,7 @@ QString UpdateChecker::status() const
 
 QString UpdateChecker::currentVersion() const
 {
-    return QStringLiteral(INFINITDESKTOP_VERSION_STRING);
+    return QStringLiteral(INFINITEDESKTOP_VERSION_STRING);
 }
 
 QString UpdateChecker::latestVersion() const
@@ -155,7 +155,7 @@ void UpdateChecker::check()
     QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/%1/releases?per_page=30").arg(s_repository)));
     request.setRawHeader("Accept", "application/vnd.github+json");
     request.setRawHeader("X-GitHub-Api-Version", "2022-11-28");
-    request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("kde-infinit-desktop-settings/%1").arg(currentVersion()));
+    request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("kde-infinite-desktop-settings/%1").arg(currentVersion()));
     request.setTransferTimeout(TimeoutMs);
     QNetworkReply *reply = m_network->get(request);
     m_reply = reply;
@@ -284,4 +284,4 @@ void UpdateChecker::setStatus(const QString &status)
     Q_EMIT changed();
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

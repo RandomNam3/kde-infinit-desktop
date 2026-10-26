@@ -1,4 +1,4 @@
-# KDE Infinit Desktop – Technische Dokumentation
+# KDE Infinite Desktop – Technische Dokumentation
 
 Dieses Dokument beschreibt Aufbau, Datenmodell und die wichtigsten Designentscheidungen. Es richtet sich an
 Entwickler, Paketierer und alle, die Fehler analysieren wollen. Zielplattform ist **KWin 6.8** (Plasma 6.8,
@@ -11,7 +11,7 @@ Wayland); alle Aussagen zur KWin-API beziehen sich auf den Quellcode von KWin 6.
 ```
 ┌──────────────────────────── kwin_wayland (ein Prozess) ─────────────────────────────┐
 │                                                                                     │
-│   KWin-Kern ──signals──▶ InfinitDesktopEffect (KWin::Effect)                        │
+│   KWin-Kern ──signals──▶ InfiniteDesktopEffect (KWin::Effect)                        │
 │      ▲  │                   │  Fensterverwaltung, Kamera, Commit/Parken,            │
 │      │  │                   │  Zeichnen (paintWindow/paintScreen), Tastenkürzel     │
 │      │  │                   ├── CanvasInputFilter (KWin::InputEventFilter)          │
@@ -20,19 +20,19 @@ Wayland); alle Aussagen zur KWin-API beziehen sich auf den Quellcode von KWin 6.
 │      │  │                   ├── LauncherPositioner Startmenü an Mausposition        │
 │      │  │                   ├── CrashGuard         abgesicherter Modus              │
 │      │  │                   ├── StateStore         JSON-Dateien im State-Verzeichnis│
-│      │  │                   └── DBusInterface      org.kde.InfinitDesktop           │
+│      │  │                   └── DBusInterface      org.kde.InfiniteDesktop           │
 │      │  ▼                                                                           │
 │   Window::move()  …  Szene/Renderer  …  Eingabe-Filterkette                         │
 └─────────────────────────────────────────────────────────────────────────────────────┘
-        ▲ D-Bus (reconfigureEffect, org.kde.InfinitDesktop)            ▲ kwinrc
+        ▲ D-Bus (reconfigureEffect, org.kde.InfiniteDesktop)            ▲ kwinrc
         │                                                              │
- kde-infinit-desktop-settings (Qt Quick, eigener Prozess)    System-Settings-Modul (KCM)
+ kde-infinite-desktop-settings (Qt Quick, eigener Prozess)    System-Settings-Modul (KCM)
 ```
 
 | Verzeichnis | Inhalt | Abhängigkeiten |
 |---|---|---|
 | `src/core/` | reine Logik: Kamera, Animationen, Geschwindigkeitsmessung, Park-Positionen, Navigation, Fensterplatz-Gedächtnis, Gruppen, Bereiche, Notizplätze, Karte | nur Qt Core – vollständig unit-getestet, gemeinsam mit der Windows-Version |
-| `src/shared/` | Einstellungs-Schema (`infinitdesktop.kcfg`), UI-Metadaten, Tastenkürzel-Tabelle, D-Bus-XML | KConfig, KI18n |
+| `src/shared/` | Einstellungs-Schema (`infinitedesktop.kcfg`), UI-Metadaten, Tastenkürzel-Tabelle, D-Bus-XML | KConfig, KI18n |
 | `src/effect/` | das KWin-Plugin | KWin::kwin (+ Kern, Shared) |
 | `src/kcm/` | Modul für die Systemeinstellungen | KCMUtils, XmlGui |
 | `src/app/` | Einstellungs-App (Qt Quick, eigenes Design) | Qt Quick, KConfig, KGlobalAccel |
@@ -398,17 +398,38 @@ Dateien werden beim Laden validiert: unendliche oder riesige Werte werden verwor
 
 | Datei | Inhalt |
 |---|---|
-| `~/.config/kwinrc` `[Effect-infinitdesktop]` | Einstellungen (Schema: `src/shared/infinitdesktop.kcfg`) |
-| `~/.config/kwinrc` `[Plugins] infinitdesktopEnabled` | an/aus – KWin beobachtet die Datei und lädt live |
-| `$XDG_STATE_HOME/kde-infinit-desktop/canvas.json` | Kameras und Lesezeichen je Canvas (nie gezoomt wiederhergestellt) |
-| `$XDG_STATE_HOME/kde-infinit-desktop/placements.json` | Fensterplatz-Gedächtnis |
-| `$XDG_STATE_HOME/kde-infinit-desktop/crashguard` | Zähler des Crash-Guards |
-| `/usr/share/kde-infinit-desktop/built-for-kwin` | KWin-Version, gegen die gebaut wurde (Neubau-Erkennung) |
+| `~/.config/kwinrc` `[Effect-infinitedesktop]` | Einstellungen (Schema: `src/shared/infinitedesktop.kcfg`) |
+| `~/.config/kwinrc` `[Plugins] infinitedesktopEnabled` | an/aus – KWin beobachtet die Datei und lädt live |
+| `$XDG_STATE_HOME/kde-infinite-desktop/canvas.json` | Kameras und Lesezeichen je Canvas (nie gezoomt wiederhergestellt) |
+| `$XDG_STATE_HOME/kde-infinite-desktop/placements.json` | Fensterplatz-Gedächtnis |
+| `$XDG_STATE_HOME/kde-infinite-desktop/crashguard` | Zähler des Crash-Guards |
+| `/usr/share/kde-infinite-desktop/built-for-kwin` | KWin-Version, gegen die gebaut wurde (Neubau-Erkennung) |
 
 Einstellungen wirken live:
-- Die App speichert und ruft `org.kde.kwin.Effects.reconfigureEffect("infinitdesktop")` auf.
+- Die App speichert und ruft `org.kde.kwin.Effects.reconfigureEffect("infinitedesktop")` auf.
 - Zusätzlich beobachtet der Effect `kwinrc` mit `KConfigWatcher` (z.B. für
   `kwriteconfig6 --notify`).
+
+### Übernahme vom alten Namen (bis 0.5.1 „KDE Infinit Desktop“)
+
+`src/shared/legacymigration.cpp` übernimmt einmalig, was die alten Versionen unter dem alten Namen
+gespeichert haben. Effect, KCM, Einstellungs-App und Notiz-App rufen es beim Start auf, bevor sie
+etwas lesen; wer zuerst startet, erledigt es:
+- `migrateConfig()`: `[Effect-infinitdesktop]` wird nach `[Effect-infinitedesktop]` kopiert, wenn die
+  neue Gruppe leer ist; `[Plugins] infinitdesktopEnabled` wird nach `infinitedesktopEnabled` übernommen,
+  der alte Schlüssel auf `false` gesetzt (nie laufen beide Plugins).
+- `migrateUserFiles()`: `kde-infinit-desktop/` (Zustand, Notizen) und `kde-infinit-desktop-*rc` in den
+  Zustands-, Daten- und Konfigurationsordnern werden umbenannt, solange am neuen Ort nichts liegt.
+- Tastenkürzel: Der Effect liest beim ersten Start die Tasten der alten Aktionen
+  (`InfinitDesktop ZoomIn`, …) aus KGlobalAccel, gibt sie den neuen Aktionen und entfernt die alten;
+  die Marke `LegacyShortcutsMigrated` in `[Effect-infinitedesktop]` verhindert eine Wiederholung.
+- War der Effect nur unter dem alten Schlüssel eingeschaltet (Paket-Update), lädt die Notiz-App ihn nach
+  der Übernahme per `loadEffect`.
+
+`scripts/install.sh` kopiert die kwinrc-Gruppe ebenfalls und entfernt danach eine alte Installation: Pakete
+der alten Namen mit dem Paketmanager, eine Installation von `scripts/install.sh` mit
+`scripts/uninstall.sh --legacy` (Manifest, Hooks der automatischen Neuerstellung, `/usr/src`-Kopie,
+Anmelde-Prüfung). Die Pakete ersetzen die alten (`Conflicts`/`Replaces`, `Obsoletes`, `replaces`, Blocker).
 
 ## 9. Stabilität
 
@@ -446,8 +467,8 @@ sicher abfangen. Die Strategie hat deshalb drei Stufen.
 
 ## 11. D-Bus-Schnittstelle
 
-Dienst `org.kde.KWin`, Objekt `/InfinitDesktop`, Schnittstelle `org.kde.InfinitDesktop`
-(`src/shared/org.kde.InfinitDesktop.xml`):
+Dienst `org.kde.KWin`, Objekt `/InfiniteDesktop`, Schnittstelle `org.kde.InfiniteDesktop`
+(`src/shared/org.kde.InfiniteDesktop.xml`):
 
 | Mitglied | Zweck |
 |---|---|
@@ -458,7 +479,7 @@ Dienst `org.kde.KWin`, Objekt `/InfinitDesktop`, Schnittstelle `org.kde.InfinitD
 | `setCamera(x,y,zoom)` | Kamera direkt setzen: Mitte in Flächenkoordinaten und Zoom (für Skripte, Tests und `tools/docs-media`) |
 | `windowPlacements()`, `forgetWindowPlacements()`, `forgetApplicationPlacements(app)` | Fensterplatz-Gedächtnis: lesen, alles bzw. ein Programm vergessen |
 
-Zusätzlich: `qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.debug infinitdesktop ""` liefert ebenfalls
+Zusätzlich: `qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.debug infinitedesktop ""` liefert ebenfalls
 den Zustand.
 
 ## 12. Tests
@@ -470,7 +491,7 @@ Schema, Metadaten und Kürzeltabelle.
 **Laufzeit-Tests** in einer echten, virtuellen KWin-Sitzung im Container:
 - `kwin_wayland --virtual`, OpenGL ES über llvmpipe auf dem vgem-Render-Node.
 - Eingaben über KWins Fake-Input-Protokoll, Screenshots über `org.kde.KWin.ScreenShot2`, Zustand über
-  `org.kde.InfinitDesktop.state`.
+  `org.kde.InfiniteDesktop.state`.
 
 Geprüft werden:
 - Pannen, Parken, Zurückholen, Zoom und Navigationsmodus.
@@ -565,7 +586,7 @@ verschachtelten der kleinste). `updateAreas()` setzt die Größe aus den Fenster
 (`AreaPadding`). Größenänderungen der Programme selbst werden pro Fläche gesammelt und einmal pro
 Ereignisschleife verrechnet.
 
-**Notizen:** Die Notizen sind Fenster der Begleit-App (`org.kde.infinitdesktop.companion`, App-ID =
+**Notizen:** Die Notizen sind Fenster der Begleit-App (`org.kde.infinitedesktop.companion`, App-ID =
 Desktop-Datei).
 - Vor jedem Zeigen ruft die App `expectNote(id)` auf und wartet kurz auf die Antwort (500 ms). Erst dann
   zeigt sie das Fenster; die Ankündigung ist also da, bevor KWin es meldet.
@@ -576,11 +597,11 @@ Desktop-Datei).
 - Startet KWin oder der Effekt neu, kennt er die offenen Notizfenster nicht. Er ruft dann
   `reannounceNotes` auf, ohne die App zu starten. Die App zeigt ihre Fenster neu und kündigt sie dabei an.
 
-**Begleit-App** (`src/companion`): D-Bus-Dienst `org.kde.InfinitDesktop.Companion` auf `/Companion`.
+**Begleit-App** (`src/companion`): D-Bus-Dienst `org.kde.InfiniteDesktop.Companion` auf `/Companion`.
 - **Methoden:** `newNote`, `toggleNotes`, `setNotesVisible`, `reannounceNotes`, `notes`, `quit`.
 - **Start:** über D-Bus-Aktivierung (`.service`-Datei) oder Autostart. Ein zweiter Start reicht
   `--new-note` an die laufende App weiter.
-- **Speicher:** `~/.local/share/kde-infinit-desktop/notes/<id>.md` und `index.json` (Farbe, Größe,
+- **Speicher:** `~/.local/share/kde-infinite-desktop/notes/<id>.md` und `index.json` (Farbe, Größe,
   ausgeblendet, formatiert). Gespeichert wird 600 ms nach der letzten Änderung, atomar per `QSaveFile`.
   Ids sind geprüfte UUIDs, weil sie in Dateinamen stehen.
 - **Notizfenster** (`qml/NoteWindow.qml`, gleich wie in der Windows-Version bis auf die Fensterart):
@@ -614,12 +635,12 @@ Bereiche werden in der Canvas-Ebene gezeichnet, also über dem Hintergrund und u
 `ShowAreas = Always` halten sie den Effekt aktiv, aber nur wenn es auf der Fläche Bereiche gibt und kein
 Vollbild-Fenster den Bildschirm sperrt. Spiele behalten so Direct Scanout.
 
-**D-Bus-Erweiterung von `org.kde.InfinitDesktop`:**
+**D-Bus-Erweiterung von `org.kde.InfiniteDesktop`:**
 - Notizen: `expectNote`, `noteState`, `setNotePinned`, `forgetNote`, `retainNotes`, `newNote`.
 - Gruppen: `groups`, `setGroups`, `openGroup`, `saveGroupLayout`, `newGroupFromSelection`.
 - Bereiche: `areas`, `setAreas`, `newAreaFromSelection`.
 - Karte: `showMap`.
 - Signale: `groupsChanged`, `areasChanged`, `notePinnedChanged`.
 
-Das JSON-Format steht in `src/shared/org.kde.InfinitDesktop.xml`. `groups.json`, `areas.json` und
+Das JSON-Format steht in `src/shared/org.kde.InfiniteDesktop.xml`. `groups.json`, `areas.json` und
 `notes.json` liegen neben `canvas.json` und werden beim Laden geprüft wie alle anderen Dateien.

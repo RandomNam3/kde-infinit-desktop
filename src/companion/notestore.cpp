@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "notestore.h"
@@ -19,7 +19,7 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -142,7 +142,7 @@ NoteStore::~NoteStore()
 
 QString NoteStore::directory()
 {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kde-infinit-desktop/notes");
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kde-infinite-desktop/notes");
 }
 
 bool NoteStore::isValidId(const QString &id)
@@ -311,4 +311,4 @@ void NoteStore::setNotesVisible(bool visible)
     }
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

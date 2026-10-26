@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Slider with a value bubble above the handle and a tick at the default value.

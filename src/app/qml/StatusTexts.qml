@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Titles, explanations and colors for the states of EffectStatus.
 pragma Singleton
 
 import QtQuick
-import InfinitDesktop.Settings
+import InfiniteDesktop.Settings
 
 QtObject {
     function title(state) {
@@ -41,10 +41,10 @@ QtObject {
             return i18n("KWin crashed several times in a row while the plugin was active, so it was started in safe mode and stays inactive. Leave safe mode to use the canvas again.");
         case "loadfailed":
             return Effect.kwinVersion.length > 0
-                ? i18n("KWin %1 could not load the plugin. This usually happens after a KWin update: rebuild and reinstall KDE Infinit Desktop for this KWin version, then log out and back in.", Effect.kwinVersion)
-                : i18n("KWin could not load the plugin. This usually happens after a KWin update: rebuild and reinstall KDE Infinit Desktop for this KWin version, then log out and back in.");
+                ? i18n("KWin %1 could not load the plugin. This usually happens after a KWin update: rebuild and reinstall KDE Infinite Desktop for this KWin version, then log out and back in.", Effect.kwinVersion)
+                : i18n("KWin could not load the plugin. This usually happens after a KWin update: rebuild and reinstall KDE Infinite Desktop for this KWin version, then log out and back in.");
         case "notinstalled":
-            return i18n("KWin does not know the plugin. Install the KDE Infinit Desktop KWin effect, then log out and back in.");
+            return i18n("KWin does not know the plugin. Install the KDE Infinite Desktop KWin effect, then log out and back in.");
         case "nokwin":
             return i18n("KWin cannot be reached. Your settings are still saved and take effect in the next Plasma Wayland session.");
         default:

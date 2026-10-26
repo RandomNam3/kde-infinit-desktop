@@ -1,10 +1,10 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "organizer.h"
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 #include "inputfilter.h"
 #include "logging.h"
 #include "navigation.h"
@@ -48,7 +48,7 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -69,7 +69,7 @@ constexpr int MaxLabels = 256;
 constexpr qreal MapWheelStep = 1.15;
 
 const QString CompanionPath = QStringLiteral("/Companion");
-const QString CompanionInterface = QStringLiteral("org.kde.InfinitDesktop.Companion");
+const QString CompanionInterface = QStringLiteral("org.kde.InfiniteDesktop.Companion");
 
 // Pastel colors for areas, readable on light and dark wallpapers alike.
 const QColor AreaColors[AreaStore::Colors] = {
@@ -195,7 +195,7 @@ std::optional<QJsonObject> parseObject(const QString &json)
 
 } // namespace
 
-Organizer::Organizer(InfinitDesktopEffect *effect, StateStore *store)
+Organizer::Organizer(InfiniteDesktopEffect *effect, StateStore *store)
     : m_effect(effect)
     , m_store(store)
 {
@@ -373,7 +373,7 @@ bool Organizer::placeNewWindow(ManagedWindow &window)
             window.canvasPos = launch.target.topLeft();
             m_effect->placeWindow(window, *canvas, target);
         }
-        qCDebug(KWIN_INFINITDESKTOP) << "placed" << window.appKey << "in group" << launch.groupId << "at" << launch.target;
+        qCDebug(KWIN_INFINITEDESKTOP) << "placed" << window.appKey << "in group" << launch.groupId << "at" << launch.target;
         return true;
     }
     return false;
@@ -388,7 +388,7 @@ void Organizer::windowClosed(ManagedWindow &window)
             const QRectF frame = toQRectF(window.effectWindow->frameGeometry());
             NotePlacement placement;
             placement.id = window.noteId;
-            placement.output = InfinitDesktopEffect::identityOf(output);
+            placement.output = InfiniteDesktopEffect::identityOf(output);
             placement.desktopId = canvas ? canvas->desktopId : QString();
             placement.pinned = window.userPinned;
             placement.keepAbove = window.effectWindow->keepAbove();
@@ -447,7 +447,7 @@ void Organizer::windowArranged(ManagedWindow &window)
                 followWindows(group, rects);
             }
             if (KWin::LogicalOutput *output = m_effect->outputOf(*canvas)) {
-                group.output = InfinitDesktopEffect::identityOf(output);
+                group.output = InfiniteDesktopEffect::identityOf(output);
             }
             group.desktopId = canvas->desktopId;
             m_groups.update(group);
@@ -511,7 +511,7 @@ bool Organizer::areaBelongsTo(const Area &area, const Canvas &canvas) const
         return false;
     }
     KWin::LogicalOutput *output = m_effect->outputOf(canvas);
-    return output && outputMatchScore(area.output, InfinitDesktopEffect::identityOf(output)) > 0;
+    return output && outputMatchScore(area.output, InfiniteDesktopEffect::identityOf(output)) > 0;
 }
 
 QList<Area> Organizer::areasOf(const Canvas &canvas) const
@@ -568,7 +568,7 @@ void Organizer::createAreaFromRect(const QRectF &canvasRect, Canvas &canvas)
     }
     Area area;
     area.name = m_areas.nextName(i18nc("@item name of a new area, %1 is a number", "Area %1", QStringLiteral("%1")));
-    area.output = InfinitDesktopEffect::identityOf(output);
+    area.output = InfiniteDesktopEffect::identityOf(output);
     area.desktopId = canvas.desktopId;
     area.drawnRect = canvasRect;
     area.dynamic = true;
@@ -714,7 +714,7 @@ void Organizer::fillMissingGeometry(Group &group, Canvas &canvas)
         // A new group without a place yet: in the middle of the view.
         const QRectF visible = m_effect->targetCamera(canvas).visibleCanvasRect(rectOf(output));
         group.origin = visible.center() - group.layoutBounds().center();
-        group.output = InfinitDesktopEffect::identityOf(output);
+        group.output = InfiniteDesktopEffect::identityOf(output);
         group.desktopId = canvas.desktopId;
     }
     m_groups.update(group);
@@ -822,7 +822,7 @@ void Organizer::openGroup(const QString &id)
     } else {
         m_effect->flashMessage(i18n("Group “%1”", group.name), QStringLiteral("window-duplicate"));
     }
-    qCDebug(KWIN_INFINITDESKTOP) << "opened group" << group.name << "moved" << plan.moves.size() << "started" << started;
+    qCDebug(KWIN_INFINITEDESKTOP) << "opened group" << group.name << "moved" << plan.moves.size() << "started" << started;
 }
 
 void Organizer::revealGroup(const Group &group, Canvas &canvas)
@@ -863,7 +863,7 @@ bool Organizer::launch(const QString &desktopFile)
     if (!QStandardPaths::findExecutable(QStringLiteral("gtk-launch")).isEmpty()) {
         return QProcess::startDetached(QStringLiteral("gtk-launch"), {name});
     }
-    qCWarning(KWIN_INFINITDESKTOP) << "cannot start" << name << "(neither kstart nor gtk-launch found)";
+    qCWarning(KWIN_INFINITEDESKTOP) << "cannot start" << name << "(neither kstart nor gtk-launch found)";
     return false;
 }
 
@@ -889,7 +889,7 @@ void Organizer::createGroupFromRect(const QRectF &canvasRect, Canvas &canvas)
     }
     Group group;
     group.name = m_groups.nextName(i18nc("@item name of a new group, %1 is a number", "Group %1", QStringLiteral("%1")));
-    group.output = InfinitDesktopEffect::identityOf(output);
+    group.output = InfiniteDesktopEffect::identityOf(output);
     group.desktopId = canvas.desktopId;
     group.layoutMode = m_effect->settings().groupLayoutAutomatic ? GroupLayoutMode::Automatic : GroupLayoutMode::Manual;
     QList<QRectF> memberRects;
@@ -979,7 +979,7 @@ void Organizer::toggleNotes()
 
 void Organizer::openSettings()
 {
-    QProcess::startDetached(QStringLiteral("kde-infinit-desktop-settings"), {QStringLiteral("--page"), QStringLiteral("organize")});
+    QProcess::startDetached(QStringLiteral("kde-infinite-desktop-settings"), {QStringLiteral("--page"), QStringLiteral("organize")});
 }
 
 void Organizer::expectNote(const QString &id)
@@ -1147,7 +1147,7 @@ QList<Organizer::MenuItem> Organizer::menuItems() const
             items.append(MenuItem{QStringLiteral("zoom-reset"), i18nc("@action canvas menu", "Zoom to 100 %")});
         }
     }
-    items.append(MenuItem{QStringLiteral("settings"), i18nc("@action canvas menu", "Infinit Desktop Settings…")});
+    items.append(MenuItem{QStringLiteral("settings"), i18nc("@action canvas menu", "Infinite Desktop Settings…")});
     return items;
 }
 
@@ -1787,6 +1787,6 @@ void Organizer::paintOverlay(const KWin::RenderTarget &renderTarget, const KWin:
     Q_UNUSED(scale)
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
 
 #include "moc_organizer.cpp"

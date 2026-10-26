@@ -1,4 +1,4 @@
-# Copyright 2026 KDE Infinit Desktop contributors
+# Copyright 2026 KDE Infinite Desktop contributors
 # Distributed under the terms of the GNU General Public License v3 or later
 
 EAPI=8
@@ -9,10 +9,10 @@ QTMIN=6.8.0
 inherit ecm git-r3
 
 DESCRIPTION="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect)"
-HOMEPAGE="https://github.com/RandomNam3/kde-infinit-desktop"
+HOMEPAGE="https://github.com/RandomNam3/kde-infinite-desktop"
 # To build from a local clone set (e.g. in /etc/portage/make.conf)
-#   EGIT_OVERRIDE_REPO_RANDOMNAM3_KDE_INFINIT_DESKTOP=file:///path/to/clone
-EGIT_REPO_URI="https://github.com/RandomNam3/kde-infinit-desktop.git"
+#   EGIT_OVERRIDE_REPO_RANDOMNAM3_KDE_INFINITE_DESKTOP=file:///path/to/clone
+EGIT_REPO_URI="https://github.com/RandomNam3/kde-infinite-desktop.git"
 
 LICENSE="GPL-3+"
 SLOT="0"
@@ -43,7 +43,10 @@ DEPEND="
 		>=dev-qt/qtsvg-${QTMIN}:6
 	)
 "
-RDEPEND="${DEPEND}"
+# Up to 0.5.1 the package was called kde-misc/kde-infinit-desktop.
+RDEPEND="${DEPEND}
+	!kde-misc/kde-infinit-desktop
+"
 BDEPEND="
 	dev-util/vulkan-headers
 	sys-devel/gettext
@@ -67,10 +70,10 @@ pkg_postinst() {
 	ecm_pkg_postinst
 	local kwin_ver
 	kwin_ver=$(best_version kde-plasma/kwin)
-	elog "KDE Infinit Desktop was built for ${kwin_ver#kde-plasma/}."
+	elog "KDE Infinite Desktop was built for ${kwin_ver#kde-plasma/}."
 	elog "KWin only loads plugins built for exactly its version: after every"
 	elog "kde-plasma/kwin update run"
-	elog "    emerge --oneshot kde-misc/kde-infinit-desktop"
+	elog "    emerge --oneshot kde-misc/kde-infinite-desktop"
 	elog "and log out and back in. Enable the effect in System Settings >"
 	elog "Window Management > Desktop Effects."
 }

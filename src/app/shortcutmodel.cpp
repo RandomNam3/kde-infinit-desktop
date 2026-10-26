@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "shortcutmodel.h"
@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -36,7 +36,7 @@ const QString s_kglobalaccelService = QStringLiteral("org.kde.kglobalaccel");
 
 QString stripPrefix(const QString &text)
 {
-    // "Infinit Desktop: Zoom In" is good in KWin's global shortcut list, but
+    // "Infinite Desktop: Zoom In" is good in KWin's global shortcut list, but
     // redundant inside our own app.
     const int colon = text.indexOf(QLatin1String(": "));
     if (colon > 0 && colon <= 24) {
@@ -488,7 +488,7 @@ QVariantList ShortcutModel::conflicts(const QString &id, const QString &sequence
         if (entry.id != id && entry.current.contains(sequence)) {
             result.append(QVariantMap{
                 {QStringLiteral("action"), entry.title},
-                {QStringLiteral("component"), i18nc("@label name of this plugin", "Infinit Desktop")},
+                {QStringLiteral("component"), i18nc("@label name of this plugin", "Infinite Desktop")},
                 {QStringLiteral("own"), true},
             });
         }
@@ -775,4 +775,4 @@ bool ShortcutFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
     return SearchUtil::matches(index.data(ShortcutModel::SearchTextRole).toString(), m_terms);
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

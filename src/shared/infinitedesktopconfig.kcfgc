@@ -1,0 +1,10 @@
+File=infinitedesktop.kcfg
+ClassName=InfiniteDesktopConfig
+NameSpace=InfiniteDesktop
+Singleton=true
+Mutators=true
+ItemAccessors=true
+DefaultValueGetters=true
+SetUserTexts=true
+TranslationSystem=kde
+TranslationDomain=kwin_infinitedesktop

@@ -1,11 +1,15 @@
-# KDE Infinit Desktop installieren
+# KDE Infinite Desktop installieren
 
-> „Wenn es KDE Plasma ausführt, läuft auch KDE Infinit Desktop.“
+> „Wenn es KDE Plasma ausführt, läuft auch KDE Infinite Desktop.“
 
-KDE Infinit Desktop ist ein Effekt-Plugin für **KWin**, den Compositor von
+KDE Infinite Desktop ist ein Effekt-Plugin für **KWin**, den Compositor von
 KDE Plasma 6. Er macht jeden Monitor zu einer unendlichen Arbeitsfläche, die
 man verschieben und zoomen kann. Dazu gehören ein Modul für die
 Systemeinstellungen und eine eigene Einstellungs-App.
+
+Bis Version 0.5.1 hieß das Projekt „KDE Infinit Desktop“. Der Installer entfernt die Installation unter dem
+alten Namen (Dateien, Pakete, automatische Neuerstellung) und übernimmt die Einstellungen; Notizen und
+Arbeitsflächen holt das Plugin beim ersten Start an den neuen Ort.
 
 **Voraussetzungen**
 
@@ -33,7 +37,7 @@ Systemeinstellungen und eine eigene Einstellungs-App.
 
 ## 1. Schnellstart: ein Befehl
 
-Im Quellverzeichnis (`git clone https://github.com/RandomNam3/kde-infinit-desktop.git`), als **normaler Benutzer** (nicht mit `sudo` – das Skript
+Im Quellverzeichnis (`git clone https://github.com/RandomNam3/kde-infinite-desktop.git`), als **normaler Benutzer** (nicht mit `sudo` – das Skript
 fragt selbst nach dem Passwort, wenn es Root-Rechte braucht):
 
 ```sh
@@ -46,9 +50,9 @@ ist: `bash install.sh`.)
 Oder ganz ohne vorherigen Download (lädt den Branch `main` herunter):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/install.sh | bash
 # mit Optionen:
-curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash -s -- --yes
+curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/install.sh | bash -s -- --yes
 ```
 
 Der Installer
@@ -58,7 +62,7 @@ Der Installer
 3. zeigt die fehlenden Build-Abhängigkeiten an und installiert sie nach
    Rückfrage mit dem Paketmanager der Distribution,
 4. baut in einem temporären Verzeichnis und installiert mit `sudo`,
-5. legt eine Kopie des Quellcodes in `/usr/src/kde-infinit-desktop-<version>`
+5. legt eine Kopie des Quellcodes in `/usr/src/kde-infinite-desktop-<version>`
    ab und richtet den **automatischen Neubau nach KWin-Updates** ein,
 6. aktiviert den Effekt in der laufenden Sitzung. War schon eine ältere Version
    geladen, behält die laufende KWin-Instanz diese im Speicher. Der Installer
@@ -126,7 +130,7 @@ stürzt nichts ab, der Effekt ist einfach weg, bis er neu gebaut wurde.
 Darum
 
 - merkt sich jede Installation, für welche KWin-Version sie gebaut wurde:
-  `/usr/share/kde-infinit-desktop/built-for-kwin`,
+  `/usr/share/kde-infinite-desktop/built-for-kwin`,
 - richtet `scripts/install.sh` einen Hook im Paketmanager ein, der nach einem
   KWin-Update automatisch neu baut (siehe [Abschnitt 9](#9-nach-kwin-updates)),
 - hängen die fertigen Pakete (`.deb`, `.rpm`, Arch-Binärpaket) von genau der
@@ -167,15 +171,15 @@ Darum
 
 | Datei | Zweck |
 |---|---|
-| `<Qt-Plugin-Verzeichnis>/kwin/effects/plugins/infinitdesktop.so` | der Effekt (z. B. `/usr/lib/x86_64-linux-gnu/qt6/plugins/…` auf Debian/neon, `/usr/lib/qt6/plugins/…` auf Arch, `/usr/lib64/qt6/plugins/…` auf Fedora/openSUSE) |
-| `<Qt-Plugin-Verzeichnis>/kwin/effects/configs/kwin_infinitdesktop_config.so` | Modul für die Systemeinstellungen |
-| `/usr/bin/kde-infinit-desktop-settings`, `/usr/share/applications/kde-infinit-desktop-settings.desktop`, `/usr/share/icons/hicolor/*/apps/org.kde.infinitdesktop.{svg,png}` | Einstellungs-App |
-| `/usr/share/config.kcfg/infinitdesktop.kcfg`, `/usr/share/dbus-1/interfaces/org.kde.InfinitDesktop.xml`, `/usr/share/metainfo/org.kde.infinitdesktop.metainfo.xml` | Einstellungsschema, D-Bus-Schnittstelle, AppStream-Daten |
-| `/usr/share/kde-infinit-desktop/` | `built-for-kwin`, `install-info`, `install_manifest.txt` |
-| `/usr/lib/kde-infinit-desktop/` | `check-kwin-update.sh`, `kwin-update-hook.sh`, `uninstall.sh` |
-| `/usr/src/kde-infinit-desktop-<version>/` | Quellcode für den automatischen Neubau (ca. 1 MB) |
+| `<Qt-Plugin-Verzeichnis>/kwin/effects/plugins/infinitedesktop.so` | der Effekt (z. B. `/usr/lib/x86_64-linux-gnu/qt6/plugins/…` auf Debian/neon, `/usr/lib/qt6/plugins/…` auf Arch, `/usr/lib64/qt6/plugins/…` auf Fedora/openSUSE) |
+| `<Qt-Plugin-Verzeichnis>/kwin/effects/configs/kwin_infinitedesktop_config.so` | Modul für die Systemeinstellungen |
+| `/usr/bin/kde-infinite-desktop-settings`, `/usr/share/applications/kde-infinite-desktop-settings.desktop`, `/usr/share/icons/hicolor/*/apps/org.kde.infinitedesktop.{svg,png}` | Einstellungs-App |
+| `/usr/share/config.kcfg/infinitedesktop.kcfg`, `/usr/share/dbus-1/interfaces/org.kde.InfiniteDesktop.xml`, `/usr/share/metainfo/org.kde.infinitedesktop.metainfo.xml` | Einstellungsschema, D-Bus-Schnittstelle, AppStream-Daten |
+| `/usr/share/kde-infinite-desktop/` | `built-for-kwin`, `install-info`, `install_manifest.txt` |
+| `/usr/lib/kde-infinite-desktop/` | `check-kwin-update.sh`, `kwin-update-hook.sh`, `uninstall.sh` |
+| `/usr/src/kde-infinite-desktop-<version>/` | Quellcode für den automatischen Neubau (ca. 1 MB) |
 | Paketmanager-Hook (siehe [Abschnitt 9](#9-nach-kwin-updates)) | automatischer Neubau |
-| `/etc/xdg/autostart/kde-infinit-desktop-kwin-check.desktop` | Prüfung beim Anmelden |
+| `/etc/xdg/autostart/kde-infinite-desktop-kwin-check.desktop` | Prüfung beim Anmelden |
 
 Der Effekt landet immer im Qt-Plugin-Verzeichnis
 (`-DKDE_INSTALL_USE_QT_SYS_PATHS=ON`), auch mit `--prefix /usr/local` – nur
@@ -185,7 +189,7 @@ dort sucht KWin nach Effekten.
 openSUSE Aeon/Kalpa) haben ein schreibgeschütztes `/usr`; dort bricht der
 Installer ab. Möglich ist dort: in einer Toolbox/Distrobox mit
 `./build.sh --package` ein RPM bauen und es mit
-`rpm-ostree install ./dist/kde-infinit-desktop-*.rpm` einspielen – nach jedem
+`rpm-ostree install ./dist/kde-infinite-desktop-*.rpm` einspielen – nach jedem
 KWin-Update erneut.
 
 ---
@@ -218,7 +222,7 @@ qml6-module-qtquick-layouts qml6-module-qtquick-effects qml6-module-qtquick-shap
 qml6-module-qtquick-window qml6-module-qtqml-workerscript qt6-svg-plugins` (KDE neon:
 `qt6-svg`, dort gibt es kein `qt6-svg-plugins`).
 
-Automatischer Neubau: `/etc/apt/apt.conf.d/99kde-infinit-desktop`
+Automatischer Neubau: `/etc/apt/apt.conf.d/99kde-infinite-desktop`
 (`DPkg::Post-Invoke`, vergleicht nur zwei Versionsnummern, solange sich KWin
 nicht geändert hat).
 
@@ -237,7 +241,7 @@ kxmlgui kwidgetsaddons kwin wayland libepoxy libdrm vulkan-headers libxkbcommon`
 Wichtig: `vulkan-headers` wird vom `kwin`-Paket nicht mitinstalliert, aber von
 KWins CMake-Konfiguration verlangt.
 
-Automatischer Neubau: `/etc/pacman.d/hooks/kde-infinit-desktop.hook`
+Automatischer Neubau: `/etc/pacman.d/hooks/kde-infinite-desktop.hook`
 (Trigger: Paket `kwin`).
 
 Alternativ als Paket (AUR-Stil):
@@ -250,7 +254,7 @@ KID_GIT_URL=file:///pfad/zum/klon makepkg -si
 # Release-Tarball (aktuelles Release):
 cd packaging/arch && makepkg -si
 # oder aus dem Quellbaum:
-./build.sh --package && sudo pacman -U ./dist/kde-infinit-desktop-*.pkg.tar.zst
+./build.sh --package && sudo pacman -U ./dist/kde-infinite-desktop-*.pkg.tar.zst
 ```
 
 Das AUR-Paket baut sich standardmäßig nach jedem `kwin`-Update selbst neu
@@ -278,9 +282,9 @@ kwin-devel wayland-devel libepoxy-devel libdrm-devel vulkan-headers vulkan-loade
 libxkbcommon-devel`.
 
 Automatischer Neubau: dnf5-„actions“-Plugin (Paket `libdnf5-plugin-actions`,
-Datei `/etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions`).
+Datei `/etc/dnf/libdnf5-plugins/actions.d/kde-infinite-desktop.actions`).
 
-Als RPM: `./build.sh --package` → `sudo dnf install ./dist/kde-infinit-desktop*.rpm`.
+Als RPM: `./build.sh --package` → `sudo dnf install ./dist/kde-infinite-desktop*.rpm`.
 
 ### RHEL, AlmaLinux, Rocky Linux (EPEL KDE)
 
@@ -299,7 +303,7 @@ und `sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-
 
 Der Installer erledigt EPEL/CRB auf Alma/Rocky nach Rückfrage selbst. Der
 automatische Neubau nutzt dort dnf4 (`python3-dnf-plugin-post-transaction-actions`,
-`/etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action`).
+`/etc/dnf/plugins/post-transaction-actions.d/kde-infinite-desktop.action`).
 Die Fedora-Spec-Datei funktioniert unverändert auch für EL10.
 
 ### openSUSE Tumbleweed / Slowroll
@@ -316,7 +320,7 @@ kf6-kwidgetsaddons-devel kwin6-devel kf6-kwindowsystem-devel wayland-devel libep
 vulkan-headers vulkan-devel libxkbcommon-devel`; Laufzeit: `qt6-declarative-imports libQt6Svg6`.
 
 Automatischer Neubau: zypp-Commit-Plugin
-`/usr/lib/zypp/plugins/commit/kde-infinit-desktop` (startet den Neubau im
+`/usr/lib/zypp/plugins/commit/kde-infinite-desktop` (startet den Neubau im
 Hintergrund, sobald zypper fertig ist).
 
 openSUSE Leap 16.0 (KWin 6.4) ist zu alt; Aeon/Kalpa sind unveränderlich.
@@ -333,17 +337,17 @@ sudo mkdir -p /var/db/repos/local/metadata /var/db/repos/local/profiles
 echo 'masters = gentoo' | sudo tee /var/db/repos/local/metadata/layout.conf
 echo 'local' | sudo tee /var/db/repos/local/profiles/repo_name
 printf '[local]\nlocation = /var/db/repos/local\n' | sudo tee /etc/portage/repos.conf/local.conf
-echo 'kde-misc/kde-infinit-desktop **' | sudo tee /etc/portage/package.accept_keywords/kde-infinit-desktop
+echo 'kde-misc/kde-infinite-desktop **' | sudo tee /etc/portage/package.accept_keywords/kde-infinite-desktop
 # optional: aus einem lokalen Klon statt von GitHub bauen
-# echo 'EGIT_OVERRIDE_REPO_RANDOMNAM3_KDE_INFINIT_DESKTOP=file:///pfad/zum/klon' | sudo tee -a /etc/portage/make.conf
-sudo emerge -av kde-misc/kde-infinit-desktop
+# echo 'EGIT_OVERRIDE_REPO_RANDOMNAM3_KDE_INFINITE_DESKTOP=file:///pfad/zum/klon' | sudo tee -a /etc/portage/make.conf
+sudo emerge -av kde-misc/kde-infinite-desktop
 ```
 
 `kde-plasma/kwin` hat keinen Sub-Slot, deshalb kann Portage den Neubau nicht
 selbst auslösen. Nach jedem KWin-Update:
 
 ```sh
-sudo emerge --oneshot kde-misc/kde-infinit-desktop
+sudo emerge --oneshot kde-misc/kde-infinite-desktop
 ```
 
 (`./scripts/install.sh` funktioniert auf Gentoo ebenfalls, installiert dann
@@ -354,7 +358,7 @@ aber am Paketmanager vorbei; dort meldet die Anmelde-Prüfung nötige Neubauten.
 ```nix
 # configuration.nix (nixpkgs mit KWin >= 6.8, derzeit nixos-unstable)
 environment.systemPackages = [
-  (pkgs.callPackage /pfad/zu/kde-infinit-desktop/packaging/nix { })
+  (pkgs.callPackage /pfad/zu/kde-infinite-desktop/packaging/nix { })
 ];
 ```
 
@@ -384,13 +388,13 @@ jedem KWin-Update ohnehin neu – ein manueller Neubau ist unter NixOS nicht nö
 
 `--package` installiert mit `--deps` auch die Build-Abhängigkeiten. Die
 KWin-Version steckt in Version bzw. Dateiname, z. B.
-`kwin-effect-infinitdesktop_0.1.0-1+kwin6.8.1_amd64.deb`,
-`kde-infinit-desktop-0.1.0-1.kwin6.8.1.fc46.x86_64.rpm`,
-`kde-infinit-desktop-0.1.0+kwin6.8.1-1-x86_64.pkg.tar.zst`.
+`kwin-effect-infinitedesktop_0.1.0-1+kwin6.8.1_amd64.deb`,
+`kde-infinite-desktop-0.1.0-1.kwin6.8.1.fc46.x86_64.rpm`,
+`kde-infinite-desktop-0.1.0+kwin6.8.1-1-x86_64.pkg.tar.zst`.
 
-Debian/neon erzeugt vier Pakete: `kde-infinit-desktop` (Metapaket),
-`kwin-effect-infinitdesktop` (Effekt + Systemeinstellungsmodul),
-`kde-infinit-desktop-settings` (App) und `kde-infinit-desktop-data`.
+Debian/neon erzeugt vier Pakete: `kde-infinite-desktop` (Metapaket),
+`kwin-effect-infinitedesktop` (Effekt + Systemeinstellungsmodul),
+`kde-infinite-desktop-settings` (App) und `kde-infinite-desktop-data`.
 
 ```sh
 sudo apt install ./dist/*.deb             # neon / Debian / Ubuntu
@@ -404,7 +408,7 @@ automatisch neu bauen (openSUSE Build Service, COPR, AUR, GitHub-Workflow),
 beschreibt [PAKETE.md](PAKETE.md).
 
 Ohne KWin 6.8 (z. B. Debian sid) baut `--package` nur App und Daten
-(Debian-Build-Profil `pkg.kde-infinit-desktop.noeffect`, RPM
+(Debian-Build-Profil `pkg.kde-infinite-desktop.noeffect`, RPM
 `--without effect`).
 
 ---
@@ -412,7 +416,7 @@ Ohne KWin 6.8 (z. B. Debian sid) baut `--package` nur App und Daten
 ## 7. Manuell mit CMake bauen
 
 ```sh
-B=~/.cache/kde-infinit-desktop/build/release      # außerhalb des Quellbaums
+B=~/.cache/kde-infinite-desktop/build/release      # außerhalb des Quellbaums
 cmake -S . -B "$B" -G Ninja \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=/usr \
@@ -433,28 +437,28 @@ Ein solcher Build wird **nicht** automatisch neu gebaut.
 ## 8. Effekt aktivieren und deaktivieren
 
 **Grafisch:** Systemeinstellungen → Fensterverwaltung → Arbeitsflächen-Effekte
-(in älteren Versionen unter „Arbeitsbereich“) → „KDE Infinit Desktop“
+(in älteren Versionen unter „Arbeitsbereich“) → „KDE Infinite Desktop“
 ankreuzen → Anwenden. Das Zahnrad daneben öffnet die Einstellungen; zusätzlich
-gibt es die App „KDE Infinit Desktop“ (`kde-infinit-desktop-settings`).
+gibt es die App „KDE Infinite Desktop“ (`kde-infinite-desktop-settings`).
 
 **Kommandozeile** (in der Plasma-Sitzung, als normaler Benutzer):
 
 ```sh
 # dauerhaft ein-/ausschalten
-kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled true  --notify
-kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled false --notify
+kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled true  --notify
+kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled false --notify
 
 # sofort laden / entladen
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect   infinitdesktop
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.unloadEffect infinitdesktop
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect   infinitedesktop
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.unloadEffect infinitedesktop
 
 # geladen?
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop
 ```
 
 `qdbus6` heißt auf Fedora `qdbus-qt6`; ohne Qt-Tools geht es auch mit
-`gdbus call --session --dest org.kde.KWin --object-path /Effects --method org.kde.kwin.Effects.loadEffect infinitdesktop`
-oder `dbus-send --session --print-reply --dest=org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect string:infinitdesktop`.
+`gdbus call --session --dest org.kde.KWin --object-path /Effects --method org.kde.kwin.Effects.loadEffect infinitedesktop`
+oder `dbus-send --session --print-reply --dest=org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect string:infinitedesktop`.
 
 ---
 
@@ -464,19 +468,19 @@ Mit `scripts/install.sh` installiert, passiert der Neubau **automatisch**:
 
 | Paketmanager | Hook |
 |---|---|
-| pacman (Arch, CachyOS, Manjaro, EndeavourOS) | `/etc/pacman.d/hooks/kde-infinit-desktop.hook` |
-| apt (neon, Debian, Ubuntu) | `/etc/apt/apt.conf.d/99kde-infinit-desktop` |
-| dnf5 (Fedora) | `/etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions` |
-| dnf4 (RHEL/Alma/Rocky) | `/etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action` |
-| zypper (openSUSE) | `/usr/lib/zypp/plugins/commit/kde-infinit-desktop` |
-| apk (Alpine, postmarketOS) | `/etc/apk/commit_hooks.d/kde-infinit-desktop.post-commit` |
+| pacman (Arch, CachyOS, Manjaro, EndeavourOS) | `/etc/pacman.d/hooks/kde-infinite-desktop.hook` |
+| apt (neon, Debian, Ubuntu) | `/etc/apt/apt.conf.d/99kde-infinite-desktop` |
+| dnf5 (Fedora) | `/etc/dnf/libdnf5-plugins/actions.d/kde-infinite-desktop.actions` |
+| dnf4 (RHEL/Alma/Rocky) | `/etc/dnf/plugins/post-transaction-actions.d/kde-infinite-desktop.action` |
+| zypper (openSUSE) | `/usr/lib/zypp/plugins/commit/kde-infinite-desktop` |
+| apk (Alpine, postmarketOS) | `/etc/apk/commit_hooks.d/kde-infinite-desktop.post-commit` |
 | alle anderen | Prüfung beim Anmelden (fragt, ob neu gebaut werden soll; Passwort über pkexec) |
 
-Alle Hooks rufen `/usr/lib/kde-infinit-desktop/kwin-update-hook.sh` auf. Es
+Alle Hooks rufen `/usr/lib/kde-infinite-desktop/kwin-update-hook.sh` auf. Es
 vergleicht `built-for-kwin` mit der installierten KWin-Version und baut nur bei
-einem Unterschied neu – aus `/usr/src/kde-infinit-desktop-<version>`, ohne
+einem Unterschied neu – aus `/usr/src/kde-infinite-desktop-<version>`, ohne
 Internet. Es lässt eine Paketinstallation **nie** fehlschlagen (Rückgabewert
-immer 0), protokolliert nach `/var/log/kde-infinit-desktop-rebuild.log` und
+immer 0), protokolliert nach `/var/log/kde-infinite-desktop-rebuild.log` und
 schickt allen angemeldeten Benutzern eine Desktop-Benachrichtigung („neu gebaut
 – bitte ab- und wieder anmelden“ bzw. „Neubau fehlgeschlagen“).
 
@@ -487,7 +491,7 @@ Von Hand:
 
 ```sh
 ./scripts/check-kwin-update.sh                           # passt alles?
-sudo /usr/lib/kde-infinit-desktop/kwin-update-hook.sh    # neu bauen, falls nötig
+sudo /usr/lib/kde-infinite-desktop/kwin-update-hook.sh    # neu bauen, falls nötig
 ./scripts/install.sh --rebuild                           # aus dem Quellbaum neu bauen
 ./scripts/install.sh --rebuild --deps                    # ... und fehlende Abhängigkeiten nachinstallieren
 ```
@@ -502,19 +506,19 @@ selbst neu, angeheftete Binärpakete muss man ersetzen).
 ```sh
 ./scripts/install.sh --uninstall
 # oder, falls der Quellbaum weg ist:
-/usr/lib/kde-infinit-desktop/uninstall.sh
+/usr/lib/kde-infinite-desktop/uninstall.sh
 # zusätzlich eigene Einstellungen und gespeicherte Arbeitsflächen löschen:
-/usr/lib/kde-infinit-desktop/uninstall.sh --purge
+/usr/lib/kde-infinite-desktop/uninstall.sh --purge
 ```
 
 Das entfernt alle installierten Dateien (laut `install_manifest.txt`), die
 Hooks, die Anmelde-Prüfung, die Quellkopie in `/usr/src` und deaktiviert den
 Effekt. Pakete entfernt man mit dem Paketmanager (`sudo apt remove
-kwin-effect-infinitdesktop kde-infinit-desktop-settings kde-infinit-desktop-data`,
-`sudo dnf remove kde-infinit-desktop`, `sudo pacman -R kde-infinit-desktop` …).
+kwin-effect-infinitedesktop kde-infinite-desktop-settings kde-infinite-desktop-data`,
+`sudo dnf remove kde-infinite-desktop`, `sudo pacman -R kde-infinite-desktop` …).
 
 Benutzerdaten: Einstellungen in `~/.config/kwinrc` (Gruppe
-`[Effect-infinitdesktop]`), Zustand in `~/.local/state/kde-infinit-desktop/`.
+`[Effect-infinitedesktop]`), Zustand in `~/.local/state/kde-infinite-desktop/`.
 
 ---
 
@@ -525,7 +529,7 @@ Benutzerdaten: Einstellungen in `~/.config/kwinrc` (Gruppe
 ```sh
 ./scripts/check-kwin-update.sh            # gebaut für KWin X, installiert ist Y?
 kwin_wayland --version
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop
 ls "$(qtpaths6 --query QT_INSTALL_PLUGINS)"/kwin/effects/plugins/ | grep infinit
 ```
 
@@ -538,13 +542,13 @@ ls "$(qtpaths6 --query QT_INSTALL_PLUGINS)"/kwin/effects/plugins/ | grep infinit
 **Protokoll**
 
 ```sh
-journalctl --user -b QT_CATEGORY=kwin_effect_infinitdesktop
+journalctl --user -b QT_CATEGORY=kwin_effect_infinitedesktop
 journalctl --user -b -u plasma-kwin_wayland        # KWin allgemein
 ```
 
 Für ausführliche Meldungen in den Einstellungen unter „Erweitert“
 „Debug-Protokollierung“ einschalten (oder mit `kdebugsettings` die Kategorie
-`kwin_effect_infinitdesktop` auf „Alle“ stellen).
+`kwin_effect_infinitedesktop` auf „Alle“ stellen).
 
 **Sicherheitsmodus**
 
@@ -553,11 +557,11 @@ er im Sicherheitsmodus und bleibt inaktiv, damit der Desktop benutzbar bleibt.
 
 ```sh
 # Ist der Sicherheitsmodus aktiv?
-qdbus6 org.kde.KWin /InfinitDesktop org.freedesktop.DBus.Properties.Get org.kde.InfinitDesktop safeMode
+qdbus6 org.kde.KWin /InfiniteDesktop org.freedesktop.DBus.Properties.Get org.kde.InfiniteDesktop safeMode
 # Sicherheitsmodus verlassen
-qdbus6 org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.leaveSafeMode
+qdbus6 org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.leaveSafeMode
 # Absturzzähler zurücksetzen
-rm -f ~/.local/state/kde-infinit-desktop/crashguard
+rm -f ~/.local/state/kde-infinite-desktop/crashguard
 ```
 
 **Der Desktop ist nicht mehr bedienbar**
@@ -565,7 +569,7 @@ rm -f ~/.local/state/kde-infinit-desktop/crashguard
 Auf eine Textkonsole wechseln (Strg+Alt+F3), anmelden und den Effekt abschalten:
 
 ```sh
-kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled false
+kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled false
 ```
 
 Danach wieder zur grafischen Sitzung (meist Strg+Alt+F1 oder F2) und neu
@@ -573,8 +577,8 @@ anmelden.
 
 **Automatischer Neubau**
 
-- Protokoll: `/var/log/kde-infinit-desktop-rebuild.log`
-- letzter Stand: `/var/lib/kde-infinit-desktop/last-rebuild`
+- Protokoll: `/var/log/kde-infinite-desktop-rebuild.log`
+- letzter Stand: `/var/lib/kde-infinite-desktop/last-rebuild`
 - Schlägt er wegen fehlender Abhängigkeiten fehl (z. B. weil eine neue KWin-Version
   zusätzliche Entwicklerpakete braucht): `./scripts/install.sh --rebuild --deps`.
 
@@ -588,7 +592,7 @@ Qt-Quick-Entwicklerdateien, die die KWin-Entwicklerpakete nicht immer mitbringen
 ## 12. Für Entwickler
 
 ```sh
-./build.sh                       # konfigurieren, bauen, Unit-Tests (~/.cache/kde-infinit-desktop/build/debug)
+./build.sh                       # konfigurieren, bauen, Unit-Tests (~/.cache/kde-infinite-desktop/build/debug)
 ./build.sh --sanitize            # ASan + UBSan (…/build/asan)
 ./build.sh --install             # bauen + installieren + aktivieren
 ./build.sh --container neon      # in Containern bauen und testen

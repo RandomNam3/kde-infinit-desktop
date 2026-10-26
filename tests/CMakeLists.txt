@@ -11,11 +11,13 @@ ecm_add_tests(
     test_placementmemory.cpp
     test_groups.cpp
     test_areas.cpp
-    LINK_LIBRARIES infinitdesktop_core Qt6::Test
+    LINK_LIBRARIES infinitedesktop_core Qt6::Test
 )
 
-ecm_add_test(test_shared.cpp
-    LINK_LIBRARIES infinitdesktop_shared Qt6::Test
+ecm_add_tests(
+    test_shared.cpp
+    test_legacymigration.cpp
+    LINK_LIBRARIES infinitedesktop_shared Qt6::Test
 )
 
 if(BUILD_SETTINGS_APP)

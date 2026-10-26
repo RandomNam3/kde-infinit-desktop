@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -21,7 +21,7 @@ class QQmlEngine;
 class QQuickWindow;
 class QSystemTrayIcon;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 class Note;
@@ -29,7 +29,7 @@ class NoteStore;
 
 /**
  * The companion app: note windows, the notes icon in the system tray, and the D-Bus
- * interface org.kde.InfinitDesktop.Companion on /Companion that the KWin effect calls
+ * interface org.kde.InfiniteDesktop.Companion on /Companion that the KWin effect calls
  * (new note, show / hide notes, announce the note windows again).
  *
  * Every note window is announced to the effect (expectNote) right before it is shown, so the
@@ -39,7 +39,7 @@ class NoteStore;
 class Companion : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.InfinitDesktop.Companion")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.InfiniteDesktop.Companion")
 
 public:
     Companion(QQmlEngine *engine, NoteStore *store, QObject *parent = nullptr);
@@ -96,4 +96,4 @@ private:
     bool m_closing = false;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

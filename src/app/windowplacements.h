@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -12,12 +12,12 @@
 class QJSEngine;
 class QQmlEngine;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /**
  * The window positions the effect remembers per application
- * (org.kde.InfinitDesktop.windowPlacements / forgetWindowPlacements).
+ * (org.kde.InfiniteDesktop.windowPlacements / forgetWindowPlacements).
  *
  * @c applications is a list of maps: name, iconName, hasIcon, appKey,
  * windowCount, summary and windows (list of maps: screen, size, flags, time).
@@ -66,4 +66,4 @@ private:
     int m_windowCount = 0;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

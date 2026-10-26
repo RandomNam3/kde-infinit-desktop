@@ -1,4 +1,4 @@
-# KDE Infinit Desktop - runtime test environment (Arch Linux, current KWin)
+# KDE Infinite Desktop - runtime test environment (Arch Linux, current KWin)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # A headless KWin (virtual backend, software OpenGL) with Wayland/X11 test

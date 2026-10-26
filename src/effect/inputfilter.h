@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -27,10 +27,10 @@ class LogicalOutput;
 class Window;
 }
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
-class InfinitDesktopEffect;
+class InfiniteDesktopEffect;
 struct Canvas;
 struct ManagedWindow;
 struct ZoomedTarget;
@@ -51,7 +51,7 @@ struct ZoomedTarget;
 class CanvasInputFilter : public KWin::InputEventFilter
 {
 public:
-    explicit CanvasInputFilter(InfinitDesktopEffect *effect);
+    explicit CanvasInputFilter(InfiniteDesktopEffect *effect);
     ~CanvasInputFilter() override;
 
     bool pointerMotion(KWin::PointerMotionEvent *event) override;
@@ -139,7 +139,7 @@ private:
     void scrollPan(Canvas &canvas, const QPointF &screenDelta, std::chrono::microseconds time);
     void finishScrollPan(bool withVelocity);
 
-    InfinitDesktopEffect *const m_effect;
+    InfiniteDesktopEffect *const m_effect;
     Drag m_drag;
     VelocityTracker m_moveTracker;
     QPointer<KWin::Window> m_trackedMove;
@@ -210,4 +210,4 @@ private:
     } m_shortcutPass;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Every global shortcut of the session, grouped by application, with search,
@@ -6,7 +6,7 @@
 import QtQuick
 import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
-import InfinitDesktop.Settings
+import InfiniteDesktop.Settings
 
 Item {
     id: view

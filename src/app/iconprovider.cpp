@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "iconprovider.h"
@@ -13,7 +13,7 @@
 #include <QImageReader>
 #include <QPainter>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 IconProvider::IconProvider()
@@ -39,7 +39,7 @@ QImage IconProvider::requestImage(const QString &id, QSize *size, const QSize &r
         target.setHeight(target.width());
     }
 
-    QFile file(QStringLiteral(":/infinitdesktop/icons/%1.svg").arg(name));
+    QFile file(QStringLiteral(":/infinitedesktop/icons/%1.svg").arg(name));
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning("IconProvider: unknown icon %s", qPrintable(name));
         QImage empty(target, QImage::Format_ARGB32_Premultiplied);
@@ -93,4 +93,4 @@ QImage ThemeIconProvider::requestImage(const QString &id, QSize *size, const QSi
     return image;
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

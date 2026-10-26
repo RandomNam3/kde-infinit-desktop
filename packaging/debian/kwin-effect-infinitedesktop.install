@@ -1,0 +1,3 @@
+usr/lib/*/qt6/plugins/kwin/effects/plugins/infinitedesktop.so
+usr/lib/*/qt6/plugins/kwin/effects/configs/kwin_infinitedesktop_config.so
+usr/share/kde-infinite-desktop/built-for-kwin

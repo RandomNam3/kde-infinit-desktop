@@ -1,11 +1,11 @@
 /*
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 
     Consistency checks between the kcfg schema, the UI metadata and the
     shortcut table, so the settings UIs can never silently lose an entry.
 */
-#include "infinitdesktopconfig.h"
+#include "infinitedesktopconfig.h"
 #include "settingsmeta.h"
 #include "shortcutdefs.h"
 
@@ -16,7 +16,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
-using namespace InfinitDesktop;
+using namespace InfiniteDesktop;
 
 class TestShared : public QObject
 {
@@ -26,7 +26,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         QVERIFY(m_dir.isValid());
-        InfinitDesktopConfig::instance(KSharedConfig::openConfig(m_dir.filePath(QStringLiteral("kwinrc")), KConfig::SimpleConfig));
+        InfiniteDesktopConfig::instance(KSharedConfig::openConfig(m_dir.filePath(QStringLiteral("kwinrc")), KConfig::SimpleConfig));
     }
 
     void everyEntryHasMetadataAndTexts()
@@ -35,7 +35,7 @@ private Q_SLOTS:
         for (const SettingsCategory &category : settingsCategories()) {
             categoryIds.insert(QString::fromLatin1(category.id));
         }
-        const auto items = InfinitDesktopConfig::self()->items();
+        const auto items = InfiniteDesktopConfig::self()->items();
         QVERIFY(!items.isEmpty());
         for (KConfigSkeletonItem *item : items) {
             const QByteArray key = item->name().toLatin1();
@@ -45,22 +45,22 @@ private Q_SLOTS:
             QVERIFY2(!item->label().isEmpty(), meta->key);
             QVERIFY2(!item->whatsThis().isEmpty(), meta->key);
             if (meta->dependsOn) {
-                QVERIFY2(InfinitDesktopConfig::self()->findItem(QString::fromLatin1(meta->dependsOn)), meta->dependsOn);
+                QVERIFY2(InfiniteDesktopConfig::self()->findItem(QString::fromLatin1(meta->dependsOn)), meta->dependsOn);
             }
         }
         for (const SettingsEntryMeta &meta : settingsEntries()) {
-            QVERIFY2(InfinitDesktopConfig::self()->findItem(QString::fromLatin1(meta.key)), meta.key);
+            QVERIFY2(InfiniteDesktopConfig::self()->findItem(QString::fromLatin1(meta.key)), meta.key);
         }
     }
 
     void defaultsAreSane()
     {
-        auto *config = InfinitDesktopConfig::self();
+        auto *config = InfiniteDesktopConfig::self();
         QVERIFY(config->minZoom() < config->maxZoom());
         QVERIFY(config->minZoom() <= 100);
         QVERIFY(config->maxZoom() >= 100);
-        QCOMPARE(config->launcherPosition(), int(InfinitDesktopConfig::EnumLauncherPosition::Panel));
-        QCOMPARE(config->minimizedFullscreenContent(), int(InfinitDesktopConfig::EnumMinimizedFullscreenContent::LiveContent));
+        QCOMPARE(config->launcherPosition(), int(InfiniteDesktopConfig::EnumLauncherPosition::Panel));
+        QCOMPARE(config->minimizedFullscreenContent(), int(InfiniteDesktopConfig::EnumMinimizedFullscreenContent::LiveContent));
         QVERIFY(config->lockFullscreen());
     }
 

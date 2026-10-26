@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 
     Standalone settings app with a custom Qt Quick UI.
@@ -18,6 +18,7 @@
 #include "effectstatus.h"
 #include "globalshortcutsmodel.h"
 #include "iconprovider.h"
+#include "legacymigration.h"
 #include "screenshotrunner.h"
 #include "settingsmodel.h"
 #include "shortcutmodel.h"
@@ -28,6 +29,7 @@
 
 #include <KAboutData>
 #include <KLocalizedString>
+#include <KSharedConfig>
 
 #include <QCommandLineParser>
 #include <QDir>
@@ -42,7 +44,7 @@
 #include <QStandardPaths>
 #include <QTemporaryDir>
 
-using namespace InfinitDesktop;
+using namespace InfiniteDesktop;
 
 namespace
 {
@@ -73,14 +75,18 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     KLocalizedString::setApplicationDomain(QByteArrayLiteral(TRANSLATION_DOMAIN));
+    // Up to 0.5.1 the project was called "KDE Infinit Desktop": take over its settings and
+    // files once, before anything reads them.
+    Legacy::migrateUserFiles();
+    Legacy::migrateConfig(*KSharedConfig::openConfig(QStringLiteral("kwinrc")));
 
-    KAboutData about(QStringLiteral("kde-infinit-desktop-settings"),
-                     i18nc("@title application name", "KDE Infinit Desktop"),
-                     QStringLiteral(INFINITDESKTOP_VERSION_STRING),
+    KAboutData about(QStringLiteral("kde-infinite-desktop-settings"),
+                     i18nc("@title application name", "KDE Infinite Desktop"),
+                     QStringLiteral(INFINITEDESKTOP_VERSION_STRING),
                      i18n("Settings for the infinite canvas of KWin"),
                      KAboutLicense::GPL_V3,
-                     i18n("© 2026 KDE Infinit Desktop contributors"));
-    about.setDesktopFileName(QStringLiteral("kde-infinit-desktop-settings"));
+                     i18n("© 2026 KDE Infinite Desktop contributors"));
+    about.setDesktopFileName(QStringLiteral("kde-infinite-desktop-settings"));
     KAboutData::setApplicationData(about);
 
     QCommandLineParser parser;
@@ -134,10 +140,10 @@ int main(int argc, char *argv[])
     }
     // Must match the .desktop file: on Wayland it is the app id, which Plasma uses
     // to find the icon of the window in the task manager.
-    QGuiApplication::setDesktopFileName(QStringLiteral("kde-infinit-desktop-settings"));
+    QGuiApplication::setDesktopFileName(QStringLiteral("kde-infinite-desktop-settings"));
     // No dashes in the icon name, see the install rules in CMakeLists.txt.
-    QGuiApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("org.kde.infinitdesktop"),
-                                                    QIcon(QStringLiteral(":/infinitdesktop/icons/kde-infinit-desktop.svg"))));
+    QGuiApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("org.kde.infinitedesktop"),
+                                                    QIcon(QStringLiteral(":/infinitedesktop/icons/kde-infinite-desktop.svg"))));
 
     ThemeController::instance()->setScreenshotMode(screenshotMode);
     if (screenshotMode) {
@@ -151,7 +157,7 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QStringLiteral("themeicon"), new ThemeIconProvider);
     setupLocalization(&engine);
     engine.setInitialProperties({{QStringLiteral("initialPage"), parser.value(pageOption)}});
-    engine.loadFromModule("InfinitDesktop.Settings", "Main");
+    engine.loadFromModule("InfiniteDesktop.Settings", "Main");
     if (engine.rootObjects().isEmpty()) {
         return 1;
     }

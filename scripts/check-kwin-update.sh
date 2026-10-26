@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Checks whether the installed KDE Infinit Desktop KWin plugin was built for
+# Checks whether the installed KDE Infinite Desktop KWin plugin was built for
 # the KWin version that is installed right now.
 #
 # KWin plugins have no stable ABI and KWin refuses to load a plugin that was
@@ -13,14 +13,14 @@
 # this script is the safety net at login (--offer-rebuild) and a manual check.
 #
 # The KWin version the plugin was built against is installed by CMake to
-#   <prefix>/share/kde-infinit-desktop/built-for-kwin
+#   <prefix>/share/kde-infinite-desktop/built-for-kwin
 #
 # Exit status: 0 = up to date, 1 = rebuild needed, 2 = unknown/not installed.
 
 set -eu
 set -o pipefail
 
-readonly PROJECT=kde-infinit-desktop
+readonly PROJECT=kde-infinite-desktop
 
 QUIET=0
 NOTIFY=0
@@ -180,7 +180,7 @@ built_for_kwin() {
 notify_user() {
     local title=$1 body=$2
     if have notify-send; then
-        notify-send --app-name="KDE Infinit Desktop" --icon=org.kde.infinitdesktop \
+        notify-send --app-name="KDE Infinite Desktop" --icon=org.kde.infinitedesktop \
             --urgency=normal "$title" "$body" 2>/dev/null && return 0
     fi
     if have kdialog; then
@@ -190,7 +190,7 @@ notify_user() {
         gdbus call --session --dest org.freedesktop.Notifications \
             --object-path /org/freedesktop/Notifications \
             --method org.freedesktop.Notifications.Notify \
-            "KDE Infinit Desktop" 0 kde-infinit-desktop "$title" "$body" '[]' '{}' 30000 \
+            "KDE Infinite Desktop" 0 kde-infinite-desktop "$title" "$body" '[]' '{}' 30000 \
             >/dev/null 2>&1 && return 0
     fi
     return 1
@@ -214,7 +214,7 @@ rebuild_hint() {
     if hd=$(helper_dir); then
         printf 'sudo %s/kwin-update-hook.sh\n' "$hd"
     else
-        printf 'rebuild/update your kde-infinit-desktop package (or run scripts/install.sh --rebuild)\n'
+        printf 'rebuild/update your kde-infinite-desktop package (or run scripts/install.sh --rebuild)\n'
     fi
 }
 
@@ -228,23 +228,23 @@ offer_rebuild() {
     local hd question
     hd=$(helper_dir) || return 1
     have pkexec || return 1
-    question="KWin was updated to $current, but KDE Infinit Desktop was built for KWin $built, so KWin does not load it.
+    question="KWin was updated to $current, but KDE Infinite Desktop was built for KWin $built, so KWin does not load it.
 
 Rebuild it now? This takes about a minute and needs the administrator password."
     if have kdialog; then
-        kdialog --title "KDE Infinit Desktop" --icon org.kde.infinitdesktop --yesno "$question" 2>/dev/null || return 0
+        kdialog --title "KDE Infinite Desktop" --icon org.kde.infinitedesktop --yesno "$question" 2>/dev/null || return 0
     else
         return 1
     fi
     if pkexec "$hd/kwin-update-hook.sh" --force login; then
         if [ "$(bash "${BASH_SOURCE[0]}" --print-built-for 2>/dev/null)" = "$current" ]; then
-            notify_user "KDE Infinit Desktop was rebuilt" \
+            notify_user "KDE Infinite Desktop was rebuilt" \
                 "Rebuilt for KWin $current. Log out and back in to activate it." || true
             return 0
         fi
     fi
-    notify_user "KDE Infinit Desktop: rebuild failed" \
-        "See /var/log/kde-infinit-desktop-rebuild.log or run: $(rebuild_hint)" || true
+    notify_user "KDE Infinite Desktop: rebuild failed" \
+        "See /var/log/kde-infinite-desktop-rebuild.log or run: $(rebuild_hint)" || true
     return 0
 }
 
@@ -261,33 +261,33 @@ case $MODE in
 esac
 
 if ! built=$(built_for_kwin); then
-    [ "$QUIET" -eq 1 ] || echo "KDE Infinit Desktop: no installed KWin plugin found (missing <prefix>/share/$PROJECT/built-for-kwin)." >&2
+    [ "$QUIET" -eq 1 ] || echo "KDE Infinite Desktop: no installed KWin plugin found (missing <prefix>/share/$PROJECT/built-for-kwin)." >&2
     exit 2
 fi
 if ! current=$(installed_kwin); then
-    [ "$QUIET" -eq 1 ] || echo "KDE Infinit Desktop: could not determine the installed KWin version." >&2
+    [ "$QUIET" -eq 1 ] || echo "KDE Infinite Desktop: could not determine the installed KWin version." >&2
     exit 2
 fi
 
 if [ "$built" = "$current" ]; then
-    [ "$QUIET" -eq 1 ] || echo "KDE Infinit Desktop: plugin was built for KWin $built - up to date."
+    [ "$QUIET" -eq 1 ] || echo "KDE Infinite Desktop: plugin was built for KWin $built - up to date."
     exit 0
 fi
 
 hint=$(rebuild_hint)
-msg="KDE Infinit Desktop was built for KWin $built, but KWin $current is installed.
+msg="KDE Infinite Desktop was built for KWin $built, but KWin $current is installed.
 KWin will not load the effect until it is rebuilt. Run:
   $hint
 then log out and back in."
 if last_rebuild_failed; then
     msg="$msg
-The last automatic rebuild failed, see /var/log/kde-infinit-desktop-rebuild.log"
+The last automatic rebuild failed, see /var/log/kde-infinite-desktop-rebuild.log"
 fi
 echo "$msg" >&2
 if [ "$OFFER" -eq 1 ] && offer_rebuild; then
     exit 1
 fi
 if [ "$NOTIFY" -eq 1 ]; then
-    notify_user "KDE Infinit Desktop needs a rebuild" "$msg" || true
+    notify_user "KDE Infinite Desktop needs a rebuild" "$msg" || true
 fi
 exit 1

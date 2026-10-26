@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Removes a KDE Infinit Desktop installation made by scripts/install.sh
-# (uses the install manifest saved in <prefix>/share/kde-infinit-desktop/).
-# install.sh also copies this script to <prefix>/lib/kde-infinit-desktop/,
+# Removes a KDE Infinite Desktop installation made by scripts/install.sh
+# (uses the install manifest saved in <prefix>/share/kde-infinite-desktop/).
+# install.sh also copies this script to <prefix>/lib/kde-infinite-desktop/,
 # so it keeps working after the source tree has been deleted.
 #
 # Packages (deb/rpm/pacman/...) are removed with the package manager instead.
@@ -12,15 +12,16 @@
 set -eu
 set -o pipefail
 
-readonly PROJECT=kde-infinit-desktop
-readonly EFFECT_ID=infinitdesktop
-readonly AUTOSTART_FILE=/etc/xdg/autostart/kde-infinit-desktop-kwin-check.desktop
+PROJECT=kde-infinite-desktop
+EFFECT_ID=infinitedesktop
+NAME='KDE Infinite Desktop'
 
 ASSUME_YES=0
 DRY_RUN=0
 PREFIX=''
 MANIFEST=''
 KEEP_CONFIG=1
+LEGACY=0
 
 usage() {
     cat <<EOF
@@ -31,7 +32,9 @@ Usage: uninstall.sh [OPTIONS]
       --prefix DIR   prefix of the installation (default: search /usr, /usr/local)
       --manifest F   use this install_manifest.txt (e.g. from a manual cmake build)
       --purge        also remove your settings and saved canvas state
-                     (kwinrc [Effect-infinitdesktop], ~/.local/state/$PROJECT)
+                     (kwinrc [Effect-infinitedesktop], ~/.local/state/$PROJECT)
+      --legacy       remove an installation of the old name "KDE Infinit Desktop"
+                     (up to 0.5.1); its settings and files stay for the new version
   -h, --help         show this help
 EOF
 }
@@ -53,6 +56,7 @@ while [ $# -gt 0 ]; do
             ;;
         --manifest=*) MANIFEST=${1#*=} ;;
         --purge) KEEP_CONFIG=0 ;;
+        --legacy) LEGACY=1 ;;
         -h | --help)
             usage
             exit 0
@@ -64,6 +68,16 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+if [ "$LEGACY" -eq 1 ]; then
+    # Up to 0.5.1 the project was called "KDE Infinit Desktop".
+    PROJECT=kde-infinit-desktop
+    EFFECT_ID=infinitdesktop
+    NAME='KDE Infinit Desktop'
+    KEEP_CONFIG=1
+fi
+readonly PROJECT EFFECT_ID NAME
+readonly AUTOSTART_FILE="/etc/xdg/autostart/$PROJECT-kwin-check.desktop"
 
 info() { printf '==> %s\n' "$*"; }
 warn() { printf 'Warning: %s\n' "$*" >&2; }
@@ -163,12 +177,12 @@ done <"$MANIFEST"
 # login check, package manager hooks (automatic rebuild), state
 extra=()
 for f in "$AUTOSTART_FILE" \
-    /etc/pacman.d/hooks/kde-infinit-desktop.hook \
-    /etc/apt/apt.conf.d/99kde-infinit-desktop \
-    /etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions \
-    /etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action \
-    /usr/lib/zypp/plugins/commit/kde-infinit-desktop \
-    /etc/apk/commit_hooks.d/kde-infinit-desktop.post-commit; do
+    "/etc/pacman.d/hooks/$PROJECT.hook" \
+    "/etc/apt/apt.conf.d/99$PROJECT" \
+    "/etc/dnf/libdnf5-plugins/actions.d/$PROJECT.actions" \
+    "/etc/dnf/plugins/post-transaction-actions.d/$PROJECT.action" \
+    "/usr/lib/zypp/plugins/commit/$PROJECT" \
+    "/etc/apk/commit_hooks.d/$PROJECT.post-commit"; do
     if [ -e "$f" ]; then extra+=("$f"); fi
 done
 
@@ -182,8 +196,8 @@ case $src_copy in
     *) src_copy='' ;;
 esac
 
-info "Removing KDE Infinit Desktop (${#files[@]} installed files, prefix ${PREFIX:-?})"
-confirm "Remove KDE Infinit Desktop?" || die "aborted"
+info "Removing $NAME (${#files[@]} installed files, prefix ${PREFIX:-?})"
+confirm "Remove $NAME?" || die "aborted"
 
 # --- unload & disable the effect in the running session (as the user) ---
 if [ "$(id -u)" -ne 0 ]; then
@@ -227,8 +241,8 @@ done
 if [ -n "$src_copy" ] && [ -d "$src_copy" ]; then
     run_root rm -rf -- "$src_copy"
 fi
-if [ "$KEEP_CONFIG" -eq 0 ] && [ -e /var/log/kde-infinit-desktop-rebuild.log ]; then
-    run_root rm -f -- /var/log/kde-infinit-desktop-rebuild.log
+if { [ "$KEEP_CONFIG" -eq 0 ] || [ "$LEGACY" -eq 1 ]; } && [ -e "/var/log/$PROJECT-rebuild.log" ]; then
+    run_root rm -f -- "/var/log/$PROJECT-rebuild.log"
 fi
 
 # --- user data ---
@@ -245,14 +259,14 @@ if [ "$KEEP_CONFIG" -eq 0 ] && [ "$(id -u)" -ne 0 ]; then
         # kwriteconfig6 cannot delete a whole group; delete the known keys.
         cfg="${XDG_CONFIG_HOME:-$HOME/.config}/kwinrc"
         if [ -r "$cfg" ]; then
-            keys=$(sed -n '/^\[Effect-infinitdesktop\]/,/^\[/{/^[A-Za-z]/s/=.*//p}' "$cfg")
+            keys=$(sed -n '/^\[Effect-infinitedesktop\]/,/^\[/{/^[A-Za-z]/s/=.*//p}' "$cfg")
             for k in $keys; do
-                print_cmd kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key "$k" --delete
-                [ "$DRY_RUN" -eq 1 ] || kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key "$k" --delete || true
+                print_cmd kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key "$k" --delete
+                [ "$DRY_RUN" -eq 1 ] || kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key "$k" --delete || true
             done
         fi
     fi
 fi
 
-info "KDE Infinit Desktop has been removed."
+info "$NAME has been removed."
 echo "If KWin still shows the effect, log out and back in."

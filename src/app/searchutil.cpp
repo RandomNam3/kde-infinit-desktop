@@ -1,13 +1,13 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "searchutil.h"
 
 #include <QRegularExpression>
 
-namespace InfinitDesktop::SearchUtil
+namespace InfiniteDesktop::SearchUtil
 {
 
 QString normalize(const QString &text, QList<int> *map)
@@ -91,4 +91,4 @@ QString highlight(const QString &text, const QStringList &terms, const QColor &c
     return result;
 }
 
-} // namespace InfinitDesktop::SearchUtil
+} // namespace InfiniteDesktop::SearchUtil

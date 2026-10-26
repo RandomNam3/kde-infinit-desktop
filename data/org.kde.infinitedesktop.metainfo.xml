@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: CC0-1.0
 
-    AppStream metadata of KDE Infinit Desktop.
+    AppStream metadata of KDE Infinite Desktop.
 -->
 <component type="desktop-application">
-  <id>org.kde.infinitdesktop</id>
+  <id>org.kde.infinitedesktop</id>
+  <replaces>
+    <id>org.kde.infinitdesktop</id>
+  </replaces>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
 
-  <name>KDE Infinit Desktop</name>
-  <name xml:lang="de">KDE Infinit Desktop</name>
+  <name>KDE Infinite Desktop</name>
+  <name xml:lang="de">KDE Infinite Desktop</name>
   <summary>Turn every monitor into an infinite canvas you can pan and zoom</summary>
   <summary xml:lang="de">Macht jeden Monitor zu einer unendlichen Arbeitsfläche zum Verschieben und Zoomen</summary>
 
-  <developer id="org.kde.infinitdesktop">
-    <name>KDE Infinit Desktop contributors</name>
+  <developer id="org.kde.infinitedesktop">
+    <name>KDE Infinite Desktop contributors</name>
   </developer>
 
   <description>
     <p>
-      KDE Infinit Desktop is an effect for KWin, the compositor of KDE Plasma 6 on Wayland.
+      KDE Infinite Desktop is an effect for KWin, the compositor of KDE Plasma 6 on Wayland.
       It turns every monitor into an infinite canvas: windows are placed on a plane that
       you can pan and zoom freely, with the mouse, the touchpad, a touchscreen or the keyboard.
     </p>
     <p xml:lang="de">
-      KDE Infinit Desktop ist ein Effekt für KWin, den Compositor von KDE Plasma 6 unter Wayland.
+      KDE Infinite Desktop ist ein Effekt für KWin, den Compositor von KDE Plasma 6 unter Wayland.
       Er macht jeden Monitor zu einer unendlichen Arbeitsfläche: Fenster liegen auf einer Ebene,
       die du mit Maus, Touchpad, Touchscreen oder Tastatur frei verschieben und zoomen kannst.
     </p>
@@ -54,22 +57,22 @@
     </p>
   </description>
 
-  <launchable type="desktop-id">kde-infinit-desktop-settings.desktop</launchable>
+  <launchable type="desktop-id">kde-infinite-desktop-settings.desktop</launchable>
 
   <screenshots>
     <screenshot type="default">
       <caption>Zoomed out: every window live and readable, wallpaper and panel stay still</caption>
-      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/docs/images/overview.png</image>
+      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/docs/images/overview.png</image>
     </screenshot>
     <screenshot>
       <caption>The settings app</caption>
-      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/docs/screenshots/light-overview.png</image>
+      <image>https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/docs/screenshots/light-overview.png</image>
     </screenshot>
   </screenshots>
 
-  <url type="homepage">https://github.com/RandomNam3/kde-infinit-desktop</url>
-  <url type="bugtracker">https://github.com/RandomNam3/kde-infinit-desktop/issues</url>
-  <url type="vcs-browser">https://github.com/RandomNam3/kde-infinit-desktop</url>
+  <url type="homepage">https://github.com/RandomNam3/kde-infinite-desktop</url>
+  <url type="bugtracker">https://github.com/RandomNam3/kde-infinite-desktop/issues</url>
+  <url type="vcs-browser">https://github.com/RandomNam3/kde-infinite-desktop</url>
 
   <categories>
     <category>Settings</category>
@@ -89,7 +92,7 @@
   </keywords>
 
   <provides>
-    <binary>kde-infinit-desktop-settings</binary>
+    <binary>kde-infinite-desktop-settings</binary>
   </provides>
 
   <supports>
@@ -101,6 +104,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.6.0" date="2026-10-26">
+      <description>
+        <p>The project is now called KDE Infinite Desktop (until 0.5.1: KDE Infinit Desktop). Settings, shortcuts, notes and canvases are taken over automatically.</p>
+      </description>
+    </release>
     <release version="0.5.1" date="2026-10-25">
       <description>
         <p>Notes open with their Markdown source and a pencil button switches to the formatted text, right click opens the note's own menu everywhere, the hint text wraps, and menus and tool tips follow the color scheme.</p>
