@@ -785,6 +785,144 @@ enable_effect() {
     fi
 }
 
+# ----------------------------------------- the old name (up to 0.5.1) --
+# Up to version 0.5.1 the project was called "KDE Infinit Desktop" (plugin id
+# "infinitdesktop"). Its settings are taken over for the user and its files are
+# removed, so the old and the new plugin never run side by side. Notes, canvases
+# and the app settings move to the new folders when the new version first starts.
+readonly LEGACY_PROJECT=kde-infinit-desktop
+readonly LEGACY_EFFECT_ID=infinitdesktop
+
+kreadconfig() {
+    local k
+    for k in kreadconfig6 /usr/lib/kf6/bin/kreadconfig6 /usr/lib64/kf6/bin/kreadconfig6; do
+        if have "$k"; then
+            "$k" "$@"
+            return
+        fi
+    done
+    return 127
+}
+
+# legacy_packages: installed distribution packages of the old name, one per line
+legacy_packages() {
+    local p
+    # shellcheck disable=SC2016 # ${Status} is a dpkg-query format, not a shell expansion
+    if have dpkg-query; then
+        for p in kde-infinit-desktop kwin-effect-infinitdesktop kde-infinit-desktop-settings kde-infinit-desktop-data; do
+            if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q 'ok installed'; then printf '%s\n' "$p"; fi
+        done
+    elif have pacman; then
+        for p in kde-infinit-desktop kde-infinit-desktop-git; do
+            if pacman -Qq "$p" >/dev/null 2>&1; then printf '%s\n' "$p"; fi
+        done
+    elif have apk; then
+        if apk info -e "$LEGACY_PROJECT" >/dev/null 2>&1; then printf '%s\n' "$LEGACY_PROJECT"; fi
+    elif have rpm; then
+        for p in kde-infinit-desktop kde-infinit-desktop-settings; do
+            if rpm -q "$p" >/dev/null 2>&1; then printf '%s\n' "$p"; fi
+        done
+    fi
+    if compgen -G "/var/db/pkg/kde-misc/$LEGACY_PROJECT-[0-9]*" >/dev/null 2>&1; then
+        printf '%s\n' "kde-misc/$LEGACY_PROJECT"
+    fi
+    return 0
+}
+
+remove_legacy_packages() {
+    local pkgs=("$@")
+    if have apt-get && have dpkg-query; then
+        run_root apt-get remove -y "${pkgs[@]}"
+    elif have pacman; then
+        run_root pacman -R --noconfirm "${pkgs[@]}"
+    elif have emerge && [[ ${pkgs[0]} == */* ]]; then
+        run_root emerge --unmerge "${pkgs[@]}"
+    elif have apk; then
+        run_root apk del "${pkgs[@]}"
+    elif have dnf5 || have dnf; then
+        run_root "$(have dnf5 && echo dnf5 || echo dnf)" remove -y "${pkgs[@]}"
+    elif have zypper; then
+        run_root zypper --non-interactive remove "${pkgs[@]}"
+    elif have rpm; then
+        run_root rpm -e "${pkgs[@]}"
+    else
+        return 1
+    fi
+}
+
+# Copy [Effect-infinitdesktop] to [Effect-infinitedesktop] and the enabled
+# state, unless the new name has settings already (the plugin does the same at
+# its first start; this runs before the old plugin is switched off).
+migrate_legacy_config() {
+    local cfg="${XDG_CONFIG_HOME:-$HOME/.config}/kwinrc" old_enabled new_enabled lines
+    if [ -r "$cfg" ] && grep -q "^\[Effect-$LEGACY_EFFECT_ID\]" "$cfg" && ! grep -q "^\[Effect-$EFFECT_ID\]" "$cfg"; then
+        info "Taking over the settings of KDE Infinit Desktop ([Effect-$LEGACY_EFFECT_ID] in kwinrc)"
+        lines=$(awk -v group="[Effect-$LEGACY_EFFECT_ID]" '
+            $0 == group { inside = 1; next }
+            /^\[/ { inside = 0 }
+            inside && NF { print }' "$cfg")
+        print_cmd "append [Effect-$EFFECT_ID] to $cfg"
+        if [ "$DRY_RUN" -eq 0 ] && [ -n "$lines" ]; then
+            printf '\n[Effect-%s]\n%s\n' "$EFFECT_ID" "$lines" >>"$cfg"
+        fi
+    fi
+    old_enabled=$(kreadconfig --file kwinrc --group Plugins --key "${LEGACY_EFFECT_ID}Enabled" 2>/dev/null || true)
+    new_enabled=$(kreadconfig --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" 2>/dev/null || true)
+    if [ -n "$old_enabled" ] && [ -z "$new_enabled" ]; then
+        print_cmd kwriteconfig6 --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" "$old_enabled"
+        [ "$DRY_RUN" -eq 1 ] || kwriteconfig --file kwinrc --group Plugins --key "${EFFECT_ID}Enabled" "$old_enabled" || true
+    fi
+}
+
+# quit_legacy_companion: the notes app of the old name keeps its icon until
+# logout otherwise. Only if it runs (a call would start it by D-Bus activation).
+quit_legacy_companion() {
+    local q service=org.kde.InfinitDesktop.Companion
+    for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
+        if have "$q"; then
+            if "$q" 2>/dev/null | grep -qx " *$service"; then
+                print_cmd "$q" "$service" /Companion "$service.quit"
+                [ "$DRY_RUN" -eq 1 ] || "$q" "$service" /Companion "$service.quit" >/dev/null 2>&1 || true
+            fi
+            return 0
+        fi
+    done
+}
+
+migrate_legacy_install() {
+    local pkgs=() p prefixes=() uninstall_args=(--legacy --yes)
+    mapfile -t pkgs < <(legacy_packages)
+    for p in "$PREFIX" /usr /usr/local; do
+        if [ -r "$p/share/$LEGACY_PROJECT/install_manifest.txt" ] || [ -r "$p/share/$LEGACY_PROJECT/install-info" ]; then
+            case " ${prefixes[*]} " in *" $p "*) ;; *) prefixes+=("$p") ;; esac
+        fi
+    done
+    if [ "${#pkgs[@]}" -eq 0 ] && [ "${#prefixes[@]}" -eq 0 ] && ! compgen -G "/usr/src/$LEGACY_PROJECT-*" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    info "Found KDE Infinit Desktop (the name up to 0.5.1): taking over its settings, removing its files"
+    if [ "$IS_ROOT" -eq 0 ]; then
+        migrate_legacy_config
+        quit_legacy_companion
+    fi
+    if [ "${#pkgs[@]}" -gt 0 ]; then
+        confirm "Remove the packages of the old name (${pkgs[*]})?" || die "aborted"
+        remove_legacy_packages "${pkgs[@]}" || warn "could not remove ${pkgs[*]} - remove them with your package manager"
+    fi
+    [ "$DRY_RUN" -eq 1 ] && uninstall_args+=(--dry-run)
+    for p in "${prefixes[@]}"; do
+        if [ -d "$p/share/$LEGACY_PROJECT" ]; then
+            bash "$SOURCE_DIR/scripts/uninstall.sh" "${uninstall_args[@]}" --prefix "$p" ||
+                warn "could not remove everything of KDE Infinit Desktop in $p"
+        fi
+    done
+    # copies of the sources the old automatic rebuild used
+    for p in /usr/src/"$LEGACY_PROJECT"-*; do
+        if [ -d "$p" ]; then run_root rm -rf -- "$p"; fi
+    done
+}
+
 # ------------------------------------------------------ install metadata --
 read_install_info() {
     # read_install_info FILE: load prefix/options of a previous installation
@@ -1116,6 +1254,9 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
         ok "rebuilt and installed for KWin ${kwin_version:-?}"
         return 0
     fi
+
+    # --- the old name (KDE Infinit Desktop, up to 0.5.1) ---
+    migrate_legacy_install
 
     # --- enable ---
     if [ "$ENABLE_EFFECT" -eq 1 ] && [ "$WITH_EFFECT" = ON ]; then

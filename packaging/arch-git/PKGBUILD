@@ -27,7 +27,9 @@ if ((_autorebuild)); then
     depends+=(cmake ninja extra-cmake-modules vulkan-headers gcc make)
 fi
 provides=("$_name=${pkgver%%.r*}" kwin-effect-infinitedesktop)
-conflicts=("$_name")
+# Up to 0.5.1 the package was called kde-infinit-desktop(-git).
+conflicts=("$_name" kde-infinit-desktop kde-infinit-desktop-git)
+replaces=(kde-infinit-desktop-git)
 install=kde-infinite-desktop.install
 source=("$_name::git+${KID_GIT_URL:-$_repo.git}")
 sha256sums=('SKIP')

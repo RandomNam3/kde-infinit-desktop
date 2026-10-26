@@ -10,6 +10,7 @@
 #include "infinitedesktopconfig.h"
 #include "inputfilter.h"
 #include "launcherpositioner.h"
+#include "legacymigration.h"
 #include "logging.h"
 #include "organizer.h"
 #include "parking.h"
@@ -30,6 +31,7 @@
 #include "window.h"
 #include "workspace.h"
 
+#include <KConfigGroup>
 #include <KGlobalAccel>
 #include <KLocalizedString>
 
@@ -192,6 +194,12 @@ InfiniteDesktopEffect::InfiniteDesktopEffect()
     : m_crashGuard(std::make_unique<CrashGuard>())
     , m_stateStore(std::make_unique<StateStore>())
 {
+    // Up to 0.5.1 the project was called "KDE Infinit Desktop": take over its settings and
+    // files once, before anything reads them.
+    Legacy::migrateConfig(*KWin::effects->config());
+    for (const QString &path : Legacy::migrateUserFiles()) {
+        qCInfo(KWIN_INFINITEDESKTOP) << "took over" << path << "from KDE Infinit Desktop";
+    }
     InfiniteDesktopConfig::instance(KWin::effects->config());
     loadSettings();
 
@@ -429,16 +437,41 @@ void InfiniteDesktopEffect::loadSettings()
 
 void InfiniteDesktopEffect::setupShortcuts()
 {
+    // Shortcuts of the old name ("InfinitDesktop ZoomIn", ...) are taken over once: their keys
+    // go to the new action, the old action is removed so it does not hold on to the keys.
+    KConfigGroup group = KWin::effects->config()->group(QString::fromLatin1(Legacy::NewEffectGroup));
+    const bool takeOverLegacy = !group.readEntry(Legacy::ShortcutsMigratedKey, false);
+    const QString component = QString::fromLatin1(ShortcutComponent);
     for (const ShortcutDefinition &definition : shortcutDefinitions()) {
         auto *action = new QAction(this);
         action->setObjectName(QString::fromLatin1(definition.id));
         action->setText(definition.text.toString());
-        KGlobalAccel::self()->setGlobalShortcut(action, definition.defaultShortcuts);
+        QList<QKeySequence> legacyKeys;
+        if (takeOverLegacy) {
+            const QString legacyId = Legacy::legacyShortcutId(action->objectName());
+            legacyKeys = KGlobalAccel::self()->globalShortcut(component, legacyId);
+            if (!legacyKeys.isEmpty()) {
+                QAction legacy;
+                legacy.setObjectName(legacyId);
+                legacy.setProperty("componentName", component);
+                KGlobalAccel::self()->removeAllShortcuts(&legacy);
+            }
+        }
+        if (!legacyKeys.isEmpty() && legacyKeys != definition.defaultShortcuts) {
+            KGlobalAccel::self()->setDefaultShortcut(action, definition.defaultShortcuts);
+            KGlobalAccel::self()->setShortcut(action, legacyKeys, KGlobalAccel::NoAutoloading);
+        } else {
+            KGlobalAccel::self()->setGlobalShortcut(action, definition.defaultShortcuts);
+        }
         const ShortcutAction id = definition.action;
         connect(action, &QAction::triggered, this, [this, id]() {
             triggerAction(id);
         });
         m_actions.append(action);
+    }
+    if (takeOverLegacy) {
+        group.writeEntry(Legacy::ShortcutsMigratedKey, true);
+        group.sync();
     }
 }
 

@@ -410,6 +410,27 @@ Einstellungen wirken live:
 - Zusätzlich beobachtet der Effect `kwinrc` mit `KConfigWatcher` (z.B. für
   `kwriteconfig6 --notify`).
 
+### Übernahme vom alten Namen (bis 0.5.1 „KDE Infinit Desktop“)
+
+`src/shared/legacymigration.cpp` übernimmt einmalig, was die alten Versionen unter dem alten Namen
+gespeichert haben. Effect, KCM, Einstellungs-App und Notiz-App rufen es beim Start auf, bevor sie
+etwas lesen; wer zuerst startet, erledigt es:
+- `migrateConfig()`: `[Effect-infinitdesktop]` wird nach `[Effect-infinitedesktop]` kopiert, wenn die
+  neue Gruppe leer ist; `[Plugins] infinitdesktopEnabled` wird nach `infinitedesktopEnabled` übernommen,
+  der alte Schlüssel auf `false` gesetzt (nie laufen beide Plugins).
+- `migrateUserFiles()`: `kde-infinit-desktop/` (Zustand, Notizen) und `kde-infinit-desktop-*rc` in den
+  Zustands-, Daten- und Konfigurationsordnern werden umbenannt, solange am neuen Ort nichts liegt.
+- Tastenkürzel: Der Effect liest beim ersten Start die Tasten der alten Aktionen
+  (`InfinitDesktop ZoomIn`, …) aus KGlobalAccel, gibt sie den neuen Aktionen und entfernt die alten;
+  die Marke `LegacyShortcutsMigrated` in `[Effect-infinitedesktop]` verhindert eine Wiederholung.
+- War der Effect nur unter dem alten Schlüssel eingeschaltet (Paket-Update), lädt die Notiz-App ihn nach
+  der Übernahme per `loadEffect`.
+
+`scripts/install.sh` kopiert die kwinrc-Gruppe ebenfalls und entfernt danach eine alte Installation: Pakete
+der alten Namen mit dem Paketmanager, eine Installation von `scripts/install.sh` mit
+`scripts/uninstall.sh --legacy` (Manifest, Hooks der automatischen Neuerstellung, `/usr/src`-Kopie,
+Anmelde-Prüfung). Die Pakete ersetzen die alten (`Conflicts`/`Replaces`, `Obsoletes`, `replaces`, Blocker).
+
 ## 9. Stabilität
 
 Ein Absturz im Plugin ist ein Absturz von KWin. In keiner Sprache lässt sich ein Segfault im Prozess

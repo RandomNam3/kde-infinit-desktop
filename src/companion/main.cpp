@@ -16,9 +16,11 @@
 #endif
 
 #include "companion.h"
+#include "legacymigration.h"
 #include "notestore.h"
 
 #include <KAboutData>
+#include <KSharedConfig>
 #include <KLocalizedString>
 
 #include <QApplication>
@@ -64,6 +66,11 @@ int main(int argc, char *argv[])
     parser.process(app);
     about.processCommandLine(&parser);
 
+    // Up to 0.5.1 the project was called "KDE Infinit Desktop": take over its notes and
+    // settings once (the effect does the same; whoever runs first does it).
+    Legacy::migrateUserFiles();
+    const Legacy::ConfigResult migration = Legacy::migrateConfig(*KSharedConfig::openConfig(QStringLiteral("kwinrc")));
+
     NoteStore store;
     store.load();
     // Links in the formatted text lie on light paper with every color scheme; the Markdown
@@ -91,6 +98,19 @@ int main(int argc, char *argv[])
             QDBusConnection::sessionBus().call(message, QDBus::Block, 2000);
         }
         return 0;
+    }
+    // An old companion of the previous name may still run in this session: one notes icon
+    // is enough. Never start it for that (no D-Bus activation).
+    QDBusMessage quitLegacy = QDBusMessage::createMethodCall(QStringLiteral("org.kde.InfinitDesktop.Companion"), QStringLiteral("/Companion"),
+                                                             QStringLiteral("org.kde.InfinitDesktop.Companion"), QStringLiteral("quit"));
+    quitLegacy.setAutoStartService(false);
+    QDBusConnection::sessionBus().send(quitLegacy);
+    if (migration.changed() && migration.enabled) {
+        // The effect was enabled under the old name only: KWin did not load it at login.
+        QDBusMessage load = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"), QStringLiteral("/Effects"), QStringLiteral("org.kde.kwin.Effects"),
+                                                           QStringLiteral("loadEffect"));
+        load << QStringLiteral("infinitedesktop");
+        QDBusConnection::sessionBus().send(load);
     }
     companion.start();
     if (parser.isSet(newNoteOption)) {

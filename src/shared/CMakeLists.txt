@@ -4,6 +4,7 @@
 # the System Settings module and the settings app.
 
 add_library(infinitedesktop_shared STATIC
+    legacymigration.cpp
     shortcutdefs.cpp
     settingsmeta.cpp
 )

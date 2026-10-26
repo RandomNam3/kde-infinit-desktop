@@ -7,6 +7,9 @@
 -->
 <component type="desktop-application">
   <id>org.kde.infinitedesktop</id>
+  <replaces>
+    <id>org.kde.infinitdesktop</id>
+  </replaces>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
 
@@ -101,6 +104,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.6.0" date="2026-10-26">
+      <description>
+        <p>The project is now called KDE Infinite Desktop (until 0.5.1: KDE Infinit Desktop). Settings, shortcuts, notes and canvases are taken over automatically.</p>
+      </description>
+    </release>
     <release version="0.5.1" date="2026-10-25">
       <description>
         <p>Notes open with their Markdown source and a pencil button switches to the formatted text, right click opens the note's own menu everywhere, the hint text wraps, and menus and tool tips follow the color scheme.</p>

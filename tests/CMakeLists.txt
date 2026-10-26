@@ -14,7 +14,9 @@ ecm_add_tests(
     LINK_LIBRARIES infinitedesktop_core Qt6::Test
 )
 
-ecm_add_test(test_shared.cpp
+ecm_add_tests(
+    test_shared.cpp
+    test_legacymigration.cpp
     LINK_LIBRARIES infinitedesktop_shared Qt6::Test
 )
 

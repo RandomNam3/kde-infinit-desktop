@@ -27,6 +27,7 @@ qt_add_qml_module(kde-infinite-desktop-companion
 )
 
 target_link_libraries(kde-infinite-desktop-companion PRIVATE
+    infinitedesktop_shared
     Qt6::DBus
     Qt6::Qml
     Qt6::Quick

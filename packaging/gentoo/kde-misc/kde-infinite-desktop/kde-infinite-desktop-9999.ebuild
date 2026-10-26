@@ -43,7 +43,10 @@ DEPEND="
 		>=dev-qt/qtsvg-${QTMIN}:6
 	)
 "
-RDEPEND="${DEPEND}"
+# Up to 0.5.1 the package was called kde-misc/kde-infinit-desktop.
+RDEPEND="${DEPEND}
+	!kde-misc/kde-infinit-desktop
+"
 BDEPEND="
 	dev-util/vulkan-headers
 	sys-devel/gettext

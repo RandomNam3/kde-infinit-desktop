@@ -36,6 +36,9 @@ Build-Profiles: <!pkg.kde-infinite-desktop.noeffect !pkg.kde-infinite-desktop.no
 Depends: kwin-effect-infinitedesktop (>= ${source:Version}),
          kde-infinite-desktop-settings (>= ${source:Version}),
          ${misc:Depends},
+Replaces: kde-infinit-desktop
+Conflicts: kde-infinit-desktop
+Provides: kde-infinit-desktop
 Description: infinite canvas for KDE Plasma (metapackage)
  KDE Infinite Desktop turns every monitor into an infinite canvas: windows
  are placed on a plane that can be panned and zoomed freely with the mouse,
@@ -52,6 +55,9 @@ Depends: kde-infinite-desktop-data (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Recommends: kde-infinite-desktop-settings,
+Replaces: kwin-effect-infinitdesktop
+Conflicts: kwin-effect-infinitdesktop
+Provides: kwin-effect-infinitdesktop
 Description: infinite pannable and zoomable canvas - KWin effect
  KDE Infinite Desktop turns every monitor into an infinite canvas: windows
  are placed on a plane that can be panned and zoomed freely with the mouse,
@@ -77,6 +83,9 @@ Depends: kde-infinite-desktop-data (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Recommends: kwin-effect-infinitedesktop,
+Replaces: kde-infinit-desktop-settings
+Conflicts: kde-infinit-desktop-settings
+Provides: kde-infinit-desktop-settings
 Description: infinite pannable and zoomable canvas - settings app
  KDE Infinite Desktop turns every monitor into an infinite canvas: windows
  are placed on a plane that can be panned and zoomed freely with the mouse,
@@ -89,6 +98,9 @@ Package: kde-infinite-desktop-data
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
+Replaces: kde-infinit-desktop-data
+Conflicts: kde-infinit-desktop-data
+Provides: kde-infinit-desktop-data
 Description: infinite pannable and zoomable canvas - shared data
  KDE Infinite Desktop turns every monitor into an infinite canvas: windows
  are placed on a plane that can be panned and zoomed freely with the mouse,

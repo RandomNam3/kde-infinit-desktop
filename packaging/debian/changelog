@@ -1,3 +1,11 @@
+kde-infinite-desktop (0.6.0-1) unstable; urgency=medium
+
+  * New name: KDE Infinite Desktop (until 0.5.1 KDE Infinit Desktop). The
+    packages replace those of the old name; settings, shortcuts, notes and
+    canvases are taken over automatically.
+
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Mon, 26 Oct 2026 19:00:00 +0100
+
 kde-infinite-desktop (0.5.1-1) unstable; urgency=medium
 
   * Notes open with their Markdown source; a pencil button and Ctrl+E switch

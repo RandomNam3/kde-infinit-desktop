@@ -8,6 +8,9 @@ unendlichen Fläche, auf der Fenster in Originalgröße liegen. Du verschiebst d
 oder Tastatur, zoomst mit dem Mausrad heraus, um alles zu überblicken, und wieder hinein, um weiterzuarbeiten.
 Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
 
+Bis Version 0.5.1 hieß das Projekt „KDE Infinit Desktop“. Eine bestehende Installation übernimmt beim Update alle
+Einstellungen, Tastenkürzel, Notizen und Arbeitsflächen.
+
 ![Übersicht bei 42 %: alle Fenster live und lesbar, Hintergrund und Taskleiste bleiben stehen](docs/images/overview.png)
 
 | Fläche verschieben | Herausgezoomt arbeiten |

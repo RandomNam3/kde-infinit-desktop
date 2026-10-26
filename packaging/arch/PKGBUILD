@@ -22,7 +22,7 @@
 # build from a local checkout with ./build.sh --package (uses a local tarball).
 
 pkgname=kde-infinite-desktop
-pkgver=0.5.1
+pkgver=0.6.0
 pkgrel=1
 pkgdesc="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect for Plasma 6 on Wayland)"
 arch=(x86_64 aarch64)
@@ -38,7 +38,9 @@ if ((_autorebuild)); then
     depends+=(cmake ninja extra-cmake-modules vulkan-headers gcc make)
 fi
 provides=(kwin-effect-infinitedesktop)
-conflicts=(kde-infinite-desktop-git)
+# Up to 0.5.1 the package was called kde-infinit-desktop.
+conflicts=(kde-infinite-desktop-git kde-infinit-desktop kde-infinit-desktop-git)
+replaces=(kde-infinit-desktop)
 install=kde-infinite-desktop.install
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 # Replace with the real checksum (updpkgsums) before publishing to the AUR.

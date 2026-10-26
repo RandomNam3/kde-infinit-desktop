@@ -29,7 +29,7 @@
 %endif
 
 Name:           kde-infinite-desktop
-Version:        0.5.1
+Version:        0.6.0
 Release:        1%{?kwin_tag}%{?dist}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -85,6 +85,9 @@ Requires:       kwin%{?_isa} = %{kwin_version}
 %else
 Requires:       kwin%{?_isa} >= 6.8
 %endif
+# Up to 0.5.1 the package was called kde-infinit-desktop.
+Obsoletes:      kde-infinit-desktop < 0.6.0
+Provides:       kde-infinit-desktop = %{version}-%{release}
 %endif
 %if %{with app}
 Recommends:     %{name}-settings = %{version}-%{release}
@@ -102,6 +105,8 @@ KWin update.
 %if %{with app}
 %package settings
 Summary:        Settings app for KDE Infinite Desktop
+Obsoletes:      kde-infinit-desktop-settings < 0.6.0
+Provides:       kde-infinit-desktop-settings = %{version}-%{release}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       qt6-qtdeclarative%{?_isa}
 Requires:       qt6-qtsvg%{?_isa}
@@ -164,6 +169,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/org.kde.infini
 %endif
 
 %changelog
+* Mon Oct 26 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.6.0-1
+- Update to 0.6.0: new name KDE Infinite Desktop (was KDE Infinit Desktop)
+
 * Sun Oct 25 2026 KDE Infinite Desktop contributors <maintainers@kde-infinite-desktop.invalid> - 0.5.1-1
 - Update to 0.5.1
 

@@ -6,6 +6,7 @@
 #include "infinitedesktopkcm.h"
 
 #include "infinitedesktopconfig.h"
+#include "legacymigration.h"
 #include "settingsmeta.h"
 #include "shortcutdefs.h"
 #include "stringlistedit.h"
@@ -145,6 +146,8 @@ QWidget *wrapInScrollArea(QWidget *content, QWidget *parent)
 InfiniteDesktopEffectConfig::InfiniteDesktopEffectConfig(QObject *parent, const KPluginMetaData &data)
     : KCModule(parent, data)
 {
+    // Up to 0.5.1 the project was called "KDE Infinit Desktop": take over its settings once.
+    Legacy::migrateConfig(*KSharedConfig::openConfig(QStringLiteral("kwinrc")));
     InfiniteDesktopConfig::instance(KSharedConfig::openConfig(QStringLiteral("kwinrc")));
     InfiniteDesktopConfig *config = InfiniteDesktopConfig::self();
 

@@ -7,6 +7,10 @@ KDE Plasma 6. Er macht jeden Monitor zu einer unendlichen Arbeitsfläche, die
 man verschieben und zoomen kann. Dazu gehören ein Modul für die
 Systemeinstellungen und eine eigene Einstellungs-App.
 
+Bis Version 0.5.1 hieß das Projekt „KDE Infinit Desktop“. Der Installer entfernt die Installation unter dem
+alten Namen (Dateien, Pakete, automatische Neuerstellung) und übernimmt die Einstellungen; Notizen und
+Arbeitsflächen holt das Plugin beim ersten Start an den neuen Ort.
+
 **Voraussetzungen**
 
 - KDE Plasma mit **KWin 6.8 oder neuer** (ältere Versionen haben eine andere Plugin-Schnittstelle)

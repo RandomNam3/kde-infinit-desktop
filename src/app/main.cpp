@@ -18,6 +18,7 @@
 #include "effectstatus.h"
 #include "globalshortcutsmodel.h"
 #include "iconprovider.h"
+#include "legacymigration.h"
 #include "screenshotrunner.h"
 #include "settingsmodel.h"
 #include "shortcutmodel.h"
@@ -28,6 +29,7 @@
 
 #include <KAboutData>
 #include <KLocalizedString>
+#include <KSharedConfig>
 
 #include <QCommandLineParser>
 #include <QDir>
@@ -73,6 +75,10 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     KLocalizedString::setApplicationDomain(QByteArrayLiteral(TRANSLATION_DOMAIN));
+    // Up to 0.5.1 the project was called "KDE Infinit Desktop": take over its settings and
+    // files once, before anything reads them.
+    Legacy::migrateUserFiles();
+    Legacy::migrateConfig(*KSharedConfig::openConfig(QStringLiteral("kwinrc")));
 
     KAboutData about(QStringLiteral("kde-infinite-desktop-settings"),
                      i18nc("@title application name", "KDE Infinite Desktop"),

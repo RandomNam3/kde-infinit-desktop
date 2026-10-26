@@ -27,7 +27,7 @@
 %endif
 
 Name:           kde-infinite-desktop
-Version:        0.5.1
+Version:        0.6.0
 Release:        1%{?kwin_tag}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
@@ -69,6 +69,9 @@ Requires:       kwin6 = %{kwin_version}
 %else
 Requires:       kwin6 >= 6.8
 %endif
+# Up to 0.5.1 the package was called kde-infinit-desktop.
+Obsoletes:      kde-infinit-desktop < 0.6.0
+Provides:       kde-infinit-desktop = %{version}-%{release}
 %endif
 %if %{with app}
 BuildRequires:  cmake(Qt6Qml)
@@ -89,6 +92,8 @@ KWin update.
 %if %{with app}
 %package settings
 Summary:        Settings app for KDE Infinite Desktop
+Obsoletes:      kde-infinit-desktop-settings < 0.6.0
+Provides:       kde-infinit-desktop-settings = %{version}-%{release}
 Requires:       %{name} = %{version}
 Requires:       libQt6Svg6
 Requires:       qt6-declarative-imports
