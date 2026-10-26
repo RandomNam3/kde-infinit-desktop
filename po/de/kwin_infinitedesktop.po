@@ -1,16 +1,16 @@
-# German translation of kwin_infinitdesktop (KDE Infinit Desktop).
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# German translation of kwin_infinitedesktop (KDE Infinite Desktop).
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Terminology: canvas = Arbeitsfläche, desktop = Desktop, screen = Bildschirm,
 # shortcut = Kurzbefehl, pan = verschieben, Ctrl = Strg, Shift = Umschalt.
 msgid ""
 msgstr ""
-"Project-Id-Version: kde-infinit-desktop\n"
-"Report-Msgid-Bugs-To: https://github.com/RandomNam3/kde-infinit-desktop/issues\n"
+"Project-Id-Version: kde-infinite-desktop\n"
+"Report-Msgid-Bugs-To: https://github.com/RandomNam3/kde-infinite-desktop/issues\n"
 "POT-Creation-Date: 2026-10-24 11:35+0000\n"
 "PO-Revision-Date: 2026-10-24 14:00+0200\n"
-"Last-Translator: KDE Infinit Desktop contributors\n"
+"Last-Translator: KDE Infinite Desktop contributors\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # ---------------------------------------------------------------------------
-# Settings (infinitdesktop.kcfg)
+# Settings (infinitedesktop.kcfg)
 # ---------------------------------------------------------------------------
 
 msgid "Drag the empty desktop to pan"
@@ -656,10 +656,10 @@ msgstr "Debug-Protokoll"
 
 msgid ""
 "Writes detailed messages to the system journal (journalctl --user -g "
-"infinitdesktop). Only useful for bug reports."
+"infinitedesktop). Only useful for bug reports."
 msgstr ""
 "Schreibt ausführliche Meldungen in das Systemprotokoll (journalctl --user -g "
-"infinitdesktop). Nur für Fehlerberichte nützlich."
+"infinitedesktop). Nur für Fehlerberichte nützlich."
 
 # ---------------------------------------------------------------------------
 # Categories and search keywords (settingsmeta.cpp)
@@ -891,26 +891,26 @@ msgstr "protokoll,journal,debug,fehlerbericht"
 # Global shortcuts (shortcutdefs.cpp)
 # ---------------------------------------------------------------------------
 
-msgid "Infinit Desktop: Zoom In"
-msgstr "Infinit Desktop: Hineinzoomen"
+msgid "Infinite Desktop: Zoom In"
+msgstr "Infinite Desktop: Hineinzoomen"
 
 msgid "Zoom into the canvas around the mouse pointer."
 msgstr "Rund um den Mauszeiger in die Arbeitsfläche hineinzoomen."
 
-msgid "Infinit Desktop: Zoom Out"
-msgstr "Infinit Desktop: Herauszoomen"
+msgid "Infinite Desktop: Zoom Out"
+msgstr "Infinite Desktop: Herauszoomen"
 
 msgid "Zoom out of the canvas around the mouse pointer."
 msgstr "Rund um den Mauszeiger aus der Arbeitsfläche herauszoomen."
 
-msgid "Infinit Desktop: Zoom to 100 %"
-msgstr "Infinit Desktop: Zoom auf 100 %"
+msgid "Infinite Desktop: Zoom to 100 %"
+msgstr "Infinite Desktop: Zoom auf 100 %"
 
 msgid "Return to 100 % zoom so that windows can be used directly again."
 msgstr "Zurück zu 100 % Zoom, damit Fenster wieder direkt bedienbar sind."
 
-msgid "Infinit Desktop: Show All Windows"
-msgstr "Infinit Desktop: Alle Fenster zeigen"
+msgid "Infinite Desktop: Show All Windows"
+msgstr "Infinite Desktop: Alle Fenster zeigen"
 
 msgid ""
 "Zoom out until every window of this screen is visible. Press again to go "
@@ -919,8 +919,8 @@ msgstr ""
 "So weit herauszoomen, bis alle Fenster dieses Bildschirms sichtbar sind. "
 "Erneut drücken, um zurückzukehren."
 
-msgid "Infinit Desktop: Go Home"
-msgstr "Infinit Desktop: Zum Ursprung"
+msgid "Infinite Desktop: Go Home"
+msgstr "Infinite Desktop: Zum Ursprung"
 
 msgid ""
 "Jump to the origin of the canvas. Press again to return to where you were."
@@ -928,8 +928,8 @@ msgstr ""
 "Zum Ursprung der Arbeitsfläche springen. Erneut drücken, um an die vorherige "
 "Stelle zurückzukehren."
 
-msgid "Infinit Desktop: Center Active Window"
-msgstr "Infinit Desktop: Aktives Fenster zentrieren"
+msgid "Infinite Desktop: Center Active Window"
+msgstr "Infinite Desktop: Aktives Fenster zentrieren"
 
 msgid ""
 "Move the canvas so that the active window is in the middle of the screen."
@@ -937,32 +937,32 @@ msgstr ""
 "Die Arbeitsfläche so verschieben, dass das aktive Fenster in der "
 "Bildschirmmitte liegt."
 
-msgid "Infinit Desktop: Pan Left"
-msgstr "Infinit Desktop: Nach links verschieben"
+msgid "Infinite Desktop: Pan Left"
+msgstr "Infinite Desktop: Nach links verschieben"
 
 msgid "Move the view to the left."
 msgstr "Die Ansicht nach links verschieben."
 
-msgid "Infinit Desktop: Pan Right"
-msgstr "Infinit Desktop: Nach rechts verschieben"
+msgid "Infinite Desktop: Pan Right"
+msgstr "Infinite Desktop: Nach rechts verschieben"
 
 msgid "Move the view to the right."
 msgstr "Die Ansicht nach rechts verschieben."
 
-msgid "Infinit Desktop: Pan Up"
-msgstr "Infinit Desktop: Nach oben verschieben"
+msgid "Infinite Desktop: Pan Up"
+msgstr "Infinite Desktop: Nach oben verschieben"
 
 msgid "Move the view up."
 msgstr "Die Ansicht nach oben verschieben."
 
-msgid "Infinit Desktop: Pan Down"
-msgstr "Infinit Desktop: Nach unten verschieben"
+msgid "Infinite Desktop: Pan Down"
+msgstr "Infinite Desktop: Nach unten verschieben"
 
 msgid "Move the view down."
 msgstr "Die Ansicht nach unten verschieben."
 
-msgid "Infinit Desktop: Focus Window to the Left"
-msgstr "Infinit Desktop: Fenster links aktivieren"
+msgid "Infinite Desktop: Focus Window to the Left"
+msgstr "Infinite Desktop: Fenster links aktivieren"
 
 msgid ""
 "Activate the nearest window to the left on the canvas and bring it into view."
@@ -970,8 +970,8 @@ msgstr ""
 "Das nächstgelegene Fenster links auf der Arbeitsfläche aktivieren und ins "
 "Bild holen."
 
-msgid "Infinit Desktop: Focus Window to the Right"
-msgstr "Infinit Desktop: Fenster rechts aktivieren"
+msgid "Infinite Desktop: Focus Window to the Right"
+msgstr "Infinite Desktop: Fenster rechts aktivieren"
 
 msgid ""
 "Activate the nearest window to the right on the canvas and bring it into "
@@ -980,72 +980,72 @@ msgstr ""
 "Das nächstgelegene Fenster rechts auf der Arbeitsfläche aktivieren und ins "
 "Bild holen."
 
-msgid "Infinit Desktop: Focus Window Above"
-msgstr "Infinit Desktop: Fenster oberhalb aktivieren"
+msgid "Infinite Desktop: Focus Window Above"
+msgstr "Infinite Desktop: Fenster oberhalb aktivieren"
 
 msgid "Activate the nearest window above on the canvas and bring it into view."
 msgstr ""
 "Das nächstgelegene Fenster oberhalb auf der Arbeitsfläche aktivieren und ins "
 "Bild holen."
 
-msgid "Infinit Desktop: Focus Window Below"
-msgstr "Infinit Desktop: Fenster unterhalb aktivieren"
+msgid "Infinite Desktop: Focus Window Below"
+msgstr "Infinite Desktop: Fenster unterhalb aktivieren"
 
 msgid "Activate the nearest window below on the canvas and bring it into view."
 msgstr ""
 "Das nächstgelegene Fenster unterhalb auf der Arbeitsfläche aktivieren und "
 "ins Bild holen."
 
-msgid "Infinit Desktop: Go to Bookmark 1"
-msgstr "Infinit Desktop: Zu Lesezeichen 1"
+msgid "Infinite Desktop: Go to Bookmark 1"
+msgstr "Infinite Desktop: Zu Lesezeichen 1"
 
 msgid "Jump to the canvas position saved as bookmark 1."
 msgstr "Zur als Lesezeichen 1 gespeicherten Position springen."
 
-msgid "Infinit Desktop: Go to Bookmark 2"
-msgstr "Infinit Desktop: Zu Lesezeichen 2"
+msgid "Infinite Desktop: Go to Bookmark 2"
+msgstr "Infinite Desktop: Zu Lesezeichen 2"
 
 msgid "Jump to the canvas position saved as bookmark 2."
 msgstr "Zur als Lesezeichen 2 gespeicherten Position springen."
 
-msgid "Infinit Desktop: Go to Bookmark 3"
-msgstr "Infinit Desktop: Zu Lesezeichen 3"
+msgid "Infinite Desktop: Go to Bookmark 3"
+msgstr "Infinite Desktop: Zu Lesezeichen 3"
 
 msgid "Jump to the canvas position saved as bookmark 3."
 msgstr "Zur als Lesezeichen 3 gespeicherten Position springen."
 
-msgid "Infinit Desktop: Go to Bookmark 4"
-msgstr "Infinit Desktop: Zu Lesezeichen 4"
+msgid "Infinite Desktop: Go to Bookmark 4"
+msgstr "Infinite Desktop: Zu Lesezeichen 4"
 
 msgid "Jump to the canvas position saved as bookmark 4."
 msgstr "Zur als Lesezeichen 4 gespeicherten Position springen."
 
-msgid "Infinit Desktop: Save Bookmark 1"
-msgstr "Infinit Desktop: Lesezeichen 1 speichern"
+msgid "Infinite Desktop: Save Bookmark 1"
+msgstr "Infinite Desktop: Lesezeichen 1 speichern"
 
 msgid "Remember the current position and zoom as bookmark 1."
 msgstr "Aktuelle Position und Zoomstufe als Lesezeichen 1 merken."
 
-msgid "Infinit Desktop: Save Bookmark 2"
-msgstr "Infinit Desktop: Lesezeichen 2 speichern"
+msgid "Infinite Desktop: Save Bookmark 2"
+msgstr "Infinite Desktop: Lesezeichen 2 speichern"
 
 msgid "Remember the current position and zoom as bookmark 2."
 msgstr "Aktuelle Position und Zoomstufe als Lesezeichen 2 merken."
 
-msgid "Infinit Desktop: Save Bookmark 3"
-msgstr "Infinit Desktop: Lesezeichen 3 speichern"
+msgid "Infinite Desktop: Save Bookmark 3"
+msgstr "Infinite Desktop: Lesezeichen 3 speichern"
 
 msgid "Remember the current position and zoom as bookmark 3."
 msgstr "Aktuelle Position und Zoomstufe als Lesezeichen 3 merken."
 
-msgid "Infinit Desktop: Save Bookmark 4"
-msgstr "Infinit Desktop: Lesezeichen 4 speichern"
+msgid "Infinite Desktop: Save Bookmark 4"
+msgstr "Infinite Desktop: Lesezeichen 4 speichern"
 
 msgid "Remember the current position and zoom as bookmark 4."
 msgstr "Aktuelle Position und Zoomstufe als Lesezeichen 4 merken."
 
-msgid "Infinit Desktop: Pin Window to Screen"
-msgstr "Infinit Desktop: Fenster an Bildschirm anheften"
+msgid "Infinite Desktop: Pin Window to Screen"
+msgstr "Infinite Desktop: Fenster an Bildschirm anheften"
 
 msgid ""
 "Pin the active window to the screen so it does not move with the canvas, or "
@@ -1054,8 +1054,8 @@ msgstr ""
 "Das aktive Fenster am Bildschirm anheften, damit es sich nicht mit der "
 "Arbeitsfläche bewegt, oder es wieder lösen."
 
-msgid "Infinit Desktop: Pin Window to Screen, Always on Top"
-msgstr "Infinit Desktop: Fenster anheften und im Vordergrund halten"
+msgid "Infinite Desktop: Pin Window to Screen, Always on Top"
+msgstr "Infinite Desktop: Fenster anheften und im Vordergrund halten"
 
 msgid ""
 "Pin the active window to the screen and keep it above all other windows, or "
@@ -1064,8 +1064,8 @@ msgstr ""
 "Das aktive Fenster am Bildschirm anheften und vor allen anderen Fenstern "
 "halten, oder es wieder lösen."
 
-msgid "Infinit Desktop: Pause / Resume"
-msgstr "Infinit Desktop: Pausieren / Fortsetzen"
+msgid "Infinite Desktop: Pause / Resume"
+msgstr "Infinite Desktop: Pausieren / Fortsetzen"
 
 msgid ""
 "Temporarily turn off the mouse and touchpad gestures of the canvas, so "
@@ -1125,8 +1125,8 @@ msgstr ""
 "Suche, Live-Übernahme und den Status des Moduls bietet die Einstellungs-App."
 
 msgctxt "@action:button"
-msgid "Open Infinit Desktop Settings…"
-msgstr "Infinit-Desktop-Einstellungen öffnen …"
+msgid "Open Infinite Desktop Settings…"
+msgstr "Infinite-Desktop-Einstellungen öffnen …"
 
 msgid "The settings app “%1” is not installed."
 msgstr "Die Einstellungs-App „%1“ ist nicht installiert."
@@ -1181,14 +1181,14 @@ msgid "%1 is also used by “%2” (%3)"
 msgstr "%1 wird auch von „%2“ (%3) verwendet"
 
 msgctxt "@title application name"
-msgid "KDE Infinit Desktop"
-msgstr "KDE Infinit Desktop"
+msgid "KDE Infinite Desktop"
+msgstr "KDE Infinite Desktop"
 
 msgid "Settings for the infinite canvas of KWin"
 msgstr "Einstellungen für die unendliche Arbeitsfläche von KWin"
 
-msgid "© 2026 KDE Infinit Desktop contributors"
-msgstr "© 2026 Die Mitwirkenden von KDE Infinit Desktop"
+msgid "© 2026 KDE Infinite Desktop contributors"
+msgstr "© 2026 Die Mitwirkenden von KDE Infinite Desktop"
 
 msgid "Open the given page, for example “mouse” or “shortcuts”."
 msgstr "Die angegebene Seite öffnen, zum Beispiel „mouse“ oder „shortcuts“."
@@ -1297,8 +1297,8 @@ msgid "shortcut,keyboard,key,hotkey"
 msgstr "kurzbefehl,tastenkürzel,tastatur,taste,hotkey"
 
 msgctxt "@label name of this plugin"
-msgid "Infinit Desktop"
-msgstr "Infinit Desktop"
+msgid "Infinite Desktop"
+msgstr "Infinite Desktop"
 
 msgctxt "@label unknown screen"
 msgid "Unknown screen"
@@ -1340,8 +1340,8 @@ msgstr ""
 "System reserviert."
 
 msgctxt "@label badge for actions of this plugin"
-msgid "Infinit Desktop"
-msgstr "Infinit Desktop"
+msgid "Infinite Desktop"
+msgstr "Infinite Desktop"
 
 msgctxt "@action:button %1 is a key combination"
 msgid "Reset to default (%1)"
@@ -1531,10 +1531,10 @@ msgid "Reset all shortcuts?"
 msgstr "Alle Kurzbefehle zurücksetzen?"
 
 msgid ""
-"All Infinit Desktop shortcuts go back to their default key combinations. "
+"All Infinite Desktop shortcuts go back to their default key combinations. "
 "Shortcuts of other applications are not changed."
 msgstr ""
-"Alle Kurzbefehle von Infinit Desktop erhalten wieder ihre "
+"Alle Kurzbefehle von Infinite Desktop erhalten wieder ihre "
 "Standard-Tastenkombinationen. Kurzbefehle anderer Anwendungen bleiben "
 "unverändert."
 
@@ -1542,8 +1542,8 @@ msgid "All shortcuts were reset"
 msgstr "Alle Kurzbefehle wurden zurückgesetzt"
 
 msgctxt "@title:window"
-msgid "KDE Infinit Desktop"
-msgstr "KDE Infinit Desktop"
+msgid "KDE Infinite Desktop"
+msgstr "KDE Infinite Desktop"
 
 msgctxt "@title start page"
 msgid "Overview"
@@ -1747,8 +1747,8 @@ msgid "System Settings"
 msgstr "Systemeinstellungen"
 
 msgctxt "@title:tab shortcuts of this plugin"
-msgid "Infinit Desktop"
-msgstr "Infinit Desktop"
+msgid "Infinite Desktop"
+msgstr "Infinite Desktop"
 
 msgctxt "@title:tab %1 is the number of conflicts"
 msgid "All KDE Shortcuts · %1 conflict"
@@ -1780,8 +1780,8 @@ msgstr ""
 "Standardwerte."
 
 msgctxt "@title short product name"
-msgid "Infinit Desktop"
-msgstr "Infinit Desktop"
+msgid "Infinite Desktop"
+msgstr "Infinite Desktop"
 
 msgctxt "@title subtitle of the product name"
 msgid "Infinite canvas for KWin"
@@ -1855,27 +1855,27 @@ msgstr ""
 
 msgid ""
 "KWin %1 could not load the plugin. This usually happens after a KWin update: "
-"rebuild and reinstall KDE Infinit Desktop for this KWin version, then log "
+"rebuild and reinstall KDE Infinite Desktop for this KWin version, then log "
 "out and back in."
 msgstr ""
 "KWin %1 konnte das Modul nicht laden. Das passiert meist nach einer "
-"KWin-Aktualisierung: Bauen und installieren Sie KDE Infinit Desktop für diese "
+"KWin-Aktualisierung: Bauen und installieren Sie KDE Infinite Desktop für diese "
 "KWin-Version neu und melden Sie sich anschließend ab und wieder an."
 
 msgid ""
 "KWin could not load the plugin. This usually happens after a KWin update: "
-"rebuild and reinstall KDE Infinit Desktop for this KWin version, then log "
+"rebuild and reinstall KDE Infinite Desktop for this KWin version, then log "
 "out and back in."
 msgstr ""
 "KWin konnte das Modul nicht laden. Das passiert meist nach einer "
-"KWin-Aktualisierung: Bauen und installieren Sie KDE Infinit Desktop für diese "
+"KWin-Aktualisierung: Bauen und installieren Sie KDE Infinite Desktop für diese "
 "KWin-Version neu und melden Sie sich anschließend ab und wieder an."
 
 msgid ""
-"KWin does not know the plugin. Install the KDE Infinit Desktop KWin effect, "
+"KWin does not know the plugin. Install the KDE Infinite Desktop KWin effect, "
 "then log out and back in."
 msgstr ""
-"KWin kennt das Modul nicht. Installieren Sie den KWin-Effekt von KDE Infinit "
+"KWin kennt das Modul nicht. Installieren Sie den KWin-Effekt von KDE Infinite "
 "Desktop und melden Sie sich anschließend ab und wieder an."
 
 msgid ""
@@ -2016,16 +2016,16 @@ msgstr "Position von „%1“ vergessen"
 # KWin effect (on-screen messages)
 # ---------------------------------------------------------------------------
 
-msgid "KDE Infinit Desktop started in safe mode after repeated crashes."
+msgid "KDE Infinite Desktop started in safe mode after repeated crashes."
 msgstr ""
-"KDE Infinit Desktop wurde nach wiederholten Abstürzen im abgesicherten Modus "
+"KDE Infinite Desktop wurde nach wiederholten Abstürzen im abgesicherten Modus "
 "gestartet."
 
-msgid "Infinit Desktop gestures paused"
-msgstr "Infinit-Desktop-Gesten pausiert"
+msgid "Infinite Desktop gestures paused"
+msgstr "Infinite-Desktop-Gesten pausiert"
 
-msgid "Infinit Desktop gestures resumed"
-msgstr "Infinit-Desktop-Gesten fortgesetzt"
+msgid "Infinite Desktop gestures resumed"
+msgstr "Infinite-Desktop-Gesten fortgesetzt"
 
 msgctxt "zoom level shown while zooming"
 msgid "%1 %"
@@ -2144,20 +2144,20 @@ msgstr "Beim Start dieser App nach Updates suchen"
 # Notes, groups, areas and the map
 # ---------------------------------------------------------------------------
 
-msgid "Infinit Desktop: New Note"
-msgstr "Infinit Desktop: Neue Notiz"
+msgid "Infinite Desktop: New Note"
+msgstr "Infinite Desktop: Neue Notiz"
 
 msgid "Put a new note on the canvas at the mouse pointer."
 msgstr "Eine neue Notiz an der Mausposition auf die Arbeitsfläche legen."
 
-msgid "Infinit Desktop: Show / Hide Notes"
-msgstr "Infinit Desktop: Notizen ein-/ausblenden"
+msgid "Infinite Desktop: Show / Hide Notes"
+msgstr "Infinite Desktop: Notizen ein-/ausblenden"
 
 msgid "Hide all notes, or show them again."
 msgstr "Alle Notizen ausblenden oder wieder einblenden."
 
-msgid "Infinit Desktop: Show Map"
-msgstr "Infinit Desktop: Karte zeigen"
+msgid "Infinite Desktop: Show Map"
+msgstr "Infinite Desktop: Karte zeigen"
 
 msgid ""
 "Show a map of this screen's canvas with its windows, groups and areas; click"
@@ -2166,8 +2166,8 @@ msgstr ""
 "Eine Karte der Arbeitsfläche dieses Bildschirms mit Fenstern, Gruppen und "
 "Bereichen zeigen; Klicken oder Ziehen darauf verschiebt die Ansicht."
 
-msgid "Infinit Desktop: New Group from Selection"
-msgstr "Infinit Desktop: Neue Gruppe aus Auswahl"
+msgid "Infinite Desktop: New Group from Selection"
+msgstr "Infinite Desktop: Neue Gruppe aus Auswahl"
 
 msgid ""
 "Draw a rectangle with the mouse: the windows inside become a new group."
@@ -2175,8 +2175,8 @@ msgstr ""
 "Mit der Maus ein Rechteck aufziehen: Die Fenster darin werden zu einer neuen"
 " Gruppe."
 
-msgid "Infinit Desktop: New Area from Selection"
-msgstr "Infinit Desktop: Neuer Bereich aus Auswahl"
+msgid "Infinite Desktop: New Area from Selection"
+msgstr "Infinite Desktop: Neuer Bereich aus Auswahl"
 
 msgid ""
 "Draw a rectangle with the mouse: it becomes an area of the canvas that grows"
@@ -2185,16 +2185,16 @@ msgstr ""
 "Mit der Maus ein Rechteck aufziehen: Es wird zu einem Bereich der "
 "Arbeitsfläche, der mit seinen Fenstern wächst und schrumpft."
 
-msgid "Infinit Desktop: Save Group Arrangement"
-msgstr "Infinit Desktop: Anordnung der Gruppe speichern"
+msgid "Infinite Desktop: Save Group Arrangement"
+msgstr "Infinite Desktop: Anordnung der Gruppe speichern"
 
 msgid ""
 "Remember how the windows of the active window's group are arranged now."
 msgstr ""
 "Die jetzige Anordnung der Fenster in der Gruppe des aktiven Fensters merken."
 
-msgid "Infinit Desktop: Open Group 1"
-msgstr "Infinit Desktop: Gruppe 1 öffnen"
+msgid "Infinite Desktop: Open Group 1"
+msgstr "Infinite Desktop: Gruppe 1 öffnen"
 
 msgid ""
 "Bring the windows of group 1 together at its place, start the missing ones, "
@@ -2203,8 +2203,8 @@ msgstr ""
 "Die Fenster von Gruppe 1 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 2"
-msgstr "Infinit Desktop: Gruppe 2 öffnen"
+msgid "Infinite Desktop: Open Group 2"
+msgstr "Infinite Desktop: Gruppe 2 öffnen"
 
 msgid ""
 "Bring the windows of group 2 together at its place, start the missing ones, "
@@ -2213,8 +2213,8 @@ msgstr ""
 "Die Fenster von Gruppe 2 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 3"
-msgstr "Infinit Desktop: Gruppe 3 öffnen"
+msgid "Infinite Desktop: Open Group 3"
+msgstr "Infinite Desktop: Gruppe 3 öffnen"
 
 msgid ""
 "Bring the windows of group 3 together at its place, start the missing ones, "
@@ -2223,8 +2223,8 @@ msgstr ""
 "Die Fenster von Gruppe 3 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 4"
-msgstr "Infinit Desktop: Gruppe 4 öffnen"
+msgid "Infinite Desktop: Open Group 4"
+msgstr "Infinite Desktop: Gruppe 4 öffnen"
 
 msgid ""
 "Bring the windows of group 4 together at its place, start the missing ones, "
@@ -2233,8 +2233,8 @@ msgstr ""
 "Die Fenster von Gruppe 4 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 5"
-msgstr "Infinit Desktop: Gruppe 5 öffnen"
+msgid "Infinite Desktop: Open Group 5"
+msgstr "Infinite Desktop: Gruppe 5 öffnen"
 
 msgid ""
 "Bring the windows of group 5 together at its place, start the missing ones, "
@@ -2243,8 +2243,8 @@ msgstr ""
 "Die Fenster von Gruppe 5 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 6"
-msgstr "Infinit Desktop: Gruppe 6 öffnen"
+msgid "Infinite Desktop: Open Group 6"
+msgstr "Infinite Desktop: Gruppe 6 öffnen"
 
 msgid ""
 "Bring the windows of group 6 together at its place, start the missing ones, "
@@ -2253,8 +2253,8 @@ msgstr ""
 "Die Fenster von Gruppe 6 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 7"
-msgstr "Infinit Desktop: Gruppe 7 öffnen"
+msgid "Infinite Desktop: Open Group 7"
+msgstr "Infinite Desktop: Gruppe 7 öffnen"
 
 msgid ""
 "Bring the windows of group 7 together at its place, start the missing ones, "
@@ -2263,8 +2263,8 @@ msgstr ""
 "Die Fenster von Gruppe 7 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 8"
-msgstr "Infinit Desktop: Gruppe 8 öffnen"
+msgid "Infinite Desktop: Open Group 8"
+msgstr "Infinite Desktop: Gruppe 8 öffnen"
 
 msgid ""
 "Bring the windows of group 8 together at its place, start the missing ones, "
@@ -2273,8 +2273,8 @@ msgstr ""
 "Die Fenster von Gruppe 8 an ihrem Ort zusammenholen, fehlende starten und "
 "dorthin springen."
 
-msgid "Infinit Desktop: Open Group 9"
-msgstr "Infinit Desktop: Gruppe 9 öffnen"
+msgid "Infinite Desktop: Open Group 9"
+msgstr "Infinite Desktop: Gruppe 9 öffnen"
 
 msgid ""
 "Bring the windows of group 9 together at its place, start the missing ones, "
@@ -2409,8 +2409,8 @@ msgid "Zoom to 100 %"
 msgstr "Auf 100 % zoomen"
 
 msgctxt "@action canvas menu"
-msgid "Infinit Desktop Settings…"
-msgstr "Einstellungen von Infinit Desktop …"
+msgid "Infinite Desktop Settings…"
+msgstr "Einstellungen von Infinite Desktop …"
 
 msgid "Area “%1” removed"
 msgstr "Bereich „%1“ entfernt"
@@ -2443,8 +2443,8 @@ msgid "Yellow"
 msgstr "Gelb"
 
 msgctxt "@info:tooltip tray icon"
-msgid "Infinit Desktop notes"
-msgstr "Notizen von Infinit Desktop"
+msgid "Infinite Desktop notes"
+msgstr "Notizen von Infinite Desktop"
 
 msgctxt "@action tray menu"
 msgid "New Note"
@@ -2479,8 +2479,8 @@ msgid "Quit"
 msgstr "Beenden"
 
 msgctxt "@title application name"
-msgid "Infinit Desktop Notes"
-msgstr "Infinit-Desktop-Notizen"
+msgid "Infinite Desktop Notes"
+msgstr "Infinite-Desktop-Notizen"
 
 msgid "Notes on the infinite canvas"
 msgstr "Notizen auf der unendlichen Arbeitsfläche"

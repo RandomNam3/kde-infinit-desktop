@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+// SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Start page: plugin status, the update check, a short "getting around" guide that
@@ -6,7 +6,7 @@
 import QtQuick
 import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
-import InfinitDesktop.Settings
+import InfiniteDesktop.Settings
 
 PageScaffold {
     id: page
@@ -55,10 +55,10 @@ PageScaffold {
             result.push({ icon: "touchpad", text: i18n("Swipe with four fingers on the touchpad to pan from anywhere"), keys: [] });
         }
         const shortcutTips = [
-            ["overview", "InfinitDesktop Overview"],
-            ["home", "InfinitDesktop Home"],
-            ["pin", "InfinitDesktop TogglePin"],
-            ["layers", "InfinitDesktop TogglePinAbove"]
+            ["overview", "InfiniteDesktop Overview"],
+            ["home", "InfiniteDesktop Home"],
+            ["pin", "InfiniteDesktop TogglePin"],
+            ["layers", "InfiniteDesktop TogglePinAbove"]
         ];
         for (const tip of shortcutTips) {
             const title = Shortcuts.title(tip[1]);
@@ -155,7 +155,7 @@ PageScaffold {
 
                 UiText {
                     Layout.fillWidth: true
-                    text: i18nc("@title application name", "KDE Infinit Desktop")
+                    text: i18nc("@title application name", "KDE Infinite Desktop")
                     font.pointSize: Theme.fontDisplay
                     font.weight: Font.Bold
                     wrapMode: Text.Wrap

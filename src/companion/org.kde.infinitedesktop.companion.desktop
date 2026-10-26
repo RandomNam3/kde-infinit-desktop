@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=Infinit Desktop Notes
-Name[de]=Infinit-Desktop-Notizen
+Name=Infinite Desktop Notes
+Name[de]=Infinite-Desktop-Notizen
 Comment=Notes on the infinite canvas
 Comment[de]=Notizen auf der unendlichen Arbeitsfläche
-Exec=kde-infinit-desktop-companion --new-note
+Exec=kde-infinite-desktop-companion --new-note
 Icon=knotes
 Terminal=false
 NoDisplay=false

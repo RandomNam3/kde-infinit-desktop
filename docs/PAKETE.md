@@ -1,6 +1,6 @@
 # Pakete und Vertriebswege
 
-Kurzfassung für Maintainer: Wie kommt KDE Infinit Desktop zu den Nutzern, und
+Kurzfassung für Maintainer: Wie kommt KDE Infinite Desktop zu den Nutzern, und
 wer baut es nach jedem KWin-Update neu?
 
 ## Das Grundproblem
@@ -16,7 +16,7 @@ Daraus folgen zwei Strategien:
 
 | Strategie | Wo | Verhalten beim KWin-Update |
 |---|---|---|
-| **Selbst neu bauen** (wie DKMS) | `scripts/install.sh`, AUR-Paket (`_autorebuild=1`) | Ein Paketmanager-Hook baut das Plugin aus `/usr/src/kde-infinit-desktop-<version>` neu. Der Nutzer merkt nichts außer „ab- und wieder anmelden“. |
+| **Selbst neu bauen** (wie DKMS) | `scripts/install.sh`, AUR-Paket (`_autorebuild=1`) | Ein Paketmanager-Hook baut das Plugin aus `/usr/src/kde-infinite-desktop-<version>` neu. Der Nutzer merkt nichts außer „ab- und wieder anmelden“. |
 | **Fest angeheftetes Binärpaket** | `.deb`, `.rpm`, Arch-Binärpaket (`KID_AUTOREBUILD=0`) | Das Paket hängt von genau der KWin-Version ab, gegen die es gebaut wurde. Jemand muss nach jedem KWin-Update ein neues Paket bauen und veröffentlichen. |
 
 Abhängigkeiten der Binärpakete (automatisch beim Bau eingesetzt):
@@ -27,7 +27,7 @@ Abhängigkeiten der Binärpakete (automatisch beim Bau eingesetzt):
 - Fedora/RHEL: `Requires: kwin(x86-64) = 6.8.1`, Release `1.kwin6.8.1.fc46`.
 - openSUSE: `Requires: kwin6 = 6.8.1`, Release `1.kwin6.8.1`.
 - Arch (Binärpaket): `depends=(kwin=6.8.1)`; Dateiname
-  `kde-infinit-desktop-0.1.0+kwin6.8.1-1-x86_64.pkg.tar.zst`.
+  `kde-infinite-desktop-0.1.0+kwin6.8.1-1-x86_64.pkg.tar.zst`.
 
 Was passiert, wenn KWin aktualisiert wird, das passende Paket aber noch fehlt?
 
@@ -58,12 +58,12 @@ Was passiert, wenn KWin aktualisiert wird, das passende Paket aber noch fehlt?
 
 ### 2. Fedora COPR – gut für Fedora und EPEL
 
-- Baut `packaging/fedora/kde-infinit-desktop.spec` für alle Fedora-Versionen
+- Baut `packaging/fedora/kde-infinite-desktop.spec` für alle Fedora-Versionen
   und EPEL 10.
 - **Kein automatischer Neubau bei Abhängigkeitsänderungen.** `packages.yml`
   (siehe 4.) erkennt eine neue KWin-Version; ein Neubau lässt sich per
   COPR-Webhook bzw. `copr-cli build-package` auslösen.
-- Nutzer: `sudo dnf copr enable <user>/kde-infinit-desktop && sudo dnf install kde-infinit-desktop`.
+- Nutzer: `sudo dnf copr enable <user>/kde-infinite-desktop && sudo dnf install kde-infinite-desktop`.
 
 ### 3. AUR – für Arch, CachyOS, Manjaro, EndeavourOS
 
@@ -80,7 +80,7 @@ Was passiert, wenn KWin aktualisiert wird, das passende Paket aber noch fehlt?
   Arch, Fedora (latest), openSUSE Tumbleweed und KDE neon. Gibt es für diese
   Kombination noch kein Paket im Release `kwin-builds`, wird es mit
   `./build.sh --package` gebaut und hochgeladen (Version/Dateiname enthalten
-  die KWin-Version, z. B. `kwin-effect-infinitdesktop_0.1.0-1+kwin6.8.1_amd64.deb`).
+  die KWin-Version, z. B. `kwin-effect-infinitedesktop_0.1.0-1+kwin6.8.1_amd64.deb`).
 - Distributionen mit KWin < 6.8 werden automatisch übersprungen.
 - Vorteil: kein externer Dienst. Nachteil: kein Repository – Nutzer laden die
   Datei von Hand herunter und bekommen keine automatischen Updates. Geeignet
@@ -98,7 +98,7 @@ Jede Version bekommt einen Tag `vX.Y.Z` und ein GitHub-Release. Der Update-Check
 Einstellungs-App liest genau diese Releases.
 
 1. Version in `CMakeLists.txt` (`project(... VERSION X.Y.Z)`), `src/effect/metadata.json`,
-   AppStream (`data/org.kde.infinitdesktop.metainfo.xml`) und den Paketen unter `packaging/`
+   AppStream (`data/org.kde.infinitedesktop.metainfo.xml`) und den Paketen unter `packaging/`
    erhöhen.
 2. Patchnotes nach `docs/releases/X.Y.Z.md` schreiben (Markdown, ohne Titelzeile). Das CI
    bricht ab, wenn die Datei zur Projektversion fehlt.

@@ -1,5 +1,5 @@
 #!/bin/bash
-# KDE Infinit Desktop - interactive demo on Linux (Podman or Docker)
+# KDE Infinite Desktop - interactive demo on Linux (Podman or Docker)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Starts a complete Plasma Wayland session with the plugin in a container and

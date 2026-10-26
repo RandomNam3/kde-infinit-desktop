@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -10,7 +10,7 @@
 #include <QKeySequence>
 #include <QList>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /// Global shortcuts are registered by the KWin effect under this KGlobalAccel component.
@@ -81,4 +81,4 @@ const QList<ShortcutDefinition> &shortcutDefinitions();
 
 const ShortcutDefinition *findShortcut(ShortcutAction action);
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

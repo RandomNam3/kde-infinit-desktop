@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# KDE Infinit Desktop - one-command installer
-# ("If it runs KDE Plasma, it runs KDE Infinit Desktop").
+# KDE Infinite Desktop - one-command installer
+# ("If it runs KDE Plasma, it runs KDE Infinite Desktop").
 #
 #   ./install.sh  or  ./scripts/install.sh    (from the source tree)
-#   curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/install.sh | bash
 #                                             (downloads the sources itself)
 #
 #  1. detects the distribution (/etc/os-release: ID and ID_LIKE)
@@ -14,7 +14,7 @@
 #  3. installs the build dependencies with the native package manager
 #     (asks first, unless --yes)
 #  4. builds out of tree in a temporary directory, installs with sudo
-#  5. keeps a copy of the sources in /usr/src/kde-infinit-desktop-<version>
+#  5. keeps a copy of the sources in /usr/src/kde-infinite-desktop-<version>
 #     and installs a package manager hook (pacman, apt, dnf, zypper, apk) that
 #     rebuilds the plugin automatically after every KWin update - KWin only
 #     loads plugins built for exactly its version (MAJOR.MINOR.PATCH)
@@ -26,12 +26,12 @@
 set -eu
 set -o pipefail
 
-readonly PROJECT=kde-infinit-desktop
-readonly EFFECT_ID=infinitdesktop
+readonly PROJECT=kde-infinite-desktop
+readonly EFFECT_ID=infinitedesktop
 readonly KWIN_MIN=6.8
-readonly AUTOSTART_FILE=/etc/xdg/autostart/kde-infinit-desktop-kwin-check.desktop
+readonly AUTOSTART_FILE=/etc/xdg/autostart/kde-infinite-desktop-kwin-check.desktop
 # Sources for "curl ... | bash" (branch main; override with --source-url).
-readonly DEFAULT_SOURCE_URL=https://github.com/RandomNam3/kde-infinit-desktop/archive/refs/heads/main.tar.gz
+readonly DEFAULT_SOURCE_URL=https://github.com/RandomNam3/kde-infinite-desktop/archive/refs/heads/main.tar.gz
 
 if ! SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-.}")" 2>/dev/null && pwd -P); then
     SCRIPT_DIR=$(pwd -P)
@@ -68,7 +68,7 @@ usage() {
     cat <<EOF
 Usage: install.sh [OPTIONS]
 
-Builds KDE Infinit Desktop from source, installs it, enables the effect and
+Builds KDE Infinite Desktop from source, installs it, enables the effect and
 sets up the automatic rebuild after KWin updates.
 
 Options:
@@ -600,14 +600,14 @@ install_deps() {
 
 # ------------------------------------------------------- source handling --
 is_source_tree() {
-    [ -r "$1/CMakeLists.txt" ] && grep -q '^project(kde-infinit-desktop' "$1/CMakeLists.txt"
+    [ -r "$1/CMakeLists.txt" ] && grep -q '^project(kde-infinite-desktop' "$1/CMakeLists.txt"
 }
 
 TMP_SOURCE=''
 resolve_source() {
     if [ -n "$SOURCE_ARG" ]; then
         SOURCE_DIR=$(cd -- "$SOURCE_ARG" && pwd -P) || die "--source: $SOURCE_ARG not found"
-        is_source_tree "$SOURCE_DIR" || die "$SOURCE_DIR is not a KDE Infinit Desktop source tree"
+        is_source_tree "$SOURCE_DIR" || die "$SOURCE_DIR is not a KDE Infinite Desktop source tree"
         return 0
     fi
     if is_source_tree "$SCRIPT_DIR/.."; then
@@ -629,12 +629,12 @@ resolve_source() {
     else
         die "neither curl nor wget found"
     fi
-    is_source_tree "$TMP_SOURCE" || die "the download does not contain the KDE Infinit Desktop sources"
+    is_source_tree "$TMP_SOURCE" || die "the download does not contain the KDE Infinite Desktop sources"
     SOURCE_DIR=$TMP_SOURCE
 }
 
 project_version() {
-    sed -n 's/^project(kde-infinit-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$SOURCE_DIR/CMakeLists.txt" 2>/dev/null | head -n1
+    sed -n 's/^project(kde-infinite-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$SOURCE_DIR/CMakeLists.txt" 2>/dev/null | head -n1
 }
 
 # Keep a copy of the sources for the automatic rebuild (like DKMS).
@@ -719,13 +719,13 @@ running_plugin_version() {
     local q
     for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
         if have "$q"; then
-            "$q" org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.version 2>/dev/null
+            "$q" org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.version 2>/dev/null
             return
         fi
     done
     if have gdbus; then
-        gdbus call --session --dest org.kde.KWin --object-path /InfinitDesktop \
-            --method org.kde.InfinitDesktop.version 2>/dev/null | sed -n "s/^('\(.*\)',)\$/\1/p"
+        gdbus call --session --dest org.kde.KWin --object-path /InfiniteDesktop \
+            --method org.kde.InfiniteDesktop.version 2>/dev/null | sed -n "s/^('\(.*\)',)\$/\1/p"
         return
     fi
     return 127
@@ -822,29 +822,29 @@ select_hook() {
     case $FAMILY in
         arch)
             HOOK_SRC=pacman.hook
-            HOOK_DEST=/etc/pacman.d/hooks/kde-infinit-desktop.hook
+            HOOK_DEST=/etc/pacman.d/hooks/kde-infinite-desktop.hook
             ;;
         debian)
             HOOK_SRC=apt.conf
-            HOOK_DEST=/etc/apt/apt.conf.d/99kde-infinit-desktop
+            HOOK_DEST=/etc/apt/apt.conf.d/99kde-infinite-desktop
             ;;
         fedora | rhel | rpm-generic)
             if dnf_is_dnf5; then
                 HOOK_SRC=dnf5.actions
-                HOOK_DEST=/etc/dnf/libdnf5-plugins/actions.d/kde-infinit-desktop.actions
+                HOOK_DEST=/etc/dnf/libdnf5-plugins/actions.d/kde-infinite-desktop.actions
             else
                 HOOK_SRC=dnf4.action
-                HOOK_DEST=/etc/dnf/plugins/post-transaction-actions.d/kde-infinit-desktop.action
+                HOOK_DEST=/etc/dnf/plugins/post-transaction-actions.d/kde-infinite-desktop.action
             fi
             ;;
         suse)
             HOOK_SRC=zypp-commit-plugin.sh
-            HOOK_DEST=/usr/lib/zypp/plugins/commit/kde-infinit-desktop
+            HOOK_DEST=/usr/lib/zypp/plugins/commit/kde-infinite-desktop
             HOOK_MODE_BITS=0755
             ;;
         alpine)
             HOOK_SRC=apk-commit-hook.sh
-            HOOK_DEST=/etc/apk/commit_hooks.d/kde-infinit-desktop.post-commit
+            HOOK_DEST=/etc/apk/commit_hooks.d/kde-infinite-desktop.post-commit
             HOOK_MODE_BITS=0755
             ;;
     esac
@@ -877,10 +877,10 @@ install_helpers() {
         cat >"$tmp" <<EOF
 [Desktop Entry]
 Type=Application
-Name=KDE Infinit Desktop: KWin update check
-Comment=Rebuilds KDE Infinit Desktop for a new KWin version if the automatic rebuild did not run
+Name=KDE Infinite Desktop: KWin update check
+Comment=Rebuilds KDE Infinite Desktop for a new KWin version if the automatic rebuild did not run
 Exec=$libdir/check-kwin-update.sh --notify --offer-rebuild --quiet
-Icon=org.kde.infinitdesktop
+Icon=org.kde.infinitedesktop
 OnlyShowIn=KDE;
 NoDisplay=true
 X-KDE-autostart-phase=2
@@ -956,7 +956,7 @@ main() {
     detect_family || FAMILY=unknown
 
     if [ "$HOOK_MODE" -eq 0 ]; then
-        info "KDE Infinit Desktop installer - ${OS_NAME:-unknown system} (family: $FAMILY)"
+        info "KDE Infinite Desktop installer - ${OS_NAME:-unknown system} (family: $FAMILY)"
         [ "$DRY_RUN" -eq 1 ] && info "dry run: nothing will be changed"
     fi
 
@@ -967,7 +967,7 @@ main() {
         if [ "$FORCE" -eq 0 ]; then
             die "this system has a read-only /usr (Fedora Kinoite/Atomic, SteamOS, openSUSE Kalpa, ...).
 A from-source install into /usr is not possible. Build an RPM with ./build.sh --package and
-layer it (rpm-ostree install ./dist/kde-infinit-desktop-*.rpm), see docs/INSTALL.md."
+layer it (rpm-ostree install ./dist/kde-infinite-desktop-*.rpm), see docs/INSTALL.md."
         fi
         warn "read-only /usr detected, continuing because of --force"
     fi
@@ -1001,13 +1001,13 @@ layer it (rpm-ostree install ./dist/kde-infinit-desktop-*.rpm), see docs/INSTALL
     if [ "$DEPS_ONLY" -eq 0 ] && [ "$HOOK_MODE" -eq 0 ]; then
         if [ -z "$kwin_version" ]; then
             if [ "$FORCE" -eq 0 ] && [ "$DRY_RUN" -eq 0 ] && [ "$WITH_EFFECT" = ON ] && [ "$INSTALL_DEPS" -eq 0 ]; then
-                die "KWin is not installed. KDE Infinit Desktop is a KWin plugin and needs KDE Plasma >= ${KWIN_MIN} (Wayland)."
+                die "KWin is not installed. KDE Infinite Desktop is a KWin plugin and needs KDE Plasma >= ${KWIN_MIN} (Wayland)."
             fi
             warn "could not determine the installed KWin version (is KDE Plasma installed?)"
         else
             info "Installed KWin: $kwin_version"
             if ! version_ge "$kwin_version" "$KWIN_MIN"; then
-                msg="KWin $kwin_version is too old - KDE Infinit Desktop needs KWin/Plasma >= ${KWIN_MIN}.
+                msg="KWin $kwin_version is too old - KDE Infinite Desktop needs KWin/Plasma >= ${KWIN_MIN}.
 See the version table in docs/INSTALL.md (KDE neon, Arch/CachyOS, openSUSE Tumbleweed,
 Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
                 if [ "$FORCE" -eq 1 ] || [ "$WITH_EFFECT" = OFF ] || [ "$DRY_RUN" -eq 1 ]; then
@@ -1019,7 +1019,7 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
         fi
         case $SESSION_TYPE in
             wayland) ok "Wayland session" ;;
-            x11) warn "you are running an X11 session. KDE Infinit Desktop targets Plasma on Wayland - log into 'Plasma (Wayland)' to use it." ;;
+            x11) warn "you are running an X11 session. KDE Infinite Desktop targets Plasma on Wayland - log into 'Plasma (Wayland)' to use it." ;;
             *) warn "no graphical session detected (SSH/container?) - the effect will be enabled for the next login" ;;
         esac
     fi
@@ -1073,7 +1073,7 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
     fi
 
     # --- install ---
-    confirm "Install KDE Infinit Desktop to $PREFIX (and the KWin plugin into the Qt plugin directory)?" || die "aborted"
+    confirm "Install KDE Infinite Desktop to $PREFIX (and the KWin plugin into the Qt plugin directory)?" || die "aborted"
     info "Installing"
     run_root cmake --install "$BUILD_DIR"
 
@@ -1135,15 +1135,15 @@ Fedora Rawhide, Gentoo ~amd64 ... ship ${KWIN_MIN})."
     if [ "$RELOGIN_NEEDED" -eq 1 ]; then
         echo "  * Log out and back in: KWin only loads the new build at login"
     fi
-    echo "  * Configure: System Settings > Window Management > Desktop Effects > KDE Infinit Desktop"
+    echo "  * Configure: System Settings > Window Management > Desktop Effects > KDE Infinite Desktop"
     if [ "$WITH_APP" = ON ]; then
-        echo "    or run: kde-infinit-desktop-settings"
+        echo "    or run: kde-infinite-desktop-settings"
     fi
     echo "  * Enable/disable: same place, or"
     echo "      kwriteconfig6 --file kwinrc --group Plugins --key ${EFFECT_ID}Enabled true|false --notify"
     if [ "$AUTO_REBUILD" -eq 1 ] && [ -n "$HOOK_DEST" ]; then
         echo "  * KWin updates: the plugin is rebuilt automatically ($HOOK_DEST);"
-        echo "    log out and back in after a Plasma update. Log: /var/log/kde-infinit-desktop-rebuild.log"
+        echo "    log out and back in after a Plasma update. Log: /var/log/kde-infinite-desktop-rebuild.log"
     else
         echo "  * After a KWin/Plasma update run:  sudo $libdir/kwin-update-hook.sh"
     fi

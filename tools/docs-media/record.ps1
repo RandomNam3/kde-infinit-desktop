@@ -1,5 +1,5 @@
 <#
-    KDE Infinit Desktop - records the images and animations of the documentation
+    KDE Infinite Desktop - records the images and animations of the documentation
     (Windows / Podman). Uses the demo image (tools/demo); the running demo is not touched.
     SPDX-License-Identifier: GPL-3.0-or-later
 

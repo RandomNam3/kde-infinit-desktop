@@ -1,9 +1,9 @@
-# KDE Infinit Desktop
+# KDE Infinite Desktop
 
 **Eine unendliche Arbeitsfläche für KDE Plasma 6 – auf jedem Bildschirm.**
-*If it runs KDE Plasma, it runs KDE Infinit Desktop.*
+*If it runs KDE Plasma, it runs KDE Infinite Desktop.*
 
-KDE Infinit Desktop ist ein KWin-Plugin (Plasma 6.8+, Wayland). Jeder Monitor wird zu einer in alle Richtungen
+KDE Infinite Desktop ist ein KWin-Plugin (Plasma 6.8+, Wayland). Jeder Monitor wird zu einer in alle Richtungen
 unendlichen Fläche, auf der Fenster in Originalgröße liegen. Du verschiebst die Fläche mit Maus, Touchpad
 oder Tastatur, zoomst mit dem Mausrad heraus, um alles zu überblicken, und wieder hinein, um weiterzuarbeiten.
 Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
@@ -63,14 +63,14 @@ Taskleiste, Benachrichtigungen und Hintergrundbild bleiben dabei fest stehen.
 Ein Befehl, als normaler Benutzer (nicht mit `sudo`, der Installer fragt selbst nach dem Passwort):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinit-desktop/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/RandomNam3/kde-infinite-desktop/main/install.sh | bash
 ```
 
 Oder aus einem Klon des Repositorys:
 
 ```bash
-git clone https://github.com/RandomNam3/kde-infinit-desktop.git
-cd kde-infinit-desktop
+git clone https://github.com/RandomNam3/kde-infinite-desktop.git
+cd kde-infinite-desktop
 ./install.sh
 ```
 

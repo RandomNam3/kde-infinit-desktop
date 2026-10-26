@@ -1,21 +1,21 @@
 # Maintainer: RandomNam3 <https://github.com/RandomNam3>
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# KDE Infinit Desktop - development version from git (Arch Linux, CachyOS,
+# KDE Infinite Desktop - development version from git (Arch Linux, CachyOS,
 # Manjaro, EndeavourOS). See ../arch/PKGBUILD for the release package and for
 # the explanation of _autorebuild (automatic rebuild after kwin updates).
 #
 # Build from a local clone instead of GitHub:
-#   KID_GIT_URL=file:///path/to/kde-infinit-desktop makepkg -si
+#   KID_GIT_URL=file:///path/to/kde-infinite-desktop makepkg -si
 
-pkgname=kde-infinit-desktop-git
-_name=kde-infinit-desktop
+pkgname=kde-infinite-desktop-git
+_name=kde-infinite-desktop
 pkgver=0.1.0.r0.g0000000
 pkgrel=1
 pkgdesc="Turns every monitor into an infinite pannable and zoomable canvas (KWin effect for Plasma 6 on Wayland, git version)"
 arch=(x86_64 aarch64)
-_repo=https://github.com/RandomNam3/kde-infinit-desktop
+_repo=https://github.com/RandomNam3/kde-infinite-desktop
 url=$_repo
 license=(GPL-3.0-or-later)
 _autorebuild=${KID_AUTOREBUILD:-1}
@@ -26,16 +26,16 @@ makedepends=(git cmake ninja extra-cmake-modules vulkan-headers)
 if ((_autorebuild)); then
     depends+=(cmake ninja extra-cmake-modules vulkan-headers gcc make)
 fi
-provides=("$_name=${pkgver%%.r*}" kwin-effect-infinitdesktop)
+provides=("$_name=${pkgver%%.r*}" kwin-effect-infinitedesktop)
 conflicts=("$_name")
-install=kde-infinit-desktop.install
+install=kde-infinite-desktop.install
 source=("$_name::git+${KID_GIT_URL:-$_repo.git}")
 sha256sums=('SKIP')
 
 pkgver() {
     cd "$_name"
     local _ver
-    _ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+    _ver=$(sed -n 's/^project(kde-infinite-desktop VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
     if git describe --long --tags --abbrev=7 >/dev/null 2>&1; then
         git describe --long --tags --abbrev=7 | sed 's/^v//; s/\([^-]*-g\)/r\1/; s/-/./g'
     else
@@ -61,14 +61,14 @@ package() {
 
     if ((_autorebuild)); then
         local _ver _src _lib="$pkgdir/usr/lib/$_name"
-        _ver=$(sed -n 's/^project(kde-infinit-desktop VERSION \([0-9.]*\).*/\1/p' "$srcdir/$_name/CMakeLists.txt")
+        _ver=$(sed -n 's/^project(kde-infinite-desktop VERSION \([0-9.]*\).*/\1/p' "$srcdir/$_name/CMakeLists.txt")
         _src="$pkgdir/usr/src/$_name-$_ver"
         mkdir -p "$_src"
         tar -C "$srcdir/$_name" --exclude=./build --exclude=./.git --exclude=./dist -cf - . |
             tar -C "$_src" -xf -
         install -Dm755 -t "$_lib" "$srcdir/$_name"/scripts/{check-kwin-update.sh,kwin-update-hook.sh}
         install -Dm644 "$srcdir/$_name/scripts/hooks/pacman.hook" \
-            "$pkgdir/usr/share/libalpm/hooks/kde-infinit-desktop.hook"
+            "$pkgdir/usr/share/libalpm/hooks/kde-infinite-desktop.hook"
         printf '%s\n' prefix=/usr "source_dir=/usr/src/$_name-$_ver" "version=$_ver" \
             build_type=Release effect=ON kcm=ON app=ON update_check=0 auto_rebuild=1 \
             >"$pkgdir/usr/share/$_name/install-info"

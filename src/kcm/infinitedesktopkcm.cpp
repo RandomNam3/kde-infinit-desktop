@@ -1,11 +1,11 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
-#include "infinitdesktopkcm.h"
+#include "infinitedesktopkcm.h"
 
-#include "infinitdesktopconfig.h"
+#include "infinitedesktopconfig.h"
 #include "settingsmeta.h"
 #include "shortcutdefs.h"
 #include "stringlistedit.h"
@@ -40,16 +40,16 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 
-K_PLUGIN_CLASS(InfinitDesktop::InfinitDesktopEffectConfig)
+K_PLUGIN_CLASS(InfiniteDesktop::InfiniteDesktopEffectConfig)
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
 {
 
-const QString s_effectId = QStringLiteral("infinitdesktop");
-const QString s_settingsAppName = QStringLiteral("kde-infinit-desktop-settings");
+const QString s_effectId = QStringLiteral("infinitedesktop");
+const QString s_settingsAppName = QStringLiteral("kde-infinite-desktop-settings");
 
 QIcon categoryIcon(const char *iconName)
 {
@@ -142,11 +142,11 @@ QWidget *wrapInScrollArea(QWidget *content, QWidget *parent)
 
 } // namespace
 
-InfinitDesktopEffectConfig::InfinitDesktopEffectConfig(QObject *parent, const KPluginMetaData &data)
+InfiniteDesktopEffectConfig::InfiniteDesktopEffectConfig(QObject *parent, const KPluginMetaData &data)
     : KCModule(parent, data)
 {
-    InfinitDesktopConfig::instance(KSharedConfig::openConfig(QStringLiteral("kwinrc")));
-    InfinitDesktopConfig *config = InfinitDesktopConfig::self();
+    InfiniteDesktopConfig::instance(KSharedConfig::openConfig(QStringLiteral("kwinrc")));
+    InfiniteDesktopConfig *config = InfiniteDesktopConfig::self();
 
     // Tell other clients (the settings app) about our changes.
     const auto allItems = config->items();
@@ -216,21 +216,21 @@ InfinitDesktopEffectConfig::InfinitDesktopEffectConfig(QObject *parent, const KP
     footerHint->setWordWrap(true);
     footerHint->setEnabled(false);
     footer->addWidget(footerHint, 1);
-    m_openAppButton = new QPushButton(QIcon::fromTheme(QStringLiteral("org.kde.infinitdesktop"), QIcon::fromTheme(QStringLiteral("configure"))),
-                                      i18nc("@action:button", "Open Infinit Desktop Settings…"),
+    m_openAppButton = new QPushButton(QIcon::fromTheme(QStringLiteral("org.kde.infinitedesktop"), QIcon::fromTheme(QStringLiteral("configure"))),
+                                      i18nc("@action:button", "Open Infinite Desktop Settings…"),
                                       root);
     footer->addWidget(m_openAppButton);
     rootLayout->addLayout(footer);
 
     m_settingsAppPath = QStandardPaths::findExecutable(s_settingsAppName);
-    if (m_settingsAppPath.isEmpty() && QFileInfo::exists(QStringLiteral(INFINITDESKTOP_SETTINGS_APP_PATH))) {
-        m_settingsAppPath = QStringLiteral(INFINITDESKTOP_SETTINGS_APP_PATH);
+    if (m_settingsAppPath.isEmpty() && QFileInfo::exists(QStringLiteral(INFINITEDESKTOP_SETTINGS_APP_PATH))) {
+        m_settingsAppPath = QStringLiteral(INFINITEDESKTOP_SETTINGS_APP_PATH);
     }
     if (m_settingsAppPath.isEmpty()) {
         m_openAppButton->setEnabled(false);
         m_openAppButton->setToolTip(i18n("The settings app “%1” is not installed.", s_settingsAppName));
     }
-    connect(m_openAppButton, &QPushButton::clicked, this, &InfinitDesktopEffectConfig::openSettingsApp);
+    connect(m_openAppButton, &QPushButton::clicked, this, &InfiniteDesktopEffectConfig::openSettingsApp);
 
     root->setMinimumSize(root->fontMetrics().averageCharWidth() * 110, root->fontMetrics().lineSpacing() * 28);
 
@@ -239,9 +239,9 @@ InfinitDesktopEffectConfig::InfinitDesktopEffectConfig(QObject *parent, const KP
     updateShortcutState();
 }
 
-InfinitDesktopEffectConfig::~InfinitDesktopEffectConfig() = default;
+InfiniteDesktopEffectConfig::~InfiniteDesktopEffectConfig() = default;
 
-QWidget *InfinitDesktopEffectConfig::createPageHeader(const SettingsCategory &category, QWidget *parent)
+QWidget *InfiniteDesktopEffectConfig::createPageHeader(const SettingsCategory &category, QWidget *parent)
 {
     auto *header = new QWidget(parent);
     auto *layout = new QVBoxLayout(header);
@@ -263,7 +263,7 @@ QWidget *InfinitDesktopEffectConfig::createPageHeader(const SettingsCategory &ca
     return header;
 }
 
-QWidget *InfinitDesktopEffectConfig::createInfoButton(KConfigSkeletonItem *item, QWidget *parent)
+QWidget *InfiniteDesktopEffectConfig::createInfoButton(KConfigSkeletonItem *item, QWidget *parent)
 {
     const QString text = item->whatsThis();
     auto *button = new QToolButton(parent);
@@ -278,7 +278,7 @@ QWidget *InfinitDesktopEffectConfig::createInfoButton(KConfigSkeletonItem *item,
     return button;
 }
 
-QWidget *InfinitDesktopEffectConfig::createEditor(KConfigSkeletonItem *item, const SettingsEntryMeta *meta, QWidget *parent)
+QWidget *InfiniteDesktopEffectConfig::createEditor(KConfigSkeletonItem *item, const SettingsEntryMeta *meta, QWidget *parent)
 {
     const QString objectName = QStringLiteral("kcfg_") + item->name();
     QWidget *editor = nullptr;
@@ -292,7 +292,7 @@ QWidget *InfinitDesktopEffectConfig::createEditor(KConfigSkeletonItem *item, con
         // Enum entries store the index of the choice.
         combo->setProperty("kcfg_property", QByteArray("currentIndex"));
         combo->setProperty("kcfg_propertyNotify", QByteArray(SIGNAL(currentIndexChanged(int))));
-        connect(combo, &QComboBox::currentIndexChanged, this, &InfinitDesktopEffectConfig::updateDependencies);
+        connect(combo, &QComboBox::currentIndexChanged, this, &InfiniteDesktopEffectConfig::updateDependencies);
         editor = combo;
     } else if (auto *intItem = dynamic_cast<KCoreConfigSkeleton::ItemInt *>(item)) {
         auto *spin = new QSpinBox(parent);
@@ -305,7 +305,7 @@ QWidget *InfinitDesktopEffectConfig::createEditor(KConfigSkeletonItem *item, con
         editor = spin;
     } else if (dynamic_cast<KCoreConfigSkeleton::ItemBool *>(item)) {
         auto *check = new QCheckBox(item->label(), parent);
-        connect(check, &QCheckBox::toggled, this, &InfinitDesktopEffectConfig::updateDependencies);
+        connect(check, &QCheckBox::toggled, this, &InfiniteDesktopEffectConfig::updateDependencies);
         editor = check;
     } else if (dynamic_cast<KConfigSkeleton::ItemColor *>(item)) {
         auto *button = new KColorButton(parent);
@@ -330,7 +330,7 @@ QWidget *InfinitDesktopEffectConfig::createEditor(KConfigSkeletonItem *item, con
     return editor;
 }
 
-QWidget *InfinitDesktopEffectConfig::createSettingsPage(const SettingsCategory &category, const QList<KConfigSkeletonItem *> &items)
+QWidget *InfiniteDesktopEffectConfig::createSettingsPage(const SettingsCategory &category, const QList<KConfigSkeletonItem *> &items)
 {
     auto *content = new QWidget;
     auto *layout = new QVBoxLayout(content);
@@ -389,7 +389,7 @@ QWidget *InfinitDesktopEffectConfig::createSettingsPage(const SettingsCategory &
     return wrapInScrollArea(content, m_pages);
 }
 
-QWidget *InfinitDesktopEffectConfig::createShortcutsPage(const SettingsCategory &category)
+QWidget *InfiniteDesktopEffectConfig::createShortcutsPage(const SettingsCategory &category)
 {
     auto *content = new QWidget;
     auto *layout = new QVBoxLayout(content);
@@ -430,7 +430,7 @@ QWidget *InfinitDesktopEffectConfig::createShortcutsPage(const SettingsCategory 
         m_collections.append(collection);
     }
 
-    connect(m_shortcutsEditor, &KShortcutsEditor::keyChange, this, &InfinitDesktopEffectConfig::updateShortcutState);
+    connect(m_shortcutsEditor, &KShortcutsEditor::keyChange, this, &InfiniteDesktopEffectConfig::updateShortcutState);
 
     // Conflicts with other applications are best resolved in the global shortcut settings.
     auto *allShortcutsRow = new QHBoxLayout;
@@ -460,7 +460,7 @@ QWidget *InfinitDesktopEffectConfig::createShortcutsPage(const SettingsCategory 
     return content;
 }
 
-void InfinitDesktopEffectConfig::updateDependencies()
+void InfiniteDesktopEffectConfig::updateDependencies()
 {
     for (const DependentRow &row : std::as_const(m_dependentRows)) {
         QWidget *controller = m_editors.value(row.dependsOn);
@@ -476,7 +476,7 @@ void InfinitDesktopEffectConfig::updateDependencies()
     }
 }
 
-void InfinitDesktopEffectConfig::updateShortcutState()
+void InfiniteDesktopEffectConfig::updateShortcutState()
 {
     if (!m_shortcutsEditor) {
         return;
@@ -492,7 +492,7 @@ void InfinitDesktopEffectConfig::updateShortcutState()
     unmanagedWidgetDefaultState(allDefault);
 }
 
-void InfinitDesktopEffectConfig::load()
+void InfiniteDesktopEffectConfig::load()
 {
     KCModule::load();
     if (m_shortcutsEditor && m_shortcutsEditor->isModified()) {
@@ -502,7 +502,7 @@ void InfinitDesktopEffectConfig::load()
     updateShortcutState();
 }
 
-void InfinitDesktopEffectConfig::save()
+void InfiniteDesktopEffectConfig::save()
 {
     KCModule::save();
     for (KActionCollection *collection : std::as_const(m_collections)) {
@@ -522,7 +522,7 @@ void InfinitDesktopEffectConfig::save()
     QDBusConnection::sessionBus().send(message);
 }
 
-void InfinitDesktopEffectConfig::defaults()
+void InfiniteDesktopEffectConfig::defaults()
 {
     KCModule::defaults();
     if (m_shortcutsEditor) {
@@ -532,7 +532,7 @@ void InfinitDesktopEffectConfig::defaults()
     updateShortcutState();
 }
 
-void InfinitDesktopEffectConfig::openSettingsApp()
+void InfiniteDesktopEffectConfig::openSettingsApp()
 {
     if (m_settingsAppPath.isEmpty() || !QProcess::startDetached(m_settingsAppPath, {})) {
         m_message->setMessageType(KMessageWidget::Error);
@@ -541,6 +541,6 @@ void InfinitDesktopEffectConfig::openSettingsApp()
     }
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
 
-#include "infinitdesktopkcm.moc"
+#include "infinitedesktopkcm.moc"

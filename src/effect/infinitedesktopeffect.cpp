@@ -1,13 +1,13 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 #include "canvasrenderer.h"
 #include "crashguard.h"
 #include "dbusinterface.h"
-#include "infinitdesktopconfig.h"
+#include "infinitedesktopconfig.h"
 #include "inputfilter.h"
 #include "launcherpositioner.h"
 #include "logging.h"
@@ -47,7 +47,7 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -112,7 +112,7 @@ bool intersectsAnyOutput(const QRectF &rect)
 
 Qt::KeyboardModifiers panModifiersFromConfig(int value)
 {
-    using E = InfinitDesktopConfig::EnumPanModifier;
+    using E = InfiniteDesktopConfig::EnumPanModifier;
     switch (value) {
     case E::MetaAlt:
         return Qt::MetaModifier | Qt::AltModifier;
@@ -131,7 +131,7 @@ Qt::KeyboardModifiers panModifiersFromConfig(int value)
 
 Qt::KeyboardModifiers zoomModifiersFromConfig(int value)
 {
-    using E = InfinitDesktopConfig::EnumZoomModifier;
+    using E = InfiniteDesktopConfig::EnumZoomModifier;
     switch (value) {
     case E::Meta:
         return Qt::MetaModifier;
@@ -183,20 +183,20 @@ QString modeName(WindowMode mode)
 // Construction
 // ============================================================================
 
-bool InfinitDesktopEffect::supported()
+bool InfiniteDesktopEffect::supported()
 {
     return KWin::effects->waylandDisplay() != nullptr;
 }
 
-InfinitDesktopEffect::InfinitDesktopEffect()
+InfiniteDesktopEffect::InfiniteDesktopEffect()
     : m_crashGuard(std::make_unique<CrashGuard>())
     , m_stateStore(std::make_unique<StateStore>())
 {
-    InfinitDesktopConfig::instance(KWin::effects->config());
+    InfiniteDesktopConfig::instance(KWin::effects->config());
     loadSettings();
 
     if (m_crashGuard->start(m_settings.crashGuard)) {
-        showMessage(i18n("KDE Infinit Desktop started in safe mode after repeated crashes."), QStringLiteral("dialog-warning"));
+        showMessage(i18n("KDE Infinite Desktop started in safe mode after repeated crashes."), QStringLiteral("dialog-warning"));
         QTimer::singleShot(6s, this, [this]() {
             KWin::effects->hideOnScreenMessage();
         });
@@ -225,11 +225,11 @@ InfinitDesktopEffect::InfinitDesktopEffect()
 
     m_persistTimer.setSingleShot(true);
     m_persistTimer.setInterval(2s);
-    connect(&m_persistTimer, &QTimer::timeout, this, &InfinitDesktopEffect::persistNow);
+    connect(&m_persistTimer, &QTimer::timeout, this, &InfiniteDesktopEffect::persistNow);
 
     m_contentScaleTimer.setSingleShot(true);
     m_contentScaleTimer.setInterval(ContentScaleDelay);
-    connect(&m_contentScaleTimer, &QTimer::timeout, this, &InfinitDesktopEffect::applyContentScales);
+    connect(&m_contentScaleTimer, &QTimer::timeout, this, &InfiniteDesktopEffect::applyContentScales);
     m_indicatorTimer.setSingleShot(true);
     m_indicatorTimer.setInterval(900ms);
     connect(&m_indicatorTimer, &QTimer::timeout, this, []() {
@@ -237,16 +237,16 @@ InfinitDesktopEffect::InfinitDesktopEffect()
     });
 
     using KWin::EffectsHandler;
-    connect(KWin::effects, &EffectsHandler::windowAdded, this, &InfinitDesktopEffect::slotWindowAdded);
-    connect(KWin::effects, &EffectsHandler::windowClosed, this, &InfinitDesktopEffect::slotWindowClosed);
-    connect(KWin::effects, &EffectsHandler::windowDeleted, this, &InfinitDesktopEffect::slotWindowDeleted);
-    connect(KWin::effects, &EffectsHandler::windowActivated, this, &InfinitDesktopEffect::slotWindowActivated);
-    connect(KWin::effects, &EffectsHandler::desktopChanged, this, &InfinitDesktopEffect::slotCurrentDesktopChanged);
-    connect(KWin::effects, &EffectsHandler::screenAdded, this, &InfinitDesktopEffect::slotOutputsChanged);
-    connect(KWin::effects, &EffectsHandler::screenRemoved, this, &InfinitDesktopEffect::slotOutputsChanged);
-    connect(KWin::effects, &EffectsHandler::virtualScreenGeometryChanged, this, &InfinitDesktopEffect::slotOutputsChanged);
-    connect(KWin::effects, &EffectsHandler::screenLockingChanged, this, &InfinitDesktopEffect::updateActivity);
-    connect(KWin::effects, &EffectsHandler::hasActiveFullScreenEffectChanged, this, &InfinitDesktopEffect::updateActivity);
+    connect(KWin::effects, &EffectsHandler::windowAdded, this, &InfiniteDesktopEffect::slotWindowAdded);
+    connect(KWin::effects, &EffectsHandler::windowClosed, this, &InfiniteDesktopEffect::slotWindowClosed);
+    connect(KWin::effects, &EffectsHandler::windowDeleted, this, &InfiniteDesktopEffect::slotWindowDeleted);
+    connect(KWin::effects, &EffectsHandler::windowActivated, this, &InfiniteDesktopEffect::slotWindowActivated);
+    connect(KWin::effects, &EffectsHandler::desktopChanged, this, &InfiniteDesktopEffect::slotCurrentDesktopChanged);
+    connect(KWin::effects, &EffectsHandler::screenAdded, this, &InfiniteDesktopEffect::slotOutputsChanged);
+    connect(KWin::effects, &EffectsHandler::screenRemoved, this, &InfiniteDesktopEffect::slotOutputsChanged);
+    connect(KWin::effects, &EffectsHandler::virtualScreenGeometryChanged, this, &InfiniteDesktopEffect::slotOutputsChanged);
+    connect(KWin::effects, &EffectsHandler::screenLockingChanged, this, &InfiniteDesktopEffect::updateActivity);
+    connect(KWin::effects, &EffectsHandler::hasActiveFullScreenEffectChanged, this, &InfiniteDesktopEffect::updateActivity);
 
     // KWin places popups around the parent's real position; their positioners let
     // visualPopupPosition() place them around the drawn parent instead.
@@ -276,17 +276,17 @@ InfinitDesktopEffect::InfinitDesktopEffect()
 
     m_configWatcher = KConfigWatcher::create(KWin::effects->config());
     connect(m_configWatcher.get(), &KConfigWatcher::configChanged, this, [this](const KConfigGroup &group) {
-        if (group.name() == QLatin1String("Effect-infinitdesktop")) {
+        if (group.name() == QLatin1String("Effect-infinitedesktop")) {
             reconfigure(ReconfigureAll);
         }
     });
 
     commitAll();
     updateActivity();
-    qCDebug(KWIN_INFINITDESKTOP) << "KDE Infinit Desktop loaded, managing" << m_windows.size() << "windows";
+    qCDebug(KWIN_INFINITEDESKTOP) << "KDE Infinite Desktop loaded, managing" << m_windows.size() << "windows";
 }
 
-InfinitDesktopEffect::~InfinitDesktopEffect()
+InfiniteDesktopEffect::~InfiniteDesktopEffect()
 {
     // Order matters: no more input while windows are being restored.
     if (m_inputFilter) {
@@ -305,7 +305,7 @@ InfinitDesktopEffect::~InfinitDesktopEffect()
     m_crashGuard->markClean();
 }
 
-void InfinitDesktopEffect::reconfigure(ReconfigureFlags)
+void InfiniteDesktopEffect::reconfigure(ReconfigureFlags)
 {
     loadSettings();
     for (auto &[w, window] : m_windows) {
@@ -315,9 +315,9 @@ void InfinitDesktopEffect::reconfigure(ReconfigureFlags)
     updateActivity();
 }
 
-void InfinitDesktopEffect::loadSettings()
+void InfiniteDesktopEffect::loadSettings()
 {
-    InfinitDesktopConfig *config = InfinitDesktopConfig::self();
+    InfiniteDesktopConfig *config = InfiniteDesktopConfig::self();
     config->read();
 
     EffectSettings &s = m_settings;
@@ -330,10 +330,10 @@ void InfinitDesktopEffect::loadSettings()
     s.shiftWheelPans = config->shiftWheelPans();
     s.touchpadScrollPans = config->touchpadScrollPans();
     switch (config->swipeFingers()) {
-    case InfinitDesktopConfig::EnumSwipeFingers::Three:
+    case InfiniteDesktopConfig::EnumSwipeFingers::Three:
         s.swipeFingers = 3;
         break;
-    case InfinitDesktopConfig::EnumSwipeFingers::Four:
+    case InfiniteDesktopConfig::EnumSwipeFingers::Four:
         s.swipeFingers = 4;
         break;
     default:
@@ -354,7 +354,7 @@ void InfinitDesktopEffect::loadSettings()
     s.animationDuration = std::chrono::milliseconds(std::clamp(config->animationDuration(), 0, 2000));
     s.keyboardPanStep = std::clamp(config->keyboardPanStep(), 5, 100) / 100.0;
     s.revealOnActivate = config->revealOnActivate();
-    s.revealMode = config->revealMode() == InfinitDesktopConfig::EnumRevealMode::Center ? RevealMode::Center : RevealMode::Minimal;
+    s.revealMode = config->revealMode() == InfiniteDesktopConfig::EnumRevealMode::Center ? RevealMode::Center : RevealMode::Minimal;
     s.newWindowsExitZoom = config->newWindowsExitZoom();
     s.interactWhileZoomed = config->interactWhileZoomed();
     s.clickZoomedWindowFocuses = config->clickZoomedWindowFocuses();
@@ -363,7 +363,7 @@ void InfinitDesktopEffect::loadSettings()
     s.excludedClasses = config->excludedWindowClasses();
     s.perDesktopCanvas = config->perDesktopCanvas();
     s.rememberWindowPlacement = config->rememberWindowPlacement();
-    s.restoreOnCanvas = config->restorePlacementMode() == InfinitDesktopConfig::EnumRestorePlacementMode::Canvas;
+    s.restoreOnCanvas = config->restorePlacementMode() == InfiniteDesktopConfig::EnumRestorePlacementMode::Canvas;
     s.restoreWindowSize = config->restoreWindowSize();
     s.placementExcludedClasses = config->placementExcludedClasses();
     s.flingToOtherScreen = config->flingToOtherScreen();
@@ -373,13 +373,13 @@ void InfinitDesktopEffect::loadSettings()
     s.edgePanSpeed = std::clamp(config->edgePanSpeed(), 100, 8000);
     s.lockFullscreen = config->lockFullscreen();
     s.minimizedFullscreenOnCanvas = config->minimizedFullscreenOnCanvas();
-    s.tileLiveContent = config->minimizedFullscreenContent() == InfinitDesktopConfig::EnumMinimizedFullscreenContent::LiveContent;
+    s.tileLiveContent = config->minimizedFullscreenContent() == InfiniteDesktopConfig::EnumMinimizedFullscreenContent::LiveContent;
     s.tileSize = std::clamp(config->tileSize(), 5, 80) / 100.0;
     switch (config->backgroundGrid()) {
-    case InfinitDesktopConfig::EnumBackgroundGrid::Never:
+    case InfiniteDesktopConfig::EnumBackgroundGrid::Never:
         s.grid = EffectSettings::Grid::Never;
         break;
-    case InfinitDesktopConfig::EnumBackgroundGrid::Always:
+    case InfiniteDesktopConfig::EnumBackgroundGrid::Always:
         s.grid = EffectSettings::Grid::Always;
         break;
     default:
@@ -391,29 +391,29 @@ void InfinitDesktopEffect::loadSettings()
     s.gridColor = config->gridColor();
     s.zoomIndicator = config->zoomIndicator();
     switch (config->offscreenMarkers()) {
-    case InfinitDesktopConfig::EnumOffscreenMarkers::Never:
+    case InfiniteDesktopConfig::EnumOffscreenMarkers::Never:
         s.offscreenMarkers = EffectSettings::Grid::Never;
         break;
-    case InfinitDesktopConfig::EnumOffscreenMarkers::Always:
+    case InfiniteDesktopConfig::EnumOffscreenMarkers::Always:
         s.offscreenMarkers = EffectSettings::Grid::Always;
         break;
     default:
         s.offscreenMarkers = EffectSettings::Grid::WhileNavigating;
         break;
     }
-    s.launcherAtCursor = config->launcherPosition() == InfinitDesktopConfig::EnumLauncherPosition::Cursor;
+    s.launcherAtCursor = config->launcherPosition() == InfiniteDesktopConfig::EnumLauncherPosition::Cursor;
     s.crashGuard = config->crashGuard();
     s.rememberCanvas = config->rememberCanvas();
     s.debugLogging = config->debugLogging();
     s.notesEnabled = config->notesEnabled();
-    s.groupLayoutAutomatic = config->groupLayoutMode() == InfinitDesktopConfig::EnumGroupLayoutMode::Automatic;
+    s.groupLayoutAutomatic = config->groupLayoutMode() == InfiniteDesktopConfig::EnumGroupLayoutMode::Automatic;
     s.groupStartsApplications = config->groupStartsApplications();
     s.groupZoomToFit = config->groupZoomToFit();
     switch (config->showAreas()) {
-    case InfinitDesktopConfig::EnumShowAreas::Never:
+    case InfiniteDesktopConfig::EnumShowAreas::Never:
         s.showAreas = EffectSettings::Grid::Never;
         break;
-    case InfinitDesktopConfig::EnumShowAreas::WhileNavigating:
+    case InfiniteDesktopConfig::EnumShowAreas::WhileNavigating:
         s.showAreas = EffectSettings::Grid::WhileNavigating;
         break;
     default:
@@ -423,11 +423,11 @@ void InfinitDesktopEffect::loadSettings()
     s.areaPadding = std::clamp(config->areaPadding(), 0, 400);
     s.mapSize = std::clamp(config->mapSize(), 30, 95);
 
-    const_cast<QLoggingCategory &>(KWIN_INFINITDESKTOP()).setEnabled(QtDebugMsg, s.debugLogging);
-    const_cast<QLoggingCategory &>(KWIN_INFINITDESKTOP()).setEnabled(QtInfoMsg, s.debugLogging);
+    const_cast<QLoggingCategory &>(KWIN_INFINITEDESKTOP()).setEnabled(QtDebugMsg, s.debugLogging);
+    const_cast<QLoggingCategory &>(KWIN_INFINITEDESKTOP()).setEnabled(QtInfoMsg, s.debugLogging);
 }
 
-void InfinitDesktopEffect::setupShortcuts()
+void InfiniteDesktopEffect::setupShortcuts()
 {
     for (const ShortcutDefinition &definition : shortcutDefinitions()) {
         auto *action = new QAction(this);
@@ -446,12 +446,12 @@ void InfinitDesktopEffect::setupShortcuts()
 // State queries
 // ============================================================================
 
-bool InfinitDesktopEffect::isSafeMode() const
+bool InfiniteDesktopEffect::isSafeMode() const
 {
     return m_crashGuard->isSafeMode();
 }
 
-bool InfinitDesktopEffect::isOperational() const
+bool InfiniteDesktopEffect::isOperational() const
 {
     if (m_crashGuard->isSafeMode() || KWin::effects->isScreenLocked()) {
         return false;
@@ -460,7 +460,7 @@ bool InfinitDesktopEffect::isOperational() const
     return !fullScreenEffect || fullScreenEffect == this;
 }
 
-void InfinitDesktopEffect::setPaused(bool paused)
+void InfiniteDesktopEffect::setPaused(bool paused)
 {
     if (m_paused == paused) {
         return;
@@ -477,16 +477,16 @@ void InfinitDesktopEffect::setPaused(bool paused)
             commitIfDirty(canvas);
         }
         stopEdgePan();
-        showMessage(i18n("Infinit Desktop gestures paused"), QStringLiteral("media-playback-pause"));
+        showMessage(i18n("Infinite Desktop gestures paused"), QStringLiteral("media-playback-pause"));
     } else {
-        showMessage(i18n("Infinit Desktop gestures resumed"), QStringLiteral("media-playback-start"));
+        showMessage(i18n("Infinite Desktop gestures resumed"), QStringLiteral("media-playback-start"));
     }
     m_indicatorTimer.start(1500ms);
     updateActivity();
     Q_EMIT statusChanged();
 }
 
-void InfinitDesktopEffect::leaveSafeMode()
+void InfiniteDesktopEffect::leaveSafeMode()
 {
     if (!m_crashGuard->isSafeMode()) {
         return;
@@ -502,7 +502,7 @@ void InfinitDesktopEffect::leaveSafeMode()
     Q_EMIT statusChanged();
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::outputContaining(const QPointF &pos) const
+KWin::LogicalOutput *InfiniteDesktopEffect::outputContaining(const QPointF &pos) const
 {
     const auto outputs = KWin::workspace()->outputs();
     for (KWin::LogicalOutput *output : outputs) {
@@ -513,7 +513,7 @@ KWin::LogicalOutput *InfinitDesktopEffect::outputContaining(const QPointF &pos) 
     return nullptr;
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::pointerOutput() const
+KWin::LogicalOutput *InfiniteDesktopEffect::pointerOutput() const
 {
     const QPointF pos = KWin::effects->cursorPos();
     if (KWin::LogicalOutput *output = outputContaining(pos)) {
@@ -522,13 +522,13 @@ KWin::LogicalOutput *InfinitDesktopEffect::pointerOutput() const
     return KWin::workspace()->outputAt(pos);
 }
 
-QString InfinitDesktopEffect::canvasKeyFor(KWin::LogicalOutput *output, KWin::VirtualDesktop *desktop) const
+QString InfiniteDesktopEffect::canvasKeyFor(KWin::LogicalOutput *output, KWin::VirtualDesktop *desktop) const
 {
     const QString desktopId = (m_settings.perDesktopCanvas && desktop) ? desktop->id() : QStringLiteral("*");
     return output->name() + QLatin1Char('|') + desktopId;
 }
 
-QString InfinitDesktopEffect::canvasKeyForWindow(const ManagedWindow &window, KWin::LogicalOutput *output) const
+QString InfiniteDesktopEffect::canvasKeyForWindow(const ManagedWindow &window, KWin::LogicalOutput *output) const
 {
     KWin::VirtualDesktop *desktop = nullptr;
     const auto desktops = window.effectWindow->desktops();
@@ -540,7 +540,7 @@ QString InfinitDesktopEffect::canvasKeyForWindow(const ManagedWindow &window, KW
     return canvasKeyFor(output, desktop);
 }
 
-Canvas &InfinitDesktopEffect::ensureCanvas(const QString &key, const QString &outputName, const QString &desktopId)
+Canvas &InfiniteDesktopEffect::ensureCanvas(const QString &key, const QString &outputName, const QString &desktopId)
 {
     bool created = false;
     Canvas &canvas = m_canvases.obtain(key, &created);
@@ -552,7 +552,7 @@ Canvas &InfinitDesktopEffect::ensureCanvas(const QString &key, const QString &ou
     return canvas;
 }
 
-Canvas *InfinitDesktopEffect::currentCanvas(KWin::LogicalOutput *output)
+Canvas *InfiniteDesktopEffect::currentCanvas(KWin::LogicalOutput *output)
 {
     if (!output) {
         return nullptr;
@@ -562,23 +562,23 @@ Canvas *InfinitDesktopEffect::currentCanvas(KWin::LogicalOutput *output)
     return &ensureCanvas(key, output->name(), (m_settings.perDesktopCanvas && desktop) ? desktop->id() : QStringLiteral("*"));
 }
 
-Canvas *InfinitDesktopEffect::canvasByKey(const QString &key)
+Canvas *InfiniteDesktopEffect::canvasByKey(const QString &key)
 {
     return m_canvases.find(key);
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::outputOf(const Canvas &canvas) const
+KWin::LogicalOutput *InfiniteDesktopEffect::outputOf(const Canvas &canvas) const
 {
     return KWin::workspace()->findOutput(canvas.outputName);
 }
 
-bool InfinitDesktopEffect::isCurrentCanvas(const Canvas &canvas) const
+bool InfiniteDesktopEffect::isCurrentCanvas(const Canvas &canvas) const
 {
     KWin::LogicalOutput *output = outputOf(canvas);
     return output && canvas.key == canvasKeyFor(output, KWin::effects->currentDesktop(output));
 }
 
-bool InfinitDesktopEffect::isLocked(KWin::LogicalOutput *output) const
+bool InfiniteDesktopEffect::isLocked(KWin::LogicalOutput *output) const
 {
     if (!m_settings.lockFullscreen || !output) {
         return false;
@@ -589,18 +589,18 @@ bool InfinitDesktopEffect::isLocked(KWin::LogicalOutput *output) const
         && active->window()->output() == output;
 }
 
-QRectF InfinitDesktopEffect::workArea(KWin::LogicalOutput *output) const
+QRectF InfiniteDesktopEffect::workArea(KWin::LogicalOutput *output) const
 {
     return toQRectF(KWin::effects->clientArea(KWin::MaximizeArea, output));
 }
 
-ManagedWindow *InfinitDesktopEffect::record(KWin::EffectWindow *w) const
+ManagedWindow *InfiniteDesktopEffect::record(KWin::EffectWindow *w) const
 {
     auto it = m_windows.find(w);
     return it == m_windows.end() ? nullptr : it->second.get();
 }
 
-ManagedWindow *InfinitDesktopEffect::record(KWin::Window *window) const
+ManagedWindow *InfiniteDesktopEffect::record(KWin::Window *window) const
 {
     if (!window) {
         return nullptr;
@@ -613,7 +613,7 @@ ManagedWindow *InfinitDesktopEffect::record(KWin::Window *window) const
     return nullptr;
 }
 
-ManagedWindow *InfinitDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
+ManagedWindow *InfiniteDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
 {
     KWin::Window *window = w ? w->window() : nullptr;
     if (!window) {
@@ -631,7 +631,7 @@ ManagedWindow *InfinitDesktopEffect::ownerRecord(KWin::EffectWindow *w) const
     return nullptr;
 }
 
-bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
+bool InfiniteDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
 {
     KWin::Window *window = w ? w->window() : nullptr;
     if (!window || !w->isX11Client() || w->isDNDIcon() || record(w) || window->transientFor()) {
@@ -640,7 +640,7 @@ bool InfinitDesktopEffect::isLoneX11Popup(KWin::EffectWindow *w) const
     return !w->isManaged() || w->isPopupWindow() || w->isMenu() || w->isDropdownMenu() || w->isPopupMenu() || w->isTooltip() || w->isComboBox();
 }
 
-bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
+bool InfiniteDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
 {
     for (auto it = m_x11Popups.cbegin(); it != m_x11Popups.cend(); ++it) {
         KWin::EffectWindow *popup = it->popup.data();
@@ -653,12 +653,12 @@ bool InfinitDesktopEffect::hasOpenX11Popup(KWin::EffectWindow *owner) const
     return false;
 }
 
-QRectF InfinitDesktopEffect::canvasRect(const ManagedWindow &window) const
+QRectF InfiniteDesktopEffect::canvasRect(const ManagedWindow &window) const
 {
     return QRectF(window.canvasPos, window.effectWindow->frameGeometry().size());
 }
 
-QRectF InfinitDesktopEffect::tileCanvasRect(const ManagedWindow &window, const Canvas &canvas) const
+QRectF InfiniteDesktopEffect::tileCanvasRect(const ManagedWindow &window, const Canvas &canvas) const
 {
     KWin::LogicalOutput *output = outputOf(canvas);
     const QSizeF outputSize = output ? output->geometryF().size() : QSizeF(1920, 1080);
@@ -668,7 +668,7 @@ QRectF InfinitDesktopEffect::tileCanvasRect(const ManagedWindow &window, const C
     return QRectF(window.tilePos.value_or(QPointF()), QSizeF(width, width * aspect));
 }
 
-WindowMode InfinitDesktopEffect::modeOf(const ManagedWindow &window) const
+WindowMode InfiniteDesktopEffect::modeOf(const ManagedWindow &window) const
 {
     const KWin::EffectWindow *w = window.effectWindow;
     if (window.closed) {
@@ -695,12 +695,12 @@ WindowMode InfinitDesktopEffect::modeOf(const ManagedWindow &window) const
     return WindowMode::Canvas;
 }
 
-bool InfinitDesktopEffect::isFullScreen(const ManagedWindow &window) const
+bool InfiniteDesktopEffect::isFullScreen(const ManagedWindow &window) const
 {
     return window.effectWindow->isFullScreen() || window.borderlessFullScreen;
 }
 
-bool InfinitDesktopEffect::coversScreenBorderless(const ManagedWindow &window) const
+bool InfiniteDesktopEffect::coversScreenBorderless(const ManagedWindow &window) const
 {
     const KWin::EffectWindow *w = window.effectWindow;
     if (!window.window || !w->isNormalWindow() || w->hasDecoration() || window.window->maximizeMode() != KWin::MaximizeRestore) {
@@ -713,24 +713,24 @@ bool InfinitDesktopEffect::coversScreenBorderless(const ManagedWindow &window) c
         && std::abs(frame.right() - screen.right()) < 1.0 && std::abs(frame.bottom() - screen.bottom()) < 1.0;
 }
 
-bool InfinitDesktopEffect::newWindowEndsZoom(const ManagedWindow &window) const
+bool InfiniteDesktopEffect::newWindowEndsZoom(const ManagedWindow &window) const
 {
     return m_settings.newWindowsExitZoom && window.window && !window.window->skipTaskbar();
 }
 
-bool InfinitDesktopEffect::isPinned(const ManagedWindow &window) const
+bool InfiniteDesktopEffect::isPinned(const ManagedWindow &window) const
 {
     const KWin::EffectWindow *w = window.effectWindow;
     return window.userPinned || (m_settings.pinOnAllDesktops && w->isOnAllDesktops()) || (m_settings.pinKeepAboveWindows && w->keepAbove())
         || (window.window && !window.window->isMovable());
 }
 
-bool InfinitDesktopEffect::isDirty(const Canvas &canvas) const
+bool InfiniteDesktopEffect::isDirty(const Canvas &canvas) const
 {
     return canvas.motion.isActive() || !canvas.camera.fuzzyEquals(canvas.committed);
 }
 
-Camera InfinitDesktopEffect::targetCamera(const Canvas &canvas) const
+Camera InfiniteDesktopEffect::targetCamera(const Canvas &canvas) const
 {
     return canvas.motion.isActive() ? canvas.motion.target() : canvas.camera;
 }
@@ -739,7 +739,7 @@ Camera InfinitDesktopEffect::targetCamera(const Canvas &canvas) const
 // Window tracking
 // ============================================================================
 
-bool InfinitDesktopEffect::isWallpaperWindow(KWin::EffectWindow *w)
+bool InfiniteDesktopEffect::isWallpaperWindow(KWin::EffectWindow *w)
 {
     if (w->isDesktop()) {
         return true;
@@ -749,7 +749,7 @@ bool InfinitDesktopEffect::isWallpaperWindow(KWin::EffectWindow *w)
     return window && window->inherits("KWin::LayerShellV1Window") && window->layer() == KWin::DesktopLayer;
 }
 
-bool InfinitDesktopEffect::isCanvasCandidate(KWin::EffectWindow *w) const
+bool InfiniteDesktopEffect::isCanvasCandidate(KWin::EffectWindow *w) const
 {
     if (!w || w->isDeleted() || !w->window()) {
         return false;
@@ -785,20 +785,20 @@ bool InfinitDesktopEffect::isCanvasCandidate(KWin::EffectWindow *w) const
     return true;
 }
 
-void InfinitDesktopEffect::setupWindow(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::setupWindow(KWin::EffectWindow *w)
 {
     using KWin::EffectWindow;
-    connect(w, &EffectWindow::windowFrameGeometryChanged, this, &InfinitDesktopEffect::slotFrameGeometryChanged);
-    connect(w, &EffectWindow::windowStartUserMovedResized, this, &InfinitDesktopEffect::slotStartUserMovedResized);
-    connect(w, &EffectWindow::windowFinishUserMovedResized, this, &InfinitDesktopEffect::slotFinishUserMovedResized);
-    connect(w, &EffectWindow::minimizedChanged, this, &InfinitDesktopEffect::slotMinimizedChanged);
-    connect(w, &EffectWindow::windowFullScreenChanged, this, &InfinitDesktopEffect::slotFullScreenChanged);
-    connect(w, &EffectWindow::windowDesktopsChanged, this, &InfinitDesktopEffect::slotDesktopsChanged);
-    connect(w, &EffectWindow::windowDamaged, this, &InfinitDesktopEffect::slotWindowDamaged);
-    connect(w, &EffectWindow::windowKeepAboveChanged, this, &InfinitDesktopEffect::slotKeepAboveChanged);
+    connect(w, &EffectWindow::windowFrameGeometryChanged, this, &InfiniteDesktopEffect::slotFrameGeometryChanged);
+    connect(w, &EffectWindow::windowStartUserMovedResized, this, &InfiniteDesktopEffect::slotStartUserMovedResized);
+    connect(w, &EffectWindow::windowFinishUserMovedResized, this, &InfiniteDesktopEffect::slotFinishUserMovedResized);
+    connect(w, &EffectWindow::minimizedChanged, this, &InfiniteDesktopEffect::slotMinimizedChanged);
+    connect(w, &EffectWindow::windowFullScreenChanged, this, &InfiniteDesktopEffect::slotFullScreenChanged);
+    connect(w, &EffectWindow::windowDesktopsChanged, this, &InfiniteDesktopEffect::slotDesktopsChanged);
+    connect(w, &EffectWindow::windowDamaged, this, &InfiniteDesktopEffect::slotWindowDamaged);
+    connect(w, &EffectWindow::windowKeepAboveChanged, this, &InfiniteDesktopEffect::slotKeepAboveChanged);
 }
 
-void InfinitDesktopEffect::adoptCurrentGeometry(ManagedWindow &window)
+void InfiniteDesktopEffect::adoptCurrentGeometry(ManagedWindow &window)
 {
     if (!window.window || window.closed) {
         return;
@@ -818,7 +818,7 @@ void InfinitDesktopEffect::adoptCurrentGeometry(ManagedWindow &window)
     }
 }
 
-void InfinitDesktopEffect::setUserPinned(ManagedWindow &window, bool pinned, bool keepAbove)
+void InfiniteDesktopEffect::setUserPinned(ManagedWindow &window, bool pinned, bool keepAbove)
 {
     if (!window.window) {
         return;
@@ -851,7 +851,7 @@ void InfinitDesktopEffect::setUserPinned(ManagedWindow &window, bool pinned, boo
     updateActivity();
 }
 
-void InfinitDesktopEffect::slotKeepAboveChanged(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotKeepAboveChanged(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed) {
@@ -867,7 +867,7 @@ void InfinitDesktopEffect::slotKeepAboveChanged(KWin::EffectWindow *w)
     updateActivity();
 }
 
-void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
+void InfiniteDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
 {
     if (record(w) || !isCanvasCandidate(w)) {
         return;
@@ -927,7 +927,7 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
 
     if (newlyMapped && canvas.navigation && isCurrentCanvas(canvas) && modeOf(window) == WindowMode::Canvas) {
         if (newWindowEndsZoom(window)) {
-            qCDebug(KWIN_INFINITDESKTOP) << "new window" << w->caption() << "ends the zoom";
+            qCDebug(KWIN_INFINITEDESKTOP) << "new window" << w->caption() << "ends the zoom";
             animateTo(canvas, reference);
         } else {
             parkWindow(window, output);
@@ -936,7 +936,7 @@ void InfinitDesktopEffect::adoptWindow(KWin::EffectWindow *w, bool newlyMapped)
     updateActivity();
 }
 
-void InfinitDesktopEffect::forgetWindow(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::forgetWindow(KWin::EffectWindow *w)
 {
     if (m_renderer) {
         m_renderer->forget(w);
@@ -952,7 +952,7 @@ void InfinitDesktopEffect::forgetWindow(KWin::EffectWindow *w)
     m_windows.erase(w);
 }
 
-void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
 {
     setupWindow(w);
     adoptWindow(w, true);
@@ -960,7 +960,7 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
         // Menus of Steam (CEF) and Wine are override-redirect windows without
         // WM_TRANSIENT_FOR. Zoomed out only the X11 window with the pointer is on a
         // screen, so it is the one that opened this.
-        qCDebug(KWIN_INFINITDESKTOP) << "X11 popup" << w->windowClass() << toQRectF(w->frameGeometry()) << "belongs to" << m_x11Input->caption();
+        qCDebug(KWIN_INFINITEDESKTOP) << "X11 popup" << w->windowClass() << toQRectF(w->frameGeometry()) << "belongs to" << m_x11Input->caption();
         // Entries of popups gone without windowDeleted.
         for (auto it = m_x11Popups.begin(); it != m_x11Popups.end();) {
             it = it->popup ? std::next(it) : m_x11Popups.erase(it);
@@ -969,7 +969,7 @@ void InfinitDesktopEffect::slotWindowAdded(KWin::EffectWindow *w)
     }
 }
 
-void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
 {
     if (ManagedWindow *managed = record(w)) {
         if (isOperational()) {
@@ -991,14 +991,14 @@ void InfinitDesktopEffect::slotWindowClosed(KWin::EffectWindow *w)
     repaintClosingWindows();
 }
 
-void InfinitDesktopEffect::slotWindowDeleted(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotWindowDeleted(KWin::EffectWindow *w)
 {
     m_x11Popups.remove(w);
     forgetWindow(w);
     updateActivity();
 }
 
-void InfinitDesktopEffect::slotWindowActivated(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotWindowActivated(KWin::EffectWindow *w)
 {
     if (!w || !isOperational() || !m_settings.revealOnActivate) {
         return;
@@ -1030,7 +1030,7 @@ void InfinitDesktopEffect::slotWindowActivated(KWin::EffectWindow *w)
         if (canvas->navigation && managed->mappedAt && Clock::now() - *managed->mappedAt < NewWindowActivation) {
             // A window activating itself as it opens (Steam, Wine/Proton launchers): whether
             // that ends the zoom is up to the new window rule (adoptWindow), not to this one.
-            qCDebug(KWIN_INFINITDESKTOP) << "new window" << guard->caption() << "activated while zoomed out, left to the new window rule";
+            qCDebug(KWIN_INFINITEDESKTOP) << "new window" << guard->caption() << "activated while zoomed out, left to the new window rule";
             return;
         }
         KWin::LogicalOutput *output = outputOf(*canvas);
@@ -1043,7 +1043,7 @@ void InfinitDesktopEffect::slotWindowActivated(KWin::EffectWindow *w)
     });
 }
 
-void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const KWin::RectF &oldGeometry)
+void InfiniteDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const KWin::RectF &oldGeometry)
 {
     if (m_applyingLayout) {
         return;
@@ -1054,7 +1054,7 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
     }
     // Borderless fullscreen begins and ends with the geometry (fullscreen has its own signal).
     if (const bool borderless = coversScreenBorderless(*managed); borderless != managed->borderlessFullScreen) {
-        qCDebug(KWIN_INFINITDESKTOP) << w->caption() << (borderless ? "is" : "is no longer") << "borderless fullscreen";
+        qCDebug(KWIN_INFINITEDESKTOP) << w->caption() << (borderless ? "is" : "is no longer") << "borderless fullscreen";
         const bool wasFullScreen = isFullScreen(*managed);
         managed->borderlessFullScreen = borderless;
         if (isFullScreen(*managed) != wasFullScreen) {
@@ -1093,9 +1093,9 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
             // Wine/Proton): it follows the pointer it sees on the parked window with
             // XMoveWindow instead of asking KWin to move it. Like for a move through KWin,
             // the plugin moves it on the canvas from now on, and the client gets its release.
-            qCDebug(KWIN_INFINITDESKTOP) << "client moved itself while used zoomed out, taking over:" << w->caption();
+            qCDebug(KWIN_INFINITEDESKTOP) << "client moved itself while used zoomed out, taking over:" << w->caption();
         } else if (moved) {
-            qCDebug(KWIN_INFINITDESKTOP) << "parked window" << w->caption() << "was moved to" << geometry.topLeft() << "- parking it again";
+            qCDebug(KWIN_INFINITEDESKTOP) << "parked window" << w->caption() << "was moved to" << geometry.topLeft() << "- parking it again";
         }
         // The window stays where it is on the canvas and is parked again (with its new size).
         // Parked windows are outside of every screen, so KWin likes to "rescue" them when it
@@ -1138,14 +1138,14 @@ void InfinitDesktopEffect::slotFrameGeometryChanged(KWin::EffectWindow *w, const
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed || !managed->window) {
         return;
     }
     managed->moveTakenOver = false;
-    qCDebug(KWIN_INFINITDESKTOP) << "KWin starts to" << (w->isUserMove() ? "move" : "resize") << w->caption();
+    qCDebug(KWIN_INFINITEDESKTOP) << "KWin starts to" << (w->isUserMove() ? "move" : "resize") << w->caption();
     if (w->isUserMove() && m_inputFilter && (m_inputFilter->takeOverClientMove(*managed) || m_inputFilter->isMovingWindow(w))) {
         // A window used while zoomed out moves itself (client side title bar). KWin would drag
         // the parked window around at 100 %, so the plugin moves it on the canvas instead.
@@ -1172,7 +1172,7 @@ void InfinitDesktopEffect::slotStartUserMovedResized(KWin::EffectWindow *w)
     updateActivity();
 }
 
-void InfinitDesktopEffect::suspendElectricBorders()
+void InfiniteDesktopEffect::suspendElectricBorders()
 {
     if (m_suspendedElectricBorders || !KWin::options) {
         return;
@@ -1182,7 +1182,7 @@ void InfinitDesktopEffect::suspendElectricBorders()
     KWin::options->setElectricBorderMaximize(false);
 }
 
-void InfinitDesktopEffect::restoreElectricBorders()
+void InfiniteDesktopEffect::restoreElectricBorders()
 {
     if (!m_suspendedElectricBorders || !KWin::options) {
         m_suspendedElectricBorders.reset();
@@ -1193,7 +1193,7 @@ void InfinitDesktopEffect::restoreElectricBorders()
     m_suspendedElectricBorders.reset();
 }
 
-void InfinitDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
 {
     const bool wasMove = m_move && m_move->record && m_move->record->effectWindow == w;
     if (wasMove) {
@@ -1247,14 +1247,14 @@ void InfinitDesktopEffect::slotFinishUserMovedResized(KWin::EffectWindow *w)
     windowArranged(*managed);
 }
 
-void InfinitDesktopEffect::windowArranged(ManagedWindow &window)
+void InfiniteDesktopEffect::windowArranged(ManagedWindow &window)
 {
     if (m_organizer && isOperational()) {
         m_organizer->windowArranged(window);
     }
 }
 
-void InfinitDesktopEffect::slotMinimizedChanged(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotMinimizedChanged(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed) {
@@ -1273,7 +1273,7 @@ void InfinitDesktopEffect::slotMinimizedChanged(KWin::EffectWindow *w)
     }
 }
 
-void InfinitDesktopEffect::slotFullScreenChanged(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotFullScreenChanged(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed || !managed->window) {
@@ -1316,7 +1316,7 @@ void InfinitDesktopEffect::slotFullScreenChanged(KWin::EffectWindow *w)
     updateActivity();
 }
 
-void InfinitDesktopEffect::slotDesktopsChanged(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotDesktopsChanged(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed || !managed->window) {
@@ -1344,7 +1344,7 @@ void InfinitDesktopEffect::slotDesktopsChanged(KWin::EffectWindow *w)
     updateActivity();
 }
 
-void InfinitDesktopEffect::slotWindowDamaged(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::slotWindowDamaged(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = record(w);
     if (!managed) {
@@ -1365,7 +1365,7 @@ void InfinitDesktopEffect::slotWindowDamaged(KWin::EffectWindow *w)
     }
 }
 
-void InfinitDesktopEffect::slotCurrentDesktopChanged()
+void InfiniteDesktopEffect::slotCurrentDesktopChanged()
 {
     // Windows on several desktops follow the canvas of the current desktop.
     for (auto &[w, managed] : m_windows) {
@@ -1384,7 +1384,7 @@ void InfinitDesktopEffect::slotCurrentDesktopChanged()
     });
 }
 
-void InfinitDesktopEffect::slotOutputsChanged()
+void InfiniteDesktopEffect::slotOutputsChanged()
 {
     scheduleCommitAll();
 }
@@ -1393,7 +1393,7 @@ void InfinitDesktopEffect::slotOutputsChanged()
 // Physical layout
 // ============================================================================
 
-void InfinitDesktopEffect::moveWindowPhysically(KWin::Window *window, const QPointF &topLeft)
+void InfiniteDesktopEffect::moveWindowPhysically(KWin::Window *window, const QPointF &topLeft)
 {
     if (!window || window->isDeleted() || window->isInteractiveMove() || window->isInteractiveResize()) {
         return;
@@ -1406,7 +1406,7 @@ void InfinitDesktopEffect::moveWindowPhysically(KWin::Window *window, const QPoi
     window->move(topLeft);
 }
 
-void InfinitDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput *output)
+void InfiniteDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput *output)
 {
     if (!window.window || !output) {
         return;
@@ -1422,7 +1422,7 @@ void InfinitDesktopEffect::parkWindow(ManagedWindow &window, KWin::LogicalOutput
     moveWindowPhysically(window.window, spot.topLeft);
 }
 
-QPointF InfinitDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const
+QPointF InfiniteDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::LogicalOutput *output) const
 {
     // Inside the work area and away from its edges: a floating panel that a window touches
     // stops floating (and auto-hiding panels would show up).
@@ -1452,7 +1452,7 @@ QPointF InfinitDesktopEffect::x11InputSpot(const ManagedWindow &window, KWin::Lo
     return best;
 }
 
-void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
 {
     ManagedWindow *managed = w ? record(w) : nullptr;
     Canvas *canvas = managed ? canvasByKey(managed->canvasKey) : nullptr;
@@ -1477,7 +1477,7 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
             // something parked it outside of the screen again (a new window of the same
             // program, a configure): Xwayland would put its clicks at the screen edge.
             if (!area.contains(frame)) {
-                qCDebug(KWIN_INFINITDESKTOP) << "X11 window" << w->caption() << "is at" << frame << "outside of its screen, back to its input spot";
+                qCDebug(KWIN_INFINITEDESKTOP) << "X11 window" << w->caption() << "is at" << frame << "outside of its screen, back to its input spot";
             }
             parkWindow(*managed, outputOf(*canvas));
         }
@@ -1486,7 +1486,7 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
     const QPointer<KWin::EffectWindow> previous = m_x11Input;
     m_x11Input = next;
     if (managed) {
-        qCDebug(KWIN_INFINITDESKTOP) << "X11 window" << w->caption() << "used zoomed out, parking it on its screen";
+        qCDebug(KWIN_INFINITEDESKTOP) << "X11 window" << w->caption() << "used zoomed out, parking it on its screen";
         parkWindow(*managed, outputOf(*canvas));
     }
     if (previous) {
@@ -1502,7 +1502,7 @@ void InfinitDesktopEffect::setZoomedInputWindow(KWin::EffectWindow *w)
     }
 }
 
-void InfinitDesktopEffect::holdZoomedInputWindow(KWin::EffectWindow *w)
+void InfiniteDesktopEffect::holdZoomedInputWindow(KWin::EffectWindow *w)
 {
     // Jumping between its screen and the void during the move makes the client (and
     // effects like Wobbly Windows) see moves the user did not make. Parked again by the
@@ -1512,7 +1512,7 @@ void InfinitDesktopEffect::holdZoomedInputWindow(KWin::EffectWindow *w)
     }
 }
 
-void InfinitDesktopEffect::placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output)
+void InfiniteDesktopEffect::placeWindow(ManagedWindow &window, Canvas &canvas, KWin::LogicalOutput *output)
 {
     if (!output || !window.window || window.closed || modeOf(window) != WindowMode::Canvas) {
         return;
@@ -1531,7 +1531,7 @@ void InfinitDesktopEffect::placeWindow(ManagedWindow &window, Canvas &canvas, KW
     }
 }
 
-void InfinitDesktopEffect::commit(Canvas &canvas)
+void InfiniteDesktopEffect::commit(Canvas &canvas)
 {
     if (!isOperational()) {
         canvas.committed = canvas.camera;
@@ -1555,7 +1555,7 @@ void InfinitDesktopEffect::commit(Canvas &canvas)
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::commitIfDirty(Canvas &canvas)
+void InfiniteDesktopEffect::commitIfDirty(Canvas &canvas)
 {
     if (canvas.interactions > 0 || canvas.motion.isActive()) {
         return;
@@ -1565,7 +1565,7 @@ void InfinitDesktopEffect::commitIfDirty(Canvas &canvas)
     }
 }
 
-void InfinitDesktopEffect::commitAll()
+void InfiniteDesktopEffect::commitAll()
 {
     m_commitAllScheduled = false;
     const bool rearranged = std::exchange(m_rearranged, false);
@@ -1607,16 +1607,16 @@ void InfinitDesktopEffect::commitAll()
     }
 }
 
-void InfinitDesktopEffect::scheduleCommitAll()
+void InfiniteDesktopEffect::scheduleCommitAll()
 {
     if (m_commitAllScheduled) {
         return;
     }
     m_commitAllScheduled = true;
-    QTimer::singleShot(0, this, &InfinitDesktopEffect::commitAll);
+    QTimer::singleShot(0, this, &InfiniteDesktopEffect::commitAll);
 }
 
-void InfinitDesktopEffect::restoreAllWindows()
+void InfiniteDesktopEffect::restoreAllWindows()
 {
     if (!KWin::workspace()) {
         return;
@@ -1656,12 +1656,12 @@ void InfinitDesktopEffect::restoreAllWindows()
 // Camera
 // ============================================================================
 
-void InfinitDesktopEffect::noteActivity(Canvas &canvas)
+void InfiniteDesktopEffect::noteActivity(Canvas &canvas)
 {
     canvas.lastActivity = Clock::now();
 }
 
-void InfinitDesktopEffect::beginInteraction(Canvas &canvas)
+void InfiniteDesktopEffect::beginInteraction(Canvas &canvas)
 {
     if (canvas.motion.isActive()) {
         canvas.camera = canvas.motion.sample(Clock::now());
@@ -1672,7 +1672,7 @@ void InfinitDesktopEffect::beginInteraction(Canvas &canvas)
     updateActivity();
 }
 
-void InfinitDesktopEffect::endInteraction(Canvas &canvas, const QPointF &screenVelocity)
+void InfiniteDesktopEffect::endInteraction(Canvas &canvas, const QPointF &screenVelocity)
 {
     canvas.interactions = std::max(0, canvas.interactions - 1);
     if (canvas.interactions > 0) {
@@ -1698,10 +1698,10 @@ void InfinitDesktopEffect::endInteraction(Canvas &canvas, const QPointF &screenV
     updateActivity();
 }
 
-void InfinitDesktopEffect::setCamera(Canvas &canvas, const Camera &camera)
+void InfiniteDesktopEffect::setCamera(Canvas &canvas, const Camera &camera)
 {
     if (!std::isfinite(camera.center.x()) || !std::isfinite(camera.center.y()) || !std::isfinite(camera.zoom) || camera.zoom <= 0) {
-        qCWarning(KWIN_INFINITDESKTOP) << "refusing invalid camera" << camera.center << camera.zoom;
+        qCWarning(KWIN_INFINITEDESKTOP) << "refusing invalid camera" << camera.center << camera.zoom;
         return;
     }
     canvas.camera = camera;
@@ -1711,7 +1711,7 @@ void InfinitDesktopEffect::setCamera(Canvas &canvas, const Camera &camera)
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::panBy(Canvas &canvas, const QPointF &screenDelta)
+void InfiniteDesktopEffect::panBy(Canvas &canvas, const QPointF &screenDelta)
 {
     if (canvas.motion.isActive()) {
         canvas.camera = canvas.motion.sample(Clock::now());
@@ -1720,7 +1720,7 @@ void InfinitDesktopEffect::panBy(Canvas &canvas, const QPointF &screenDelta)
     setCamera(canvas, canvas.camera.pannedByScreenDelta(screenDelta));
 }
 
-void InfinitDesktopEffect::animateTo(Canvas &canvas, const Camera &camera, std::optional<std::chrono::milliseconds> duration)
+void InfiniteDesktopEffect::animateTo(Canvas &canvas, const Camera &camera, std::optional<std::chrono::milliseconds> duration)
 {
     const auto length = duration.value_or(m_settings.animationDuration);
     const TimePoint now = Clock::now();
@@ -1739,7 +1739,7 @@ void InfinitDesktopEffect::animateTo(Canvas &canvas, const Camera &camera, std::
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::stopMotion(Canvas &canvas)
+void InfiniteDesktopEffect::stopMotion(Canvas &canvas)
 {
     if (!canvas.motion.isActive()) {
         return;
@@ -1749,7 +1749,7 @@ void InfinitDesktopEffect::stopMotion(Canvas &canvas)
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::setZoom(Canvas &canvas, const QPointF &screenAnchor, qreal zoom, bool animate)
+void InfiniteDesktopEffect::setZoom(Canvas &canvas, const QPointF &screenAnchor, qreal zoom, bool animate)
 {
     KWin::LogicalOutput *output = outputOf(canvas);
     if (!output) {
@@ -1770,13 +1770,13 @@ void InfinitDesktopEffect::setZoom(Canvas &canvas, const QPointF &screenAnchor, 
     showZoomIndicator(canvas);
 }
 
-void InfinitDesktopEffect::zoomBy(Canvas &canvas, const QPointF &screenAnchor, qreal factor, bool animate)
+void InfiniteDesktopEffect::zoomBy(Canvas &canvas, const QPointF &screenAnchor, qreal factor, bool animate)
 {
     const Camera base = animate ? targetCamera(canvas) : canvas.camera;
     setZoom(canvas, screenAnchor, base.zoom * factor, animate);
 }
 
-void InfinitDesktopEffect::enterNavigation(Canvas &canvas)
+void InfiniteDesktopEffect::enterNavigation(Canvas &canvas)
 {
     if (canvas.navigation) {
         return;
@@ -1796,10 +1796,10 @@ void InfinitDesktopEffect::enterNavigation(Canvas &canvas)
         }
         KWin::input()->pointer()->update();
     }
-    qCDebug(KWIN_INFINITDESKTOP) << "entering navigation on" << canvas.key;
+    qCDebug(KWIN_INFINITEDESKTOP) << "entering navigation on" << canvas.key;
 }
 
-void InfinitDesktopEffect::leaveNavigation(Canvas &canvas)
+void InfiniteDesktopEffect::leaveNavigation(Canvas &canvas)
 {
     if (!canvas.navigation) {
         return;
@@ -1819,10 +1819,10 @@ void InfinitDesktopEffect::leaveNavigation(Canvas &canvas)
         }
     }
     commit(canvas);
-    qCDebug(KWIN_INFINITDESKTOP) << "leaving navigation on" << canvas.key;
+    qCDebug(KWIN_INFINITEDESKTOP) << "leaving navigation on" << canvas.key;
 }
 
-void InfinitDesktopEffect::updateNavigationState(Canvas &canvas)
+void InfiniteDesktopEffect::updateNavigationState(Canvas &canvas)
 {
     const bool zoomed = !canvas.camera.isUnitZoom() || !targetCamera(canvas).isUnitZoom();
     if (zoomed && !canvas.navigation) {
@@ -1832,7 +1832,7 @@ void InfinitDesktopEffect::updateNavigationState(Canvas &canvas)
     }
 }
 
-void InfinitDesktopEffect::advanceAnimations(KWin::LogicalOutput *output, TimePoint now)
+void InfiniteDesktopEffect::advanceAnimations(KWin::LogicalOutput *output, TimePoint now)
 {
     for (Canvas &canvas : m_canvases) {
         if (canvas.outputName != output->name()) {
@@ -1882,7 +1882,7 @@ void InfinitDesktopEffect::advanceAnimations(KWin::LogicalOutput *output, TimePo
             alpha = targetAlpha > alpha ? std::min(targetAlpha, alpha + step) : std::max(targetAlpha, alpha - step);
             if (alpha == 0.0) {
                 // Faded out: the effect may leave the paint chain again.
-                QTimer::singleShot(0, this, &InfinitDesktopEffect::updateActivity);
+                QTimer::singleShot(0, this, &InfiniteDesktopEffect::updateActivity);
             }
         };
         fade(canvas.gridAlpha, target(m_settings.grid, ActivityLinger));
@@ -1891,7 +1891,7 @@ void InfinitDesktopEffect::advanceAnimations(KWin::LogicalOutput *output, TimePo
     }
 }
 
-QList<OffscreenMarker> InfinitDesktopEffect::offscreenMarkers(const Canvas &canvas) const
+QList<OffscreenMarker> InfiniteDesktopEffect::offscreenMarkers(const Canvas &canvas) const
 {
     QList<OffscreenMarker> markers;
     KWin::LogicalOutput *output = outputOf(canvas);
@@ -1956,7 +1956,7 @@ QList<OffscreenMarker> InfinitDesktopEffect::offscreenMarkers(const Canvas &canv
     return markers;
 }
 
-ManagedWindow *InfinitDesktopEffect::offscreenMarkerAt(const QPointF &pos, KWin::LogicalOutput *output) const
+ManagedWindow *InfiniteDesktopEffect::offscreenMarkerAt(const QPointF &pos, KWin::LogicalOutput *output) const
 {
     const Canvas *canvas = output ? m_canvases.find(canvasKeyFor(output, KWin::effects->currentDesktop(output))) : nullptr;
     if (!canvas || canvas->markerAlpha < 0.5) {
@@ -1971,7 +1971,7 @@ ManagedWindow *InfinitDesktopEffect::offscreenMarkerAt(const QPointF &pos, KWin:
     return nullptr;
 }
 
-std::optional<QMatrix4x4> InfinitDesktopEffect::zoomedInputTransform(KWin::EffectWindow *w) const
+std::optional<QMatrix4x4> InfiniteDesktopEffect::zoomedInputTransform(KWin::EffectWindow *w) const
 {
     ManagedWindow *owner = record(w);
     if (!owner) {
@@ -1998,7 +1998,7 @@ std::optional<QMatrix4x4> InfinitDesktopEffect::zoomedInputTransform(KWin::Effec
     return transform;
 }
 
-std::optional<ZoomedTarget> InfinitDesktopEffect::zoomedTargetAt(const QPointF &pos, KWin::LogicalOutput *output) const
+std::optional<ZoomedTarget> InfiniteDesktopEffect::zoomedTargetAt(const QPointF &pos, KWin::LogicalOutput *output) const
 {
     const Canvas *canvas = output ? m_canvases.find(canvasKeyFor(output, KWin::effects->currentDesktop(output))) : nullptr;
     if (!canvas || !canvas->navigation) {
@@ -2053,7 +2053,7 @@ std::optional<ZoomedTarget> InfinitDesktopEffect::zoomedTargetAt(const QPointF &
     return std::nullopt;
 }
 
-void InfinitDesktopEffect::keepMarkersNear(const QPointF &pos, KWin::LogicalOutput *output)
+void InfiniteDesktopEffect::keepMarkersNear(const QPointF &pos, KWin::LogicalOutput *output)
 {
     Canvas *canvas = output ? currentCanvas(output) : nullptr;
     if (!canvas || canvas->markerAlpha <= 0.0 || m_settings.offscreenMarkers != EffectSettings::Grid::WhileNavigating) {
@@ -2069,7 +2069,7 @@ void InfinitDesktopEffect::keepMarkersNear(const QPointF &pos, KWin::LogicalOutp
     }
 }
 
-void InfinitDesktopEffect::flyToWindow(ManagedWindow &window)
+void InfiniteDesktopEffect::flyToWindow(ManagedWindow &window)
 {
     if (Canvas *canvas = canvasByKey(window.canvasKey)) {
         noteActivity(*canvas);
@@ -2078,7 +2078,7 @@ void InfinitDesktopEffect::flyToWindow(ManagedWindow &window)
     activateAndReveal(window, false);
 }
 
-void InfinitDesktopEffect::setEdgePan(KWin::LogicalOutput *output, const QPointF &screenVelocity)
+void InfiniteDesktopEffect::setEdgePan(KWin::LogicalOutput *output, const QPointF &screenVelocity)
 {
     for (Canvas &canvas : m_canvases) {
         const bool target = output && canvas.outputName == output->name() && isCurrentCanvas(canvas);
@@ -2094,7 +2094,7 @@ void InfinitDesktopEffect::setEdgePan(KWin::LogicalOutput *output, const QPointF
     updateActivity();
 }
 
-void InfinitDesktopEffect::stopEdgePan()
+void InfiniteDesktopEffect::stopEdgePan()
 {
     setEdgePan(nullptr, QPointF());
 }
@@ -2103,7 +2103,7 @@ void InfinitDesktopEffect::stopEdgePan()
 // Window operations used by input handling
 // ============================================================================
 
-void InfinitDesktopEffect::moveWindowOnCanvas(ManagedWindow &window, Canvas &canvas, const QPointF &canvasPos)
+void InfiniteDesktopEffect::moveWindowOnCanvas(ManagedWindow &window, Canvas &canvas, const QPointF &canvasPos)
 {
     if (window.canvasKey != canvas.key) {
         transferWindow(window, canvas, canvasPos);
@@ -2115,7 +2115,7 @@ void InfinitDesktopEffect::moveWindowOnCanvas(ManagedWindow &window, Canvas &can
     requestRepaint(canvas);
 }
 
-Qt::Edges InfinitDesktopEffect::resizeEdgesAt(const ManagedWindow &window, const Canvas &canvas, const QPointF &pos) const
+Qt::Edges InfiniteDesktopEffect::resizeEdgesAt(const ManagedWindow &window, const Canvas &canvas, const QPointF &pos) const
 {
     const KWin::Window *client = window.window;
     if (!client || !client->isResizable() || client->maximizeMode() != KWin::MaximizeRestore) {
@@ -2141,7 +2141,7 @@ Qt::Edges InfinitDesktopEffect::resizeEdgesAt(const ManagedWindow &window, const
     return edges;
 }
 
-void InfinitDesktopEffect::resizeWindowOnCanvas(ManagedWindow &window, Canvas &canvas, Qt::Edges edges, const QRectF &start, const QPointF &delta)
+void InfiniteDesktopEffect::resizeWindowOnCanvas(ManagedWindow &window, Canvas &canvas, Qt::Edges edges, const QRectF &start, const QPointF &delta)
 {
     KWin::Window *client = window.window;
     if (!client || !client->isResizable()) {
@@ -2170,7 +2170,7 @@ void InfinitDesktopEffect::resizeWindowOnCanvas(ManagedWindow &window, Canvas &c
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::endCanvasResize(ManagedWindow &window)
+void InfiniteDesktopEffect::endCanvasResize(ManagedWindow &window)
 {
     windowArranged(window);
     // The client may still answer the last request: keep the anchor a little longer.
@@ -2182,7 +2182,7 @@ void InfinitDesktopEffect::endCanvasResize(ManagedWindow &window)
     });
 }
 
-void InfinitDesktopEffect::setResizeCursor(Qt::Edges edges)
+void InfiniteDesktopEffect::setResizeCursor(Qt::Edges edges)
 {
     if (edges == m_resizeCursorEdges) {
         return;
@@ -2210,7 +2210,7 @@ void InfinitDesktopEffect::setResizeCursor(Qt::Edges edges)
     KWin::effects->startMouseInterception(this, shape);
 }
 
-void InfinitDesktopEffect::moveTileOnCanvas(ManagedWindow &window, Canvas &canvas, const QPointF &canvasPos)
+void InfiniteDesktopEffect::moveTileOnCanvas(ManagedWindow &window, Canvas &canvas, const QPointF &canvasPos)
 {
     if (window.canvasKey != canvas.key) {
         if (Canvas *previous = canvasByKey(window.canvasKey)) {
@@ -2224,7 +2224,7 @@ void InfinitDesktopEffect::moveTileOnCanvas(ManagedWindow &window, Canvas &canva
     requestRepaint(canvas);
 }
 
-void InfinitDesktopEffect::transferWindow(ManagedWindow &window, Canvas &to, const QPointF &canvasPos)
+void InfiniteDesktopEffect::transferWindow(ManagedWindow &window, Canvas &to, const QPointF &canvasPos)
 {
     Canvas *from = canvasByKey(window.canvasKey);
     window.canvasKey = to.key;
@@ -2244,7 +2244,7 @@ void InfinitDesktopEffect::transferWindow(ManagedWindow &window, Canvas &to, con
     requestRepaint(to);
 }
 
-void InfinitDesktopEffect::activateAndReveal(ManagedWindow &window, bool returnToUnitZoom)
+void InfiniteDesktopEffect::activateAndReveal(ManagedWindow &window, bool returnToUnitZoom)
 {
     Canvas *canvas = canvasByKey(window.canvasKey);
     KWin::LogicalOutput *output = canvas ? outputOf(*canvas) : nullptr;
@@ -2261,7 +2261,7 @@ void InfinitDesktopEffect::activateAndReveal(ManagedWindow &window, bool returnT
     KWin::effects->activateWindow(window.effectWindow);
 }
 
-void InfinitDesktopEffect::restoreTile(ManagedWindow &window)
+void InfiniteDesktopEffect::restoreTile(ManagedWindow &window)
 {
     Canvas *canvas = canvasByKey(window.canvasKey);
     KWin::LogicalOutput *output = canvas ? outputOf(*canvas) : nullptr;
@@ -2277,7 +2277,7 @@ void InfinitDesktopEffect::restoreTile(ManagedWindow &window)
     KWin::effects->activateWindow(window.effectWindow);
 }
 
-bool InfinitDesktopEffect::resolveForeignOverlap(const QPointF &pos, KWin::LogicalOutput *output)
+bool InfiniteDesktopEffect::resolveForeignOverlap(const QPointF &pos, KWin::LogicalOutput *output)
 {
     KWin::Window *top = KWin::input()->findToplevel(pos);
     ManagedWindow *managed = record(top);
@@ -2298,7 +2298,7 @@ bool InfinitDesktopEffect::resolveForeignOverlap(const QPointF &pos, KWin::Logic
     return true;
 }
 
-CanvasHit InfinitDesktopEffect::hitTest(const QPointF &pos, KWin::LogicalOutput *output) const
+CanvasHit InfiniteDesktopEffect::hitTest(const QPointF &pos, KWin::LogicalOutput *output) const
 {
     CanvasHit result;
     if (!output) {
@@ -2354,7 +2354,7 @@ CanvasHit InfinitDesktopEffect::hitTest(const QPointF &pos, KWin::LogicalOutput 
     return result;
 }
 
-void InfinitDesktopEffect::updateTileState(ManagedWindow &window)
+void InfiniteDesktopEffect::updateTileState(ManagedWindow &window)
 {
     const bool tile = !window.closed && modeOf(window) == WindowMode::Tile;
     if (tile && !window.tilePos) {
@@ -2388,7 +2388,7 @@ void InfinitDesktopEffect::updateTileState(ManagedWindow &window)
 // Painting
 // ============================================================================
 
-InfinitDesktopEffect::PaintDecision InfinitDesktopEffect::decide(KWin::EffectWindow *w, KWin::LogicalOutput *output) const
+InfiniteDesktopEffect::PaintDecision InfiniteDesktopEffect::decide(KWin::EffectWindow *w, KWin::LogicalOutput *output) const
 {
     ManagedWindow *self = record(w);
     ManagedWindow *owner = self ? self : ownerRecord(w);
@@ -2443,7 +2443,7 @@ InfinitDesktopEffect::PaintDecision InfinitDesktopEffect::decide(KWin::EffectWin
     return {PaintDecision::Kind::Transform, zoom, translation};
 }
 
-std::optional<QPointF> InfinitDesktopEffect::visualPopupPosition(KWin::Window *popup, const ManagedWindow &owner, const Canvas &canvas, KWin::LogicalOutput *output, int depth) const
+std::optional<QPointF> InfiniteDesktopEffect::visualPopupPosition(KWin::Window *popup, const ManagedWindow &owner, const Canvas &canvas, KWin::LogicalOutput *output, int depth) const
 {
     KWin::Window *parent = popup ? popup->transientFor() : nullptr;
     const auto it = popup ? m_xdgPopups.constFind(popup->surface()) : m_xdgPopups.cend();
@@ -2477,7 +2477,7 @@ std::optional<QPointF> InfinitDesktopEffect::visualPopupPosition(KWin::Window *p
     return parentClient + placement.topLeft() * zoom;
 }
 
-void InfinitDesktopEffect::prePaintScreen(KWin::ScreenPrePaintData &data)
+void InfiniteDesktopEffect::prePaintScreen(KWin::ScreenPrePaintData &data)
 {
     m_paintOutput = data.screen;
     if (m_paintOutput && isOperational()) {
@@ -2500,7 +2500,7 @@ void InfinitDesktopEffect::prePaintScreen(KWin::ScreenPrePaintData &data)
     KWin::effects->prePaintScreen(data);
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::outputForViewport(const KWin::RenderViewport &viewport) const
+KWin::LogicalOutput *InfiniteDesktopEffect::outputForViewport(const KWin::RenderViewport &viewport) const
 {
     const QRectF rect = toQRectF(viewport.renderRect());
     const auto outputs = KWin::workspace()->outputs();
@@ -2514,7 +2514,7 @@ KWin::LogicalOutput *InfinitDesktopEffect::outputForViewport(const KWin::RenderV
     return nullptr;
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::ownerOutputOf(KWin::EffectWindow *w) const
+KWin::LogicalOutput *InfiniteDesktopEffect::ownerOutputOf(KWin::EffectWindow *w) const
 {
     ManagedWindow *owner = record(w);
     if (!owner) {
@@ -2524,7 +2524,7 @@ KWin::LogicalOutput *InfinitDesktopEffect::ownerOutputOf(KWin::EffectWindow *w) 
     return canvas ? outputOf(*canvas) : nullptr;
 }
 
-bool InfinitDesktopEffect::paintScreen(const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport, int mask, const KWin::Region &deviceRegion, KWin::LogicalOutput *screen)
+bool InfiniteDesktopEffect::paintScreen(const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport, int mask, const KWin::Region &deviceRegion, KWin::LogicalOutput *screen)
 {
     m_paintOutput = screen;
     m_paintRegion = deviceRegion;
@@ -2556,7 +2556,7 @@ bool InfinitDesktopEffect::paintScreen(const KWin::RenderTarget &renderTarget, c
     return result;
 }
 
-void InfinitDesktopEffect::paintAreas(const Canvas &canvas, const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport,
+void InfiniteDesktopEffect::paintAreas(const Canvas &canvas, const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport,
                                       KWin::LogicalOutput *output, const KWin::Region &deviceRegion)
 {
     if (!m_organizer || m_settings.showAreas == EffectSettings::Grid::Never) {
@@ -2569,7 +2569,7 @@ void InfinitDesktopEffect::paintAreas(const Canvas &canvas, const KWin::RenderTa
     m_organizer->paintAreas(canvas, alpha, renderTarget, viewport, output, deviceRegion);
 }
 
-void InfinitDesktopEffect::postPaintScreen()
+void InfiniteDesktopEffect::postPaintScreen()
 {
     for (const Canvas &canvas : std::as_const(m_canvases)) {
         const auto fadingOrLingering = [](qreal alpha, EffectSettings::Grid mode) {
@@ -2584,7 +2584,7 @@ void InfinitDesktopEffect::postPaintScreen()
     KWin::effects->postPaintScreen();
 }
 
-void InfinitDesktopEffect::prePaintWindow(KWin::RenderView *view, KWin::EffectWindow *w, KWin::WindowPrePaintData &data)
+void InfiniteDesktopEffect::prePaintWindow(KWin::RenderView *view, KWin::EffectWindow *w, KWin::WindowPrePaintData &data)
 {
     if (m_paintOutput && isOperational()) {
         switch (decide(w, m_paintOutput).kind) {
@@ -2602,7 +2602,7 @@ void InfinitDesktopEffect::prePaintWindow(KWin::RenderView *view, KWin::EffectWi
     KWin::effects->prePaintWindow(view, w, data);
 }
 
-bool InfinitDesktopEffect::paintWindow(const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport, KWin::EffectWindow *w, int mask, const KWin::Region &deviceRegion, KWin::WindowPaintData &data)
+bool InfiniteDesktopEffect::paintWindow(const KWin::RenderTarget &renderTarget, const KWin::RenderViewport &viewport, KWin::EffectWindow *w, int mask, const KWin::Region &deviceRegion, KWin::WindowPaintData &data)
 {
     if (!isOperational()) {
         return KWin::effects->paintWindow(renderTarget, viewport, w, mask, deviceRegion, data);
@@ -2668,26 +2668,26 @@ bool InfinitDesktopEffect::paintWindow(const KWin::RenderTarget &renderTarget, c
     return true;
 }
 
-bool InfinitDesktopEffect::isActive() const
+bool InfiniteDesktopEffect::isActive() const
 {
     return m_active;
 }
 
-int InfinitDesktopEffect::requestedEffectChainPosition() const
+int InfiniteDesktopEffect::requestedEffectChainPosition() const
 {
     // Early in the chain: our transformation has to be in place before effects
     // such as blur, rounded corners or wobbly windows look at the paint data.
     return 5;
 }
 
-bool InfinitDesktopEffect::blocksDirectScanout() const
+bool InfiniteDesktopEffect::blocksDirectScanout() const
 {
     // Transformed windows are marked with an ItemEffect, so KWin keeps them
     // composited on its own; everything else (games!) may use direct scanout.
     return false;
 }
 
-void InfinitDesktopEffect::updateItemEffect(ManagedWindow &window, bool transformed)
+void InfiniteDesktopEffect::updateItemEffect(ManagedWindow &window, bool transformed)
 {
     if (transformed && !window.itemEffect && window.effectWindow->windowItem()) {
         window.itemEffect = std::make_unique<KWin::ItemEffect>(window.effectWindow->windowItem());
@@ -2696,7 +2696,7 @@ void InfinitDesktopEffect::updateItemEffect(ManagedWindow &window, bool transfor
     }
 }
 
-void InfinitDesktopEffect::setContentScale(ManagedWindow &window, qreal scale)
+void InfiniteDesktopEffect::setContentScale(ManagedWindow &window, qreal scale)
 {
     KWin::Window *client = window.window;
     if (!client || window.contentScale == scale) {
@@ -2723,7 +2723,7 @@ void InfinitDesktopEffect::setContentScale(ManagedWindow &window, qreal scale)
     window.contentScale = scale;
 }
 
-void InfinitDesktopEffect::applyContentScales()
+void InfiniteDesktopEffect::applyContentScales()
 {
     for (const Canvas &canvas : std::as_const(m_canvases)) {
         if (canvas.navigation && (canvas.motion.isActive() || canvas.interactions > 0)) {
@@ -2748,7 +2748,7 @@ void InfinitDesktopEffect::applyContentScales()
     }
 }
 
-void InfinitDesktopEffect::updateActivity()
+void InfiniteDesktopEffect::updateActivity()
 {
     // Content scales follow the zoom once it rests.
     m_contentScaleTimer.start();
@@ -2806,19 +2806,19 @@ void InfinitDesktopEffect::updateActivity()
     }
 }
 
-void InfinitDesktopEffect::requestRepaint(KWin::LogicalOutput *output)
+void InfiniteDesktopEffect::requestRepaint(KWin::LogicalOutput *output)
 {
     if (output) {
         KWin::effects->addRepaint(output->geometryF());
     }
 }
 
-void InfinitDesktopEffect::requestRepaint(const Canvas &canvas)
+void InfiniteDesktopEffect::requestRepaint(const Canvas &canvas)
 {
     requestRepaint(outputOf(canvas));
 }
 
-void InfinitDesktopEffect::repaintClosingWindows()
+void InfiniteDesktopEffect::repaintClosingWindows()
 {
     // Other effects animate closing windows (fade, scale, ...) and keep them alive until
     // the animation has run. They repaint where the window physically is, which for a
@@ -2849,7 +2849,7 @@ void InfinitDesktopEffect::repaintClosingWindows()
 // Feedback, persistence, debugging
 // ============================================================================
 
-void InfinitDesktopEffect::showZoomIndicator(const Canvas &canvas)
+void InfiniteDesktopEffect::showZoomIndicator(const Canvas &canvas)
 {
     if (!m_settings.zoomIndicator) {
         return;
@@ -2859,25 +2859,25 @@ void InfinitDesktopEffect::showZoomIndicator(const Canvas &canvas)
     m_indicatorTimer.start(900ms);
 }
 
-void InfinitDesktopEffect::showMessage(const QString &text, const QString &icon)
+void InfiniteDesktopEffect::showMessage(const QString &text, const QString &icon)
 {
     KWin::effects->showOnScreenMessage(text, icon);
 }
 
-void InfinitDesktopEffect::flashMessage(const QString &text, const QString &icon, std::chrono::milliseconds duration)
+void InfiniteDesktopEffect::flashMessage(const QString &text, const QString &icon, std::chrono::milliseconds duration)
 {
     showMessage(text, icon);
     m_indicatorTimer.start(duration);
 }
 
-void InfinitDesktopEffect::persistSoon()
+void InfiniteDesktopEffect::persistSoon()
 {
     if (m_settings.rememberCanvas || m_placementsDirty || (m_organizer && m_organizer->isDirty())) {
         m_persistTimer.start();
     }
 }
 
-void InfinitDesktopEffect::persistNow()
+void InfiniteDesktopEffect::persistNow()
 {
     m_persistTimer.stop();
     if (m_placementsDirty) {
@@ -2903,7 +2903,7 @@ void InfinitDesktopEffect::persistNow()
     m_stateStore->save(stored);
 }
 
-QString InfinitDesktopEffect::stateJson() const
+QString InfiniteDesktopEffect::stateJson() const
 {
     QJsonArray outputs;
     for (KWin::LogicalOutput *output : KWin::workspace()->outputs()) {
@@ -2952,7 +2952,7 @@ QString InfinitDesktopEffect::stateJson() const
         windows.append(object);
     }
     const QJsonObject root{
-        {QStringLiteral("version"), QStringLiteral(INFINITDESKTOP_VERSION_STRING)},
+        {QStringLiteral("version"), QStringLiteral(INFINITEDESKTOP_VERSION_STRING)},
         {QStringLiteral("safeMode"), isSafeMode()},
         {QStringLiteral("paused"), m_paused},
         {QStringLiteral("active"), m_active},
@@ -2965,7 +2965,7 @@ QString InfinitDesktopEffect::stateJson() const
     return QString::fromUtf8(QJsonDocument(root).toJson(QJsonDocument::Indented));
 }
 
-QString InfinitDesktopEffect::debug(const QString &) const
+QString InfiniteDesktopEffect::debug(const QString &) const
 {
     return stateJson();
 }
@@ -2974,7 +2974,7 @@ QString InfinitDesktopEffect::debug(const QString &) const
 // Remembered window placements
 // ============================================================================
 
-OutputIdentity InfinitDesktopEffect::identityOf(const KWin::LogicalOutput *output)
+OutputIdentity InfiniteDesktopEffect::identityOf(const KWin::LogicalOutput *output)
 {
     if (!output) {
         return OutputIdentity{};
@@ -2982,7 +2982,7 @@ OutputIdentity InfinitDesktopEffect::identityOf(const KWin::LogicalOutput *outpu
     return OutputIdentity{output->name(), output->manufacturer(), output->model(), output->serialNumber()};
 }
 
-KWin::LogicalOutput *InfinitDesktopEffect::findOutput(const OutputIdentity &identity) const
+KWin::LogicalOutput *InfiniteDesktopEffect::findOutput(const OutputIdentity &identity) const
 {
     const auto outputs = KWin::workspace()->outputs();
     QList<OutputIdentity> candidates;
@@ -2994,7 +2994,7 @@ KWin::LogicalOutput *InfinitDesktopEffect::findOutput(const OutputIdentity &iden
     return index >= 0 ? outputs[index] : nullptr;
 }
 
-bool InfinitDesktopEffect::isPlacementEligible(KWin::EffectWindow *w) const
+bool InfiniteDesktopEffect::isPlacementEligible(KWin::EffectWindow *w) const
 {
     KWin::Window *window = w->window();
     if (!window || !w->isNormalWindow() || w->isDialog() || w->isUtility() || window->transientFor()) {
@@ -3008,7 +3008,7 @@ bool InfinitDesktopEffect::isPlacementEligible(KWin::EffectWindow *w) const
     });
 }
 
-void InfinitDesktopEffect::applyPlacement(ManagedWindow &window, const WindowPlacement &placement)
+void InfiniteDesktopEffect::applyPlacement(ManagedWindow &window, const WindowPlacement &placement)
 {
     KWin::Window *client = window.window;
     if (!client) {
@@ -3092,10 +3092,10 @@ void InfinitDesktopEffect::applyPlacement(ManagedWindow &window, const WindowPla
             client->maximize(KWin::MaximizeFull);
         }
     }
-    qCDebug(KWIN_INFINITDESKTOP) << "restored" << window.appKey << "on" << output->name() << "at" << window.canvasPos;
+    qCDebug(KWIN_INFINITEDESKTOP) << "restored" << window.appKey << "on" << output->name() << "at" << window.canvasPos;
 }
 
-void InfinitDesktopEffect::rememberPlacement(ManagedWindow &window)
+void InfiniteDesktopEffect::rememberPlacement(ManagedWindow &window)
 {
     if (!m_settings.rememberWindowPlacement || !window.placementEligible || window.appKey.isEmpty() || !window.window || window.closed) {
         return;
@@ -3140,12 +3140,12 @@ void InfinitDesktopEffect::rememberPlacement(ManagedWindow &window)
     persistSoon();
 }
 
-QString InfinitDesktopEffect::windowPlacementsJson() const
+QString InfiniteDesktopEffect::windowPlacementsJson() const
 {
     return QString::fromUtf8(QJsonDocument(m_placements.toJson()).toJson(QJsonDocument::Indented));
 }
 
-void InfinitDesktopEffect::forgetWindowPlacements()
+void InfiniteDesktopEffect::forgetWindowPlacements()
 {
     m_placements.clear();
     for (auto &[w, managed] : m_windows) {
@@ -3155,7 +3155,7 @@ void InfinitDesktopEffect::forgetWindowPlacements()
     persistNow();
 }
 
-void InfinitDesktopEffect::forgetWindowPlacements(const QString &appKey)
+void InfiniteDesktopEffect::forgetWindowPlacements(const QString &appKey)
 {
     if (!m_placements.forget(appKey)) {
         return;
@@ -3173,7 +3173,7 @@ void InfinitDesktopEffect::forgetWindowPlacements(const QString &appKey)
 // Shortcuts
 // ============================================================================
 
-void InfinitDesktopEffect::zoomToFit(Canvas &canvas, bool toggle)
+void InfiniteDesktopEffect::zoomToFit(Canvas &canvas, bool toggle)
 {
     KWin::LogicalOutput *output = outputOf(canvas);
     if (!output) {
@@ -3206,7 +3206,7 @@ void InfinitDesktopEffect::zoomToFit(Canvas &canvas, bool toggle)
     animateTo(canvas, fitCamera(boundingRect(rects), outputRect(output), workArea(output), FitMargin, m_settings.minZoom, 1.0));
 }
 
-void InfinitDesktopEffect::goHome(Canvas &canvas, bool toggle)
+void InfiniteDesktopEffect::goHome(Canvas &canvas, bool toggle)
 {
     const Camera home{QPointF(0, 0), 1.0};
     if (toggle && canvas.beforeHome && targetCamera(canvas).fuzzyEquals(home, 1.0)) {
@@ -3219,7 +3219,7 @@ void InfinitDesktopEffect::goHome(Canvas &canvas, bool toggle)
     animateTo(canvas, home);
 }
 
-void InfinitDesktopEffect::triggerAction(ShortcutAction action)
+void InfiniteDesktopEffect::triggerAction(ShortcutAction action)
 {
     if (!isOperational()) {
         return;
@@ -3395,6 +3395,6 @@ void InfinitDesktopEffect::triggerAction(ShortcutAction action)
     }
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
 
-#include "moc_infinitdesktopeffect.cpp"
+#include "moc_infinitedesktopeffect.cpp"

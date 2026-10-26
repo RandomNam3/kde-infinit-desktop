@@ -1,13 +1,13 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "stringlistedit.h"
 
 #include <QFontMetrics>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 StringListEdit::StringListEdit(QWidget *parent)
@@ -55,4 +55,4 @@ QSize StringListEdit::sizeHint() const
     return QSize(metrics.averageCharWidth() * 42 + margins, metrics.lineSpacing() * 7 + margins);
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

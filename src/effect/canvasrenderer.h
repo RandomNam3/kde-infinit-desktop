@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -22,10 +22,10 @@ class RenderTarget;
 class RenderViewport;
 }
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
-class InfinitDesktopEffect;
+class InfiniteDesktopEffect;
 struct Canvas;
 struct OffscreenMarker;
 
@@ -44,7 +44,7 @@ public:
     CanvasRenderer();
     ~CanvasRenderer();
 
-    void paintCanvasLayer(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+    void paintCanvasLayer(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                           const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion);
     /// Markers at the screen edge for windows outside the view; painted on top of everything.
     void paintMarkers(const Canvas &canvas, const QList<OffscreenMarker> &markers, const KWin::RenderTarget &renderTarget,
@@ -54,9 +54,9 @@ public:
     void forget(KWin::EffectWindow *window);
 
 private:
-    void paintGrid(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+    void paintGrid(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                    const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion);
-    void paintTiles(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+    void paintTiles(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                     const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion);
     KWin::GLTexture *tileTexture(KWin::EffectWindow *window, const QSize &pixelSize);
     KWin::GLTexture *markerTexture(KWin::EffectWindow *window, int pixelSize);
@@ -71,4 +71,4 @@ private:
     std::unordered_map<KWin::EffectWindow *, CachedTile> m_markers;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

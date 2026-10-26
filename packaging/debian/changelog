@@ -1,60 +1,60 @@
-kde-infinit-desktop (0.5.1-1) unstable; urgency=medium
+kde-infinite-desktop (0.5.1-1) unstable; urgency=medium
 
   * Notes open with their Markdown source; a pencil button and Ctrl+E switch
     to the formatted text, kept per note. Right click opens the note's own
     menu everywhere. Menus and tool tips follow the color scheme.
   * Qt 6.8 or newer is required.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sun, 25 Oct 2026 14:00:00 +0100
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sun, 25 Oct 2026 14:00:00 +0100
 
-kde-infinit-desktop (0.5.0-1) unstable; urgency=medium
+kde-infinite-desktop (0.5.0-1) unstable; urgency=medium
 
   * New features: notes with Markdown on the canvas (companion app with a
     tray icon), groups of applications that open together at their place,
     areas that grow with their windows, a map of the canvas and a canvas
     menu.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sun, 25 Oct 2026 01:30:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sun, 25 Oct 2026 01:30:00 +0200
 
-kde-infinit-desktop (0.4.2-1) unstable; urgency=medium
+kde-infinite-desktop (0.4.2-1) unstable; urgency=medium
 
   * Bug fix release: menus of X11 programs (Steam, Wine) in place while
     zoomed out, reliable moving of Steam, no stray clicks after submenus,
     floating panels stay floating.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 22:20:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 22:20:00 +0200
 
-kde-infinit-desktop (0.4.1-1) unstable; urgency=medium
+kde-infinite-desktop (0.4.1-1) unstable; urgency=medium
 
   * Bug fix release: X11 windows (Steam, launchers under Wine/Proton) can be
     clicked and moved while zoomed out.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 21:00:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 21:00:00 +0200
 
-kde-infinit-desktop (0.4.0-1) unstable; urgency=medium
+kde-infinite-desktop (0.4.0-1) unstable; urgency=medium
 
   * New release: Steam and launchers under Wine/Proton can be moved while
     zoomed out, and starting them no longer changes the zoom on its own.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 20:45:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 20:45:00 +0200
 
-kde-infinit-desktop (0.3.0-1) unstable; urgency=medium
+kde-infinite-desktop (0.3.0-1) unstable; urgency=medium
 
   * New release: update check in the settings app, installer fixes for KDE
     neon and updates over a loaded plugin, automatic GitHub releases.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 20:30:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 20:30:00 +0200
 
-kde-infinit-desktop (0.2.0-1) unstable; urgency=medium
+kde-infinite-desktop (0.2.0-1) unstable; urgency=medium
 
   * New release: moving windows with their own title bar while zoomed out
     (browsers, Steam, Wine/Proton), borderless fullscreen games count as
     fullscreen, Meta + wheel zoom no longer opens the launcher.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 19:15:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 19:15:00 +0200
 
-kde-infinit-desktop (0.1.0-1) unstable; urgency=medium
+kde-infinite-desktop (0.1.0-1) unstable; urgency=medium
 
   * Initial release.
 
- -- KDE Infinit Desktop Maintainers <maintainers@kde-infinit-desktop.invalid>  Sat, 24 Oct 2026 12:00:00 +0200
+ -- KDE Infinite Desktop Maintainers <maintainers@kde-infinite-desktop.invalid>  Sat, 24 Oct 2026 12:00:00 +0200

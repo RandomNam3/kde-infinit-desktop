@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -18,10 +18,10 @@ namespace KWin
 class EffectWindow;
 }
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
-class InfinitDesktopEffect;
+class InfiniteDesktopEffect;
 
 /**
  * Optionally opens the Plasma application launcher at the mouse pointer.
@@ -38,7 +38,7 @@ class LauncherPositioner : public QObject
     Q_OBJECT
 
 public:
-    explicit LauncherPositioner(InfinitDesktopEffect *effect);
+    explicit LauncherPositioner(InfiniteDesktopEffect *effect);
     ~LauncherPositioner() override;
 
     void noteLauncherRequest(const QPointF &cursor);
@@ -47,7 +47,7 @@ private:
     void windowAdded(KWin::EffectWindow *w);
     void place();
 
-    InfinitDesktopEffect *const m_effect;
+    InfiniteDesktopEffect *const m_effect;
     struct Request
     {
         QPointF cursor;
@@ -59,4 +59,4 @@ private:
     bool m_moving = false;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

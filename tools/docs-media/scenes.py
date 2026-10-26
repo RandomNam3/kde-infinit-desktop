@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# KDE Infinit Desktop - scenes for the documentation images and animations.
+# KDE Infinite Desktop - scenes for the documentation images and animations.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Usage (inside the session started by session.sh): scenes.py OUTDIR [all|scene,scene,...]
@@ -27,7 +27,7 @@ GERMAN = os.environ.get("MEDIA_LANG", "de") == "de"
 WIDTH = 960  # width of the animations
 
 bus = dbus.SessionBus()
-effect = dbus.Interface(bus.get_object("org.kde.KWin", "/InfinitDesktop"), "org.kde.InfinitDesktop")
+effect = dbus.Interface(bus.get_object("org.kde.KWin", "/InfiniteDesktop"), "org.kde.InfiniteDesktop")
 screenshot = dbus.Interface(bus.get_object("org.kde.KWin", "/org/kde/KWin/ScreenShot2"), "org.kde.KWin.ScreenShot2")
 scripting = dbus.Interface(bus.get_object("org.kde.KWin", "/Scripting"), "org.kde.kwin.Scripting")
 
@@ -204,7 +204,7 @@ def work_area():
 
 
 def marker_position(w, cam):
-    """Where the plugin puts the marker of window @p w (see InfinitDesktopEffect::offscreenMarkers)."""
+    """Where the plugin puts the marker of window @p w (see InfiniteDesktopEffect::offscreenMarkers)."""
     ax, ay, aw, ah = work_area()
     inset = 20 + 10  # half the marker size + margin
     left, top, right, bottom = ax + inset, ay + inset, ax + aw - inset, ay + ah - inset
@@ -255,7 +255,7 @@ def layout():
     place("Kate", 110, 110, 860, 640)
     place("Konsole", 1030, 150, 780, 470)
     place("Systemeinstellungen" if GERMAN else "System Settings", 2250, 120, 1020, 700)
-    place("KDE Infinit Desktop", 260, 1300, 1120, 760)
+    place("KDE Infinite Desktop", 260, 1300, 1120, 760)
     set_camera(*HOME, settle=0.8)
 
 
@@ -415,7 +415,7 @@ def note_windows():
 def scene_notes():
     """Two notes, one formatted and one being written, and the menu of a note."""
     layout()
-    subprocess.Popen(["kde-infinit-desktop-companion"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen(["kde-infinite-desktop-companion"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(2.0)
     texts = [
         ((1120, 700), ["# Einkauf", "- Milch und **frisches** Brot", "- Kaffee"] if GERMAN else ["# Shopping", "- Milk and **fresh** bread", "- Coffee"], True),
@@ -470,14 +470,14 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     apps = [
         ["kate", os.path.expanduser("~/Notizen.md")],
-        ["konsole", "--hold", "-e", "bash", "-c", "echo 'KDE Infinit Desktop'; echo; ls --color=always /usr/share/kde-infinit-desktop /usr/lib/qt6/plugins/kwin/effects/plugins | head -20; exec bash"],
+        ["konsole", "--hold", "-e", "bash", "-c", "echo 'KDE Infinite Desktop'; echo; ls --color=always /usr/share/kde-infinite-desktop /usr/lib/qt6/plugins/kwin/effects/plugins | head -20; exec bash"],
         ["systemsettings"],
-        ["kde-infinit-desktop-settings"],
+        ["kde-infinite-desktop-settings"],
     ]
     for app in apps:
         subprocess.Popen(app, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(2.5)
-    for part in ["Kate", "Konsole", "Systemeinstellungen" if GERMAN else "System Settings", "KDE Infinit Desktop"]:
+    for part in ["Kate", "Konsole", "Systemeinstellungen" if GERMAN else "System Settings", "KDE Infinite Desktop"]:
         wait_for(part)
     time.sleep(2.0)
     for name, scene in SCENES.items():

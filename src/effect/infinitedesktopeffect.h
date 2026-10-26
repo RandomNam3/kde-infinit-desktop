@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -40,7 +40,7 @@ class VirtualDesktop;
 class XdgPopupInterface;
 }
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 class CanvasInputFilter;
@@ -51,7 +51,7 @@ class LauncherPositioner;
 class Organizer;
 class StateStore;
 
-/// Settings in the units the effect works with (converted from InfinitDesktopConfig).
+/// Settings in the units the effect works with (converted from InfiniteDesktopConfig).
 struct EffectSettings
 {
     bool dragDesktopToPan = true;
@@ -318,13 +318,13 @@ struct CanvasHit
     ManagedWindow *window = nullptr;
 };
 
-class InfinitDesktopEffect : public KWin::Effect
+class InfiniteDesktopEffect : public KWin::Effect
 {
     Q_OBJECT
 
 public:
-    InfinitDesktopEffect();
-    ~InfinitDesktopEffect() override;
+    InfiniteDesktopEffect();
+    ~InfiniteDesktopEffect() override;
 
     static bool supported();
 
@@ -643,4 +643,4 @@ private:
     QTimer m_scrollCommitTimer;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

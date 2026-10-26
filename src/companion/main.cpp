@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 
     Companion app: notes on the canvas and the notes icon in the system tray.
@@ -31,7 +31,7 @@
 #include <QQmlEngine>
 #include <QQuickStyle>
 
-using namespace InfinitDesktop;
+using namespace InfiniteDesktop;
 
 int main(int argc, char *argv[])
 {
@@ -45,17 +45,17 @@ int main(int argc, char *argv[])
     QApplication::setQuitOnLastWindowClosed(false);
     KLocalizedString::setApplicationDomain(QByteArrayLiteral(TRANSLATION_DOMAIN));
 
-    KAboutData about(QStringLiteral("kde-infinit-desktop-companion"),
-                     i18nc("@title application name", "Infinit Desktop Notes"),
-                     QStringLiteral(INFINITDESKTOP_VERSION_STRING),
+    KAboutData about(QStringLiteral("kde-infinite-desktop-companion"),
+                     i18nc("@title application name", "Infinite Desktop Notes"),
+                     QStringLiteral(INFINITEDESKTOP_VERSION_STRING),
                      i18n("Notes on the infinite canvas"),
                      KAboutLicense::GPL_V3,
-                     i18n("© 2026 KDE Infinit Desktop contributors"));
+                     i18n("© 2026 KDE Infinite Desktop contributors"));
     // The Wayland app id: the canvas recognises note windows by it.
-    about.setDesktopFileName(QStringLiteral("org.kde.infinitdesktop.companion"));
+    about.setDesktopFileName(QStringLiteral("org.kde.infinitedesktop.companion"));
     KAboutData::setApplicationData(about);
-    QGuiApplication::setDesktopFileName(QStringLiteral("org.kde.infinitdesktop.companion"));
-    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("knotes"), QIcon::fromTheme(QStringLiteral("org.kde.infinitdesktop"))));
+    QGuiApplication::setDesktopFileName(QStringLiteral("org.kde.infinitedesktop.companion"));
+    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("knotes"), QIcon::fromTheme(QStringLiteral("org.kde.infinitedesktop"))));
 
     QCommandLineParser parser;
     about.setupCommandLine(&parser);
@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
     if (!companion.registerService()) {
         // Already running: hand the request over and leave.
         if (parser.isSet(newNoteOption)) {
-            const QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.InfinitDesktop.Companion"), QStringLiteral("/Companion"),
-                                                                        QStringLiteral("org.kde.InfinitDesktop.Companion"), QStringLiteral("newNote"));
+            const QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.InfiniteDesktop.Companion"), QStringLiteral("/Companion"),
+                                                                        QStringLiteral("org.kde.InfiniteDesktop.Companion"), QStringLiteral("newNote"));
             QDBusConnection::sessionBus().call(message, QDBus::Block, 2000);
         }
         return 0;

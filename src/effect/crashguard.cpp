@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "crashguard.h"
@@ -12,7 +12,7 @@
 #include <QSaveFile>
 #include <QStandardPaths>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 CrashGuard::CrashGuard(QObject *parent)
@@ -23,7 +23,7 @@ CrashGuard::CrashGuard(QObject *parent)
     connect(&m_stableTimer, &QTimer::timeout, this, [this]() {
         if (m_armed) {
             writeCounter(0);
-            qCDebug(KWIN_INFINITDESKTOP) << "crash guard: run considered stable";
+            qCDebug(KWIN_INFINITEDESKTOP) << "crash guard: run considered stable";
         }
     });
 }
@@ -37,7 +37,7 @@ QString CrashGuard::stateFilePath()
 #else
     const QString base = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 #endif
-    return base + QStringLiteral("/kde-infinit-desktop/crashguard");
+    return base + QStringLiteral("/kde-infinite-desktop/crashguard");
 }
 
 int CrashGuard::readCounter() const
@@ -57,7 +57,7 @@ void CrashGuard::writeCounter(int value) const
     QDir().mkpath(QFileInfo(path).absolutePath());
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        qCWarning(KWIN_INFINITDESKTOP) << "crash guard: cannot write" << path;
+        qCWarning(KWIN_INFINITEDESKTOP) << "crash guard: cannot write" << path;
         return;
     }
     file.write(QByteArray::number(value));
@@ -70,7 +70,7 @@ bool CrashGuard::start(bool enabled)
     if (enabled && counter >= Threshold) {
         m_safeMode = true;
         m_armed = false;
-        qCWarning(KWIN_INFINITDESKTOP) << "KWin crashed" << counter << "times in a row while KDE Infinit Desktop was active, starting in safe mode";
+        qCWarning(KWIN_INFINITEDESKTOP) << "KWin crashed" << counter << "times in a row while KDE Infinite Desktop was active, starting in safe mode";
         return true;
     }
     m_safeMode = false;
@@ -98,4 +98,4 @@ void CrashGuard::markClean()
     m_armed = false;
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

@@ -1,11 +1,11 @@
 #
-# spec file for package kde-infinit-desktop (openSUSE Tumbleweed / Slowroll)
+# spec file for package kde-infinite-desktop (openSUSE Tumbleweed / Slowroll)
 #
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 #   ./build.sh --package                         (from the source tree)
-#   rpmbuild -ba kde-infinit-desktop.spec        (tarball in SOURCES)
+#   rpmbuild -ba kde-infinite-desktop.spec        (tarball in SOURCES)
 #   rpmbuild -ba --without effect ...            (KWin < 6.8: only the app)
 #
 # KWin only loads plugins built for exactly its version (the plugin IID
@@ -26,12 +26,12 @@
 %endif
 %endif
 
-Name:           kde-infinit-desktop
+Name:           kde-infinite-desktop
 Version:        0.5.1
 Release:        1%{?kwin_tag}
 Summary:        Infinite pannable and zoomable canvas for KDE Plasma (KWin effect)
 License:        GPL-3.0-or-later
-URL:            https://github.com/RandomNam3/kde-infinit-desktop
+URL:            https://github.com/RandomNam3/kde-infinite-desktop
 Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  cmake >= 3.22
 BuildRequires:  gcc-c++
@@ -78,7 +78,7 @@ Recommends:     %{name}-settings = %{version}
 %endif
 
 %description
-KDE Infinit Desktop turns every monitor into an infinite canvas: windows are
+KDE Infinite Desktop turns every monitor into an infinite canvas: windows are
 placed on a plane that can be panned and zoomed freely with the mouse, the
 touchpad, a touchscreen or the keyboard. It is an effect for KWin, the
 compositor of KDE Plasma 6 on Wayland, plus a System Settings module.
@@ -88,13 +88,13 @@ KWin update.
 
 %if %{with app}
 %package settings
-Summary:        Settings app for KDE Infinit Desktop
+Summary:        Settings app for KDE Infinite Desktop
 Requires:       %{name} = %{version}
 Requires:       libQt6Svg6
 Requires:       qt6-declarative-imports
 
 %description settings
-Standalone settings app (kde-infinit-desktop-settings) for KDE Infinit
+Standalone settings app (kde-infinite-desktop-settings) for KDE Infinite
 Desktop, the infinite canvas for KDE Plasma.
 %endif
 
@@ -114,8 +114,8 @@ Desktop, the infinite canvas for KDE Plasma.
 %kf6_install
 # Translations (po/) are optional while the project is young; without them give
 # "%files -f" a (harmless, duplicate) entry, an empty file list is an error.
-%find_lang kwin_infinitdesktop || :
-[ -s kwin_infinitdesktop.lang ] || echo '%{_datadir}/config.kcfg/infinitdesktop.kcfg' > kwin_infinitdesktop.lang
+%find_lang kwin_infinitedesktop || :
+[ -s kwin_infinitedesktop.lang ] || echo '%{_datadir}/config.kcfg/infinitedesktop.kcfg' > kwin_infinitedesktop.lang
 
 %check
 %if %{with tests}
@@ -123,30 +123,30 @@ export QT_QPA_PLATFORM=offscreen
 %ctest
 %endif
 
-%files -f kwin_infinitdesktop.lang
-%{_datadir}/config.kcfg/infinitdesktop.kcfg
-%{_kf6_dbusinterfacesdir}/org.kde.InfinitDesktop.xml
+%files -f kwin_infinitedesktop.lang
+%{_datadir}/config.kcfg/infinitedesktop.kcfg
+%{_kf6_dbusinterfacesdir}/org.kde.InfiniteDesktop.xml
 %if %{with effect}
 %dir %{_kf6_plugindir}/kwin
 %dir %{_kf6_plugindir}/kwin/effects
 %dir %{_kf6_plugindir}/kwin/effects/plugins
 %dir %{_kf6_plugindir}/kwin/effects/configs
-%{_kf6_plugindir}/kwin/effects/plugins/infinitdesktop.so
-%{_kf6_plugindir}/kwin/effects/configs/kwin_infinitdesktop_config.so
-%dir %{_datadir}/kde-infinit-desktop
-%{_datadir}/kde-infinit-desktop/built-for-kwin
+%{_kf6_plugindir}/kwin/effects/plugins/infinitedesktop.so
+%{_kf6_plugindir}/kwin/effects/configs/kwin_infinitedesktop_config.so
+%dir %{_datadir}/kde-infinite-desktop
+%{_datadir}/kde-infinite-desktop/built-for-kwin
 %endif
 
 %if %{with app}
 %files settings
-%{_kf6_bindir}/kde-infinit-desktop-settings
-%{_kf6_applicationsdir}/kde-infinit-desktop-settings.desktop
-%{_kf6_bindir}/kde-infinit-desktop-companion
-%{_kf6_applicationsdir}/org.kde.infinitdesktop.companion.desktop
-%{_datadir}/dbus-1/services/org.kde.InfinitDesktop.Companion.service
-%{_sysconfdir}/xdg/autostart/org.kde.infinitdesktop.companion.desktop
-%{_kf6_iconsdir}/hicolor/*/apps/org.kde.infinitdesktop.*
-%{_kf6_appstreamdir}/org.kde.infinitdesktop.metainfo.xml
+%{_kf6_bindir}/kde-infinite-desktop-settings
+%{_kf6_applicationsdir}/kde-infinite-desktop-settings.desktop
+%{_kf6_bindir}/kde-infinite-desktop-companion
+%{_kf6_applicationsdir}/org.kde.infinitedesktop.companion.desktop
+%{_datadir}/dbus-1/services/org.kde.InfiniteDesktop.Companion.service
+%{_sysconfdir}/xdg/autostart/org.kde.infinitedesktop.companion.desktop
+%{_kf6_iconsdir}/hicolor/*/apps/org.kde.infinitedesktop.*
+%{_kf6_appstreamdir}/org.kde.infinitedesktop.metainfo.xml
 %endif
 
 %changelog

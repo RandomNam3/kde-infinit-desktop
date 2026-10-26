@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -14,7 +14,7 @@
 #include <array>
 #include <optional>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /// Persistent part of a canvas: camera and bookmarks.
@@ -26,7 +26,7 @@ struct StoredCanvas
 
 /**
  * Loads and saves camera positions and bookmarks of all canvases as JSON in
- * $XDG_STATE_HOME/kde-infinit-desktop/canvas.json. Window positions are not
+ * $XDG_STATE_HOME/kde-infinite-desktop/canvas.json. Window positions are not
  * stored: windows of a new session are new windows for KWin anyway.
  */
 class StateStore
@@ -47,4 +47,4 @@ public:
     static QString placementsFilePath();
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "companion.h"
@@ -29,18 +29,18 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
 {
 
-const QString ServiceName = QStringLiteral("org.kde.InfinitDesktop.Companion");
+const QString ServiceName = QStringLiteral("org.kde.InfiniteDesktop.Companion");
 const QString ObjectPath = QStringLiteral("/Companion");
 const QString KWinService = QStringLiteral("org.kde.KWin");
-const QString EffectPath = QStringLiteral("/InfinitDesktop");
-const QString EffectInterface = QStringLiteral("org.kde.InfinitDesktop");
-const QString ConfigGroup = QStringLiteral("Effect-infinitdesktop");
+const QString EffectPath = QStringLiteral("/InfiniteDesktop");
+const QString EffectInterface = QStringLiteral("org.kde.InfiniteDesktop");
+const QString ConfigGroup = QStringLiteral("Effect-infinitedesktop");
 
 // Paper colors (light, readable with dark text), in the order of the NoteColor setting.
 const QColor PaperColors[] = {
@@ -161,7 +161,7 @@ void Companion::showWindow(Note *note)
         return;
     }
     QQmlComponent component(m_engine);
-    component.loadFromModule("InfinitDesktop.Companion", "NoteWindow");
+    component.loadFromModule("InfiniteDesktop.Companion", "NoteWindow");
     QObject *object = component.createWithInitialProperties({
         {QStringLiteral("note"), QVariant::fromValue(note)},
         {QStringLiteral("companion"), QVariant::fromValue(this)},
@@ -318,7 +318,7 @@ void Companion::showMap()
 
 void Companion::openSettings()
 {
-    QProcess::startDetached(QStringLiteral("kde-infinit-desktop-settings"), {QStringLiteral("--page"), QStringLiteral("organize")});
+    QProcess::startDetached(QStringLiteral("kde-infinite-desktop-settings"), {QStringLiteral("--page"), QStringLiteral("organize")});
 }
 
 QColor Companion::paperColor(int color) const
@@ -374,8 +374,8 @@ void Companion::updateTray()
         return;
     }
     if (!m_tray) {
-        m_tray = std::make_unique<QSystemTrayIcon>(QIcon::fromTheme(QStringLiteral("knotes"), QIcon::fromTheme(QStringLiteral("org.kde.infinitdesktop"))));
-        m_tray->setToolTip(i18nc("@info:tooltip tray icon", "Infinit Desktop notes"));
+        m_tray = std::make_unique<QSystemTrayIcon>(QIcon::fromTheme(QStringLiteral("knotes"), QIcon::fromTheme(QStringLiteral("org.kde.infinitedesktop"))));
+        m_tray->setToolTip(i18nc("@info:tooltip tray icon", "Infinite Desktop notes"));
         m_menu = std::make_unique<QMenu>();
         m_tray->setContextMenu(m_menu.get());
         connect(m_tray.get(), &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
@@ -406,4 +406,4 @@ void Companion::updateTray()
     m_tray->show();
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

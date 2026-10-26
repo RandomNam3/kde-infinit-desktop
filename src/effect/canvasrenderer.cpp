@@ -1,10 +1,10 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "canvasrenderer.h"
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 
 #include "core/colorspace.h"
 #include "core/output.h"
@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -205,7 +205,7 @@ void CanvasRenderer::paintMarkers(const Canvas &canvas, const QList<OffscreenMar
     glDisable(GL_BLEND);
 }
 
-void CanvasRenderer::paintCanvasLayer(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+void CanvasRenderer::paintCanvasLayer(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                                       const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion)
 {
     if (!output || !KWin::effects->openglContext()) {
@@ -219,7 +219,7 @@ void CanvasRenderer::paintCanvasLayer(const InfinitDesktopEffect &effect, const 
     }
 }
 
-void CanvasRenderer::paintGrid(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+void CanvasRenderer::paintGrid(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                                const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion)
 {
     const EffectSettings &settings = effect.settings();
@@ -300,7 +300,7 @@ KWin::GLTexture *CanvasRenderer::tileTexture(KWin::EffectWindow *window, const Q
     return cached.texture.get();
 }
 
-void CanvasRenderer::paintTiles(const InfinitDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
+void CanvasRenderer::paintTiles(const InfiniteDesktopEffect &effect, const Canvas &canvas, const KWin::RenderTarget &renderTarget,
                                 const KWin::RenderViewport &viewport, KWin::LogicalOutput *output, const KWin::Region &deviceRegion)
 {
     const QRectF screen = rectOf(output);
@@ -338,4 +338,4 @@ void CanvasRenderer::paintTiles(const InfinitDesktopEffect &effect, const Canvas
     }
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

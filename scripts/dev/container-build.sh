@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Developer helper: build KDE Infinit Desktop and run the unit tests in
+# Developer helper: build KDE Infinite Desktop and run the unit tests in
 # containers of several distributions (podman or docker).
 #
 #   scripts/dev/container-build.sh                    # neon + arch

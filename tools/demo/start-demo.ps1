@@ -1,5 +1,5 @@
 <#
-    KDE Infinit Desktop - interactive demo on Windows (Podman Desktop / podman machine)
+    KDE Infinite Desktop - interactive demo on Windows (Podman Desktop / podman machine)
     SPDX-License-Identifier: GPL-3.0-or-later
 
     Starts a complete Plasma Wayland session (KWin with the plugin, plasmashell,
@@ -68,7 +68,7 @@ if (-not $ready) { throw 'The demo session did not become ready in time (see: po
 # no password prompt, Windows key combinations go to Plasma. Authentication level 2
 # makes the client insist on TLS (level 0 falls back to the legacy RDP security layer,
 # which KRdp does not offer) and warn once about the self-signed certificate.
-$rdpFile = Join-Path $env:TEMP 'kde-infinit-desktop-demo.rdp'
+$rdpFile = Join-Path $env:TEMP 'kde-infinite-desktop-demo.rdp'
 @(
     "full address:s:localhost:$Port"
     'username:s:root'

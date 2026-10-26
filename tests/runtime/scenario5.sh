@@ -7,7 +7,7 @@ input abs 800 450
 
 loaded=$(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.loadedEffects | tr '\n' ' ')
 echo "loaded effects: $loaded"
-for effect in infinitdesktop translucency wobblywindows magiclamp; do
+for effect in infinitedesktop translucency wobblywindows magiclamp; do
   if echo " $loaded " | grep -q " $effect "; then echo "PASS: $effect loaded"; else echo "FAIL: $effect not loaded"; FAILURES=$((FAILURES+1)); fi
 done
 if echo " $loaded " | grep -q " better_blur_dx "; then echo "INFO: testing with Better Blur DX"; else echo "INFO: testing with the built-in blur"; fi

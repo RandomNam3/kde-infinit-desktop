@@ -1,10 +1,10 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "dbusinterface.h"
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 #include "logging.h"
 #include "organizer.h"
 
@@ -13,15 +13,15 @@
 
 #include <QDBusConnection>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
 {
-const QString ObjectPath = QStringLiteral("/InfinitDesktop");
+const QString ObjectPath = QStringLiteral("/InfiniteDesktop");
 }
 
-DBusInterface::DBusInterface(InfinitDesktopEffect *effect)
+DBusInterface::DBusInterface(InfiniteDesktopEffect *effect)
     : QObject(effect)
     , m_effect(effect)
 {
@@ -29,9 +29,9 @@ DBusInterface::DBusInterface(InfinitDesktopEffect *effect)
                                                                 QDBusConnection::ExportScriptableSlots | QDBusConnection::ExportScriptableSignals
                                                                     | QDBusConnection::ExportScriptableProperties);
     if (!m_registered) {
-        qCWarning(KWIN_INFINITDESKTOP) << "could not register D-Bus object" << ObjectPath;
+        qCWarning(KWIN_INFINITEDESKTOP) << "could not register D-Bus object" << ObjectPath;
     }
-    connect(effect, &InfinitDesktopEffect::statusChanged, this, &DBusInterface::statusChanged);
+    connect(effect, &InfiniteDesktopEffect::statusChanged, this, &DBusInterface::statusChanged);
     if (Organizer *organizer = effect->organizer()) {
         connect(organizer, &Organizer::groupsChanged, this, &DBusInterface::groupsChanged);
         connect(organizer, &Organizer::areasChanged, this, &DBusInterface::areasChanged);
@@ -58,7 +58,7 @@ bool DBusInterface::paused() const
 
 QString DBusInterface::version() const
 {
-    return QStringLiteral(INFINITDESKTOP_VERSION_STRING);
+    return QStringLiteral(INFINITEDESKTOP_VERSION_STRING);
 }
 
 void DBusInterface::leaveSafeMode()
@@ -270,6 +270,6 @@ void DBusInterface::showMap()
     }
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
 
 #include "moc_dbusinterface.cpp"

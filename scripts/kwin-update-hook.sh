@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Automatic rebuild of KDE Infinit Desktop after KWin updates (DKMS style).
+# Automatic rebuild of KDE Infinite Desktop after KWin updates (DKMS style).
 #
-# Installed by scripts/install.sh to <prefix>/lib/kde-infinit-desktop/ and
+# Installed by scripts/install.sh to <prefix>/lib/kde-infinite-desktop/ and
 # called by the package manager hooks in scripts/hooks/ (pacman, apt, dnf,
 # zypper, apk) and - as a fallback on every system - by the login check.
 #
 # KWin only loads plugins built for exactly its version (the plugin IID
 # contains MAJOR.MINOR.PATCH), so every KWin patch release needs a rebuild.
-# This script compares <prefix>/share/kde-infinit-desktop/built-for-kwin with
+# This script compares <prefix>/share/kde-infinite-desktop/built-for-kwin with
 # the installed KWin and, if they differ, rebuilds from the source copy in
-# /usr/src/kde-infinit-desktop-<version> (no network needed).
+# /usr/src/kde-infinite-desktop-<version> (no network needed).
 #
 # It NEVER fails a package transaction: it always exits 0 and logs to
-# /var/log/kde-infinit-desktop-rebuild.log.
+# /var/log/kde-infinite-desktop-rebuild.log.
 
 set -u
 
-readonly PROJECT=kde-infinit-desktop
-LOG=${KID_REBUILD_LOG:-/var/log/kde-infinit-desktop-rebuild.log}
-STATE_DIR=${KID_STATE_DIR:-/var/lib/kde-infinit-desktop}
-LOCK_FILE=/run/kde-infinit-desktop-rebuild.lock
+readonly PROJECT=kde-infinite-desktop
+LOG=${KID_REBUILD_LOG:-/var/log/kde-infinite-desktop-rebuild.log}
+STATE_DIR=${KID_STATE_DIR:-/var/lib/kde-infinite-desktop}
+LOCK_FILE=/run/kde-infinite-desktop-rebuild.lock
 
 SELF=$(readlink -f -- "${BASH_SOURCE[0]}" 2>/dev/null || printf '%s' "${BASH_SOURCE[0]}")
 HERE=$(dirname -- "$SELF")
@@ -37,7 +37,7 @@ usage() {
     cat <<EOF
 Usage: kwin-update-hook.sh [OPTIONS] [TRIGGER]
 
-Rebuilds and reinstalls KDE Infinit Desktop if the installed KWin version
+Rebuilds and reinstalls KDE Infinite Desktop if the installed KWin version
 differs from the one the plugin was built for. Run as root.
 
 TRIGGER is informational: pacman, apt, dnf, zypper, apk, login or manual.
@@ -75,7 +75,7 @@ log() {
     line="$(date '+%Y-%m-%d %H:%M:%S') [$TRIGGER] $*"
     { printf '%s\n' "$line" >>"$LOG"; } 2>/dev/null || true
     # pacman/apt/dnf show the hook output - keep it to one useful line
-    [ "$BACKGROUND" -eq 1 ] || printf 'kde-infinit-desktop: %s\n' "$*" >&2
+    [ "$BACKGROUND" -eq 1 ] || printf 'kde-infinite-desktop: %s\n' "$*" >&2
 }
 
 if [ "$(id -u)" -ne 0 ]; then
@@ -155,17 +155,17 @@ notify_users() {
         bus="unix:path=$dir/bus"
         if have runuser && have notify-send; then
             runuser -u "$user" -- env DBUS_SESSION_BUS_ADDRESS="$bus" \
-                notify-send --app-name="KDE Infinit Desktop" --icon=org.kde.infinitdesktop "$title" "$body" >/dev/null 2>&1 && continue
+                notify-send --app-name="KDE Infinite Desktop" --icon=org.kde.infinitedesktop "$title" "$body" >/dev/null 2>&1 && continue
         fi
         if have runuser && have gdbus; then
             runuser -u "$user" -- env DBUS_SESSION_BUS_ADDRESS="$bus" \
                 gdbus call --session --dest org.freedesktop.Notifications \
                 --object-path /org/freedesktop/Notifications \
                 --method org.freedesktop.Notifications.Notify \
-                "KDE Infinit Desktop" 0 kde-infinit-desktop "$title" "$body" '[]' '{}' 0 >/dev/null 2>&1 && continue
+                "KDE Infinite Desktop" 0 kde-infinite-desktop "$title" "$body" '[]' '{}' 0 >/dev/null 2>&1 && continue
         fi
         if have su && have notify-send; then
-            su -s /bin/sh "$user" -c "DBUS_SESSION_BUS_ADDRESS='$bus' notify-send --app-name='KDE Infinit Desktop' '$title' '$body'" >/dev/null 2>&1 || true
+            su -s /bin/sh "$user" -c "DBUS_SESSION_BUS_ADDRESS='$bus' notify-send --app-name='KDE Infinite Desktop' '$title' '$body'" >/dev/null 2>&1 || true
         fi
     done
 }
@@ -206,8 +206,8 @@ main() {
     src=$(find_source || true)
     if [ -z "$src" ]; then
         log "KWin changed ($built -> $current) but no source copy in /usr/src/$PROJECT-* - run scripts/install.sh --rebuild"
-        notify_users "KDE Infinit Desktop: rebuild needed" \
-            "KWin was updated to $current. Run 'install.sh --rebuild' from the KDE Infinit Desktop sources."
+        notify_users "KDE Infinite Desktop: rebuild needed" \
+            "KWin was updated to $current. Run 'install.sh --rebuild' from the KDE Infinite Desktop sources."
         write_state failed "$current"
         return 0
     fi
@@ -228,12 +228,12 @@ main() {
     if [ "$rc" -eq 0 ]; then
         log "rebuilt successfully for KWin $current - log out and back in to activate it"
         write_state ok "$current"
-        notify_users "KDE Infinit Desktop was updated" \
+        notify_users "KDE Infinite Desktop was updated" \
             "Rebuilt for KWin $current. Log out and back in to activate it."
     else
         log "rebuild FAILED (exit $rc) - see $LOG; missing build dependencies? Run: $src/scripts/install.sh --rebuild --deps"
         write_state failed "$current"
-        notify_users "KDE Infinit Desktop: rebuild failed" \
+        notify_users "KDE Infinite Desktop: rebuild failed" \
             "The automatic rebuild for KWin $current failed. See $LOG or run 'install.sh --rebuild --deps'."
     fi
     return 0

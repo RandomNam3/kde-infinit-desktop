@@ -17,7 +17,7 @@ compile_commands.json
 /packaging/arch/pkg/
 /packaging/arch-git/src/
 /packaging/arch-git/pkg/
-/packaging/arch-git/kde-infinit-desktop/
+/packaging/arch-git/kde-infinite-desktop/
 
 # Editors / OS / local assistants
 .idea/

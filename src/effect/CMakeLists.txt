@@ -4,9 +4,9 @@
 # exact KWin version it is loaded into (KWin plugins have no stable ABI; KWin
 # refuses to load a plugin that was built for another version).
 
-set(infinitdesktop_SOURCES
+set(infinitedesktop_SOURCES
     main.cpp
-    infinitdesktopeffect.cpp
+    infinitedesktopeffect.cpp
     inputfilter.cpp
     canvasrenderer.cpp
     crashguard.cpp
@@ -16,19 +16,19 @@ set(infinitdesktop_SOURCES
     organizer.cpp
 )
 
-ecm_qt_declare_logging_category(infinitdesktop_SOURCES
+ecm_qt_declare_logging_category(infinitedesktop_SOURCES
     HEADER logging.h
-    IDENTIFIER KWIN_INFINITDESKTOP
-    CATEGORY_NAME kwin_effect_infinitdesktop
+    IDENTIFIER KWIN_INFINITEDESKTOP
+    CATEGORY_NAME kwin_effect_infinitedesktop
     DEFAULT_SEVERITY Warning
-    DESCRIPTION "KDE Infinit Desktop (KWin effect)"
+    DESCRIPTION "KDE Infinite Desktop (KWin effect)"
 )
 
-kcoreaddons_add_plugin(infinitdesktop INSTALL_NAMESPACE "kwin/effects/plugins" SOURCES ${infinitdesktop_SOURCES})
+kcoreaddons_add_plugin(infinitedesktop INSTALL_NAMESPACE "kwin/effects/plugins" SOURCES ${infinitedesktop_SOURCES})
 
-target_link_libraries(infinitdesktop PRIVATE
-    infinitdesktop_core
-    infinitdesktop_shared
+target_link_libraries(infinitedesktop PRIVATE
+    infinitedesktop_core
+    infinitedesktop_shared
     KWin::kwin
     KF6::ConfigCore
     KF6::ConfigGui
@@ -42,4 +42,4 @@ target_link_libraries(infinitdesktop PRIVATE
 # Remember which KWin version this plugin was built for (used by the settings
 # app and the rebuild helper to detect a KWin update).
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/built-for-kwin "${KWin_VERSION}\n")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/built-for-kwin DESTINATION ${KDE_INSTALL_DATADIR}/kde-infinit-desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/built-for-kwin DESTINATION ${KDE_INSTALL_DATADIR}/kde-infinite-desktop)

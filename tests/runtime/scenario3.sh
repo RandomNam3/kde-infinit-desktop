@@ -90,8 +90,8 @@ win "Movie"
 check "minimized fullscreen window became a tile" '(.windows[] | select(.caption=="Movie") | .mode) == "tile" and ((.windows[] | select(.caption=="Movie") | .tileX) != null)'
 shot 04-tile-live
 # icon mode
-kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key MinimizedFullscreenContent AppIcon
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.reconfigureEffect infinitdesktop
+kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key MinimizedFullscreenContent AppIcon
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.reconfigureEffect infinitedesktop
 sleep 0.8
 shot 05-tile-icon
 # click on the tile restores fullscreen

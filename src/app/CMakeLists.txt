@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Standalone settings app "kde-infinit-desktop-settings" with a custom Qt Quick UI
+# Standalone settings app "kde-infinite-desktop-settings" with a custom Qt Quick UI
 # (plain QtQuick + QtQuick.Controls.Basic, no Kirigami). QML, icons and the app
 # icon are compiled into the executable.
 
@@ -13,9 +13,9 @@ if(QT_KNOWN_POLICY_QTP0004)
     qt_policy(SET QTP0004 NEW)
 endif()
 
-add_executable(kde-infinit-desktop-settings)
+add_executable(kde-infinite-desktop-settings)
 
-target_sources(kde-infinit-desktop-settings PRIVATE
+target_sources(kde-infinite-desktop-settings PRIVATE
     main.cpp
     iconprovider.cpp
     iconprovider.h
@@ -84,8 +84,8 @@ foreach(file IN LISTS qml_files)
 endforeach()
 set_source_files_properties(qml/Theme.qml qml/StatusTexts.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
-qt_add_qml_module(kde-infinit-desktop-settings
-    URI InfinitDesktop.Settings
+qt_add_qml_module(kde-infinite-desktop-settings
+    URI InfiniteDesktop.Settings
     VERSION 1.0
     QML_FILES ${qml_paths}
     SOURCES
@@ -112,13 +112,13 @@ qt_add_qml_module(kde-infinit-desktop-settings
 )
 
 file(GLOB icon_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CONFIGURE_DEPENDS icons/*.svg)
-qt_add_resources(kde-infinit-desktop-settings "infinitdesktop_icons"
-    PREFIX "/infinitdesktop"
+qt_add_resources(kde-infinite-desktop-settings "infinitedesktop_icons"
+    PREFIX "/infinitedesktop"
     FILES ${icon_files}
 )
 
-target_link_libraries(kde-infinit-desktop-settings PRIVATE
-    infinitdesktop_shared
+target_link_libraries(kde-infinite-desktop-settings PRIVATE
+    infinitedesktop_shared
     Qt6::DBus
     Qt6::Gui
     Qt6::Network
@@ -131,19 +131,19 @@ target_link_libraries(kde-infinit-desktop-settings PRIVATE
     KF6::I18n
 )
 if(TARGET KF6::I18nQml)
-    target_link_libraries(kde-infinit-desktop-settings PRIVATE KF6::I18nQml)
+    target_link_libraries(kde-infinite-desktop-settings PRIVATE KF6::I18nQml)
 endif()
 
-install(TARGETS kde-infinit-desktop-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES kde-infinit-desktop-settings.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(TARGETS kde-infinite-desktop-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES kde-infinite-desktop-settings.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 
 # Application icon. The name must not contain dashes: KIconLoader also tries the
-# dash-stripped names ("kde-infinit-desktop" -> "kde-infinit" -> "kde") in every
+# dash-stripped names ("kde-infinite-desktop" -> "kde-infinite" -> "kde") in every
 # theme before falling back to hicolor, so Breeze's "kde" icon would win.
-# org.kde.infinitdesktop matches the AppStream id.
-install(FILES icons/kde-infinit-desktop.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps RENAME org.kde.infinitdesktop.svg)
+# org.kde.infinitedesktop matches the AppStream id.
+install(FILES icons/kde-infinite-desktop.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps RENAME org.kde.infinitedesktop.svg)
 foreach(size 16 22 24 32 48 64 128 256)
-    install(FILES icons/app/org.kde.infinitdesktop-${size}.png
+    install(FILES icons/app/org.kde.infinitedesktop-${size}.png
             DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/${size}x${size}/apps
-            RENAME org.kde.infinitdesktop.png)
+            RENAME org.kde.infinitedesktop.png)
 endforeach()

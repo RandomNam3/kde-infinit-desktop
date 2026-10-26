@@ -1,10 +1,10 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "launcherpositioner.h"
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 #include "logging.h"
 
 #include "core/output.h"
@@ -16,7 +16,7 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -24,7 +24,7 @@ namespace
 constexpr auto RequestLifetime = 1500ms;
 }
 
-LauncherPositioner::LauncherPositioner(InfinitDesktopEffect *effect)
+LauncherPositioner::LauncherPositioner(InfiniteDesktopEffect *effect)
     : m_effect(effect)
 {
     connect(KWin::effects, &KWin::EffectsHandler::windowAdded, this, &LauncherPositioner::windowAdded);
@@ -100,9 +100,9 @@ void LauncherPositioner::place()
     }
     QScopedValueRollback<bool> guard(m_moving, true);
     window->move(topLeft);
-    qCDebug(KWIN_INFINITDESKTOP) << "moved launcher popup to" << topLeft;
+    qCDebug(KWIN_INFINITEDESKTOP) << "moved launcher popup to" << topLeft;
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
 
 #include "moc_launcherpositioner.cpp"

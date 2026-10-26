@@ -1,5 +1,5 @@
 #!/bin/bash
-# KDE Infinit Desktop - demo session inside the container.
+# KDE Infinite Desktop - demo session inside the container.
 # Builds the plugin from /src, starts KWin (virtual output) + plasmashell and
 # serves the session over RDP with KRdp.
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -22,7 +22,7 @@ build() {
     cmake --install /build > /tmp/install.log 2>&1
 }
 if [ -d /src ]; then
-    log "building KDE Infinit Desktop from /src ..."
+    log "building KDE Infinite Desktop from /src ..."
     # shellcheck disable=SC2086
     if build ${DEMO_CMAKE_ARGS:-}; then
         log "plugin, settings app and System Settings module installed"
@@ -43,7 +43,7 @@ mkdir -p "$HOME/.config" "$HOME/Desktop" "$HOME/Documents"
 export XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state
 export XDG_SESSION_TYPE=wayland XDG_CURRENT_DESKTOP=KDE KDE_FULL_SESSION=true KDE_SESSION_VERSION=6
 export QT_FORCE_STDERR_LOGGING=1
-export QT_LOGGING_RULES="kwin_effect_infinitdesktop.debug=true"
+export QT_LOGGING_RULES="kwin_effect_infinitedesktop.debug=true"
 export SHELL=/bin/bash
 
 # Language, formats and keyboard layout of the session (DEMO_LANG=de or en).
@@ -63,8 +63,8 @@ if [ ! -f "$HOME/Videos/Testvideo.mp4" ] && command -v ffmpeg >/dev/null; then
 fi
 
 if [ ! -f "$HOME/.config/kwinrc" ]; then
-    kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled true
-    kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key DebugLogging true
+    kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled true
+    kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key DebugLogging true
     # The virtual session is software rendered: keep the wobbly bits light.
     kwriteconfig6 --file kwinrc --group Plugins --key blurEnabled false
 fi
@@ -85,7 +85,7 @@ for _ in $(seq 1 150); do
 done
 export WAYLAND_DISPLAY=wayland-0
 sleep 1
-if ! qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop 2>/dev/null | grep -q true; then
+if ! qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop 2>/dev/null | grep -q true; then
     log "WARNING: the effect is not loaded. Compositing information:"
     qdbus6 org.kde.KWin /KWin org.kde.KWin.supportInformation | grep -iE "Compositing|OpenGL" | head -8
 fi
@@ -114,7 +114,7 @@ EOF
 # KRdp needs a TLS certificate; a self-signed one is fine for a local demo.
 if [ ! -f /tmp/krdp.crt ]; then
     openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/krdp.key -out /tmp/krdp.crt -days 30 \
-        -subj "/CN=kde-infinit-desktop-demo" > /dev/null 2>&1
+        -subj "/CN=kde-infinite-desktop-demo" > /dev/null 2>&1
 fi
 if [ -n "$RDP_PASSWORD" ]; then
     # Fixed user and password, checked with NLA (NTLM).
@@ -126,7 +126,7 @@ else
     # service "login", which this throwaway container allows for everyone.
     cat > /etc/pam.d/login <<'EOF'
 #%PAM-1.0
-# KDE Infinit Desktop demo container: the RDP port is published on 127.0.0.1 only.
+# KDE Infinite Desktop demo container: the RDP port is published on 127.0.0.1 only.
 auth     sufficient pam_permit.so
 account  sufficient pam_permit.so
 session  sufficient pam_permit.so

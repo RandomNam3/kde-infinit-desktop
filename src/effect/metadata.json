@@ -2,18 +2,18 @@
     "KPlugin": {
         "Authors": [
             {
-                "Name": "KDE Infinit Desktop contributors"
+                "Name": "KDE Infinite Desktop contributors"
             }
         ],
         "Category": "Window Management",
         "Description": "Turns every screen into an infinite canvas: pan, zoom and arrange windows freely",
         "Description[de]": "Macht jeden Bildschirm zu einer unendlichen Arbeitsfläche: Fenster frei verschieben, zoomen und anordnen",
         "EnabledByDefault": false,
-        "Icon": "org.kde.infinitdesktop",
+        "Icon": "org.kde.infinitedesktop",
         "License": "GPL-3.0-or-later",
-        "Name": "KDE Infinit Desktop",
-        "Name[de]": "KDE Infinit Desktop",
+        "Name": "KDE Infinite Desktop",
+        "Name[de]": "KDE Infinite Desktop",
         "Version": "0.5.1"
     },
-    "X-KDE-ConfigModule": "kwin_infinitdesktop_config"
+    "X-KDE-ConfigModule": "kwin_infinitedesktop_config"
 }

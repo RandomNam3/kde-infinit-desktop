@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# libzypp commit plugin (openSUSE): rebuild KDE Infinit Desktop after KWin
+# libzypp commit plugin (openSUSE): rebuild KDE Infinite Desktop after KWin
 # updates. Installed by scripts/install.sh as
-#   /usr/lib/zypp/plugins/commit/kde-infinit-desktop
+#   /usr/lib/zypp/plugins/commit/kde-infinite-desktop
 #
 # Protocol: libzypp sends STOMP-like frames (COMMAND, headers, empty line,
 # body, NUL) on stdin and expects an "ACK" frame for each. stdout belongs to
 # the protocol, so nothing else may be printed there. After COMMITEND the
 # rebuild is started detached; it waits until zypper has finished.
 
-HOOK=/usr/lib/kde-infinit-desktop/kwin-update-hook.sh
+HOOK=/usr/lib/kde-infinite-desktop/kwin-update-hook.sh
 commit_seen=0
 
 ack() { printf 'ACK\n\n\0'; }

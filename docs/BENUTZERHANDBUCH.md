@@ -1,8 +1,8 @@
-# KDE Infinit Desktop – Benutzerhandbuch
+# KDE Infinite Desktop – Benutzerhandbuch
 
-> *If it runs KDE Plasma, it runs KDE Infinit Desktop.*
+> *If it runs KDE Plasma, it runs KDE Infinite Desktop.*
 
-KDE Infinit Desktop macht jeden Bildschirm zu einer **unendlich großen Arbeitsfläche**. Fenster liegen in
+KDE Infinite Desktop macht jeden Bildschirm zu einer **unendlich großen Arbeitsfläche**. Fenster liegen in
 Originalgröße auf dieser Fläche, dein Bildschirm ist wie eine Kamera, die einen Ausschnitt davon zeigt.
 Du kannst die Fläche in jede Richtung verschieben, herauszoomen, um alles zu überblicken, und wieder
 hineinzoomen – die Taskleiste, Benachrichtigungen und das Hintergrundbild bleiben dabei, wo sie sind.
@@ -51,7 +51,7 @@ Das Skript erkennt deine Distribution, installiert die nötigen Pakete, baut das
 schaltet es ein und richtet einen automatischen Neubau nach KWin-Updates ein.
 
 **Ein- und ausschalten:** *Systemeinstellungen → Fensterverwaltung → Arbeitsbereich-Effekte →
-„KDE Infinit Desktop“*. Beim Ausschalten werden alle Fenster, die gerade außerhalb des sichtbaren
+„KDE Infinite Desktop“*. Beim Ausschalten werden alle Fenster, die gerade außerhalb des sichtbaren
 Bereichs lagen, auf den Bildschirm zurückgeholt – es geht nichts verloren.
 
 ## Die wichtigsten Begriffe
@@ -251,7 +251,7 @@ Notizen sind kleine Zettel, die wie Fenster auf der Fläche liegen. Neu anlegen 
   anklickbaren Links; nochmal schaltet zurück zum Bearbeiten, ebenso ein Doppelklick in den Text. Jede
   Notiz merkt sich ihre Ansicht.
 - **Speichern** passiert automatisch, kurz nach dem Tippen. Jede Notiz ist eine Markdown-Datei unter
-  `~/.local/share/kde-infinit-desktop/notes/` und lässt sich auch dort lesen.
+  `~/.local/share/kde-infinite-desktop/notes/` und lässt sich auch dort lesen.
 - **Verschieben** an der Kopfzeile, **Größe ändern** an der Ecke rechts unten. Notizen öffnen sich wieder
   genau dort, wo sie lagen.
 - **Anheften** (Knopf ◉ in der Kopfzeile oder Meta + Alt + T): Die Notiz bleibt am Bildschirm, auch wenn
@@ -364,14 +364,14 @@ Super-/Windows-Taste (oder Alt+F1) erscheint:
 
 Es gibt zwei gleichwertige Wege; beide verwenden dieselben Einstellungen:
 
-1. **Einstellungs-App „KDE Infinit Desktop“** (im Startmenü unter *Einstellungen*): Suchfeld über alle
+1. **Einstellungs-App „KDE Infinite Desktop“** (im Startmenü unter *Einstellungen*): Suchfeld über alle
    Optionen, zu jeder Option eine kurze Erklärung hinter dem **(i)**. Änderungen wirken **sofort**.
    Hier lassen sich auch alle KDE-Tastenkürzel anzeigen und ändern, Doppelbelegungen sind markiert.
-2. **Systemeinstellungen** → *Arbeitsbereich-Effekte* → *KDE Infinit Desktop* → Einstellungen (Knopf
+2. **Systemeinstellungen** → *Arbeitsbereich-Effekte* → *KDE Infinite Desktop* → Einstellungen (Knopf
    mit dem Schraubenschlüssel). Übernommen wird mit *Anwenden*.
 
-Alle Einstellungen liegen in `~/.config/kwinrc`, Gruppe `[Effect-infinitdesktop]`. Kamerapositionen,
-Lesezeichen und gemerkte Fensterpositionen liegen unter `~/.local/state/kde-infinit-desktop/`.
+Alle Einstellungen liegen in `~/.config/kwinrc`, Gruppe `[Effect-infinitedesktop]`. Kamerapositionen,
+Lesezeichen und gemerkte Fensterpositionen liegen unter `~/.local/state/kde-infinite-desktop/`.
 
 ### Updates
 
@@ -400,11 +400,11 @@ KWin lädt Plugins nur, wenn sie für genau seine Version gebaut wurden (auch be
 6.8.1 → 6.8.2). Normalerweise baut der vom Installer eingerichtete Hook das Plugin automatisch neu.
 Von Hand: `./install.sh --rebuild`. Die Einstellungs-App zeigt diesen Zustand ebenfalls an.
 
-**„KDE Infinit Desktop wurde nach wiederholten Abstürzen im abgesicherten Modus gestartet.“**
+**„KDE Infinite Desktop wurde nach wiederholten Abstürzen im abgesicherten Modus gestartet.“**
 KWin ist mehrmals kurz hintereinander abgestürzt, während das Plugin aktiv war. Damit dein Desktop
 benutzbar bleibt, hat sich das Plugin selbst deaktiviert. Wieder einschalten über die Einstellungs-App
 (*Abgesicherten Modus verlassen*). Bitte melde den Fehler mit dem Protokoll:
-`journalctl --user -b QT_CATEGORY=kwin_effect_infinitdesktop`.
+`journalctl --user -b QT_CATEGORY=kwin_effect_infinitedesktop`.
 
 **Ein Fenster ist „verschwunden“.**
 Es liegt auf der Fläche außerhalb des Bilds: Klick in der Taskleiste oder Alt+Tab holt es, Meta+Alt+W
@@ -415,12 +415,12 @@ Gesten kurz pausieren (Kürzel *Gesten pausieren/fortsetzen*) oder die Belegung 
 ändern.
 
 **Ausführliches Protokoll:** Option *Debug-Protokoll* einschalten, dann
-`journalctl --user -f QT_CATEGORY=kwin_effect_infinitdesktop`.
+`journalctl --user -f QT_CATEGORY=kwin_effect_infinitedesktop`.
 
 **Status abfragen:**
 ```bash
-qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop
-qdbus6 org.kde.KWin /InfinitDesktop org.kde.InfinitDesktop.state
+qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop
+qdbus6 org.kde.KWin /InfiniteDesktop org.kde.InfiniteDesktop.state
 ```
 
 ## Häufige Fragen

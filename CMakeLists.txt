@@ -1,10 +1,10 @@
-# KDE Infinit Desktop - infinite canvas for KWin (Plasma 6, Wayland)
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# KDE Infinite Desktop - infinite canvas for KWin (Plasma 6, Wayland)
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 cmake_minimum_required(VERSION 3.22)
 
-project(kde-infinit-desktop VERSION 0.5.1 LANGUAGES CXX)
+project(kde-infinite-desktop VERSION 0.5.1 LANGUAGES CXX)
 
 set(QT_MIN_VERSION "6.8.0")
 set(KF6_MIN_VERSION "6.0.0")
@@ -35,8 +35,8 @@ if(ENABLE_SANITIZERS)
 endif()
 
 # One translation domain for everything the project ships.
-add_compile_definitions(TRANSLATION_DOMAIN=\"kwin_infinitdesktop\")
-add_compile_definitions(INFINITDESKTOP_VERSION_STRING=\"${PROJECT_VERSION}\")
+add_compile_definitions(TRANSLATION_DOMAIN=\"kwin_infinitedesktop\")
+add_compile_definitions(INFINITEDESKTOP_VERSION_STRING=\"${PROJECT_VERSION}\")
 add_compile_definitions(QT_NO_KEYWORDS QT_NO_CAST_FROM_ASCII QT_NO_URL_CAST_FROM_STRING)
 
 find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui DBus Widgets)

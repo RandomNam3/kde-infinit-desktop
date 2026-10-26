@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    KDE Infinit Desktop - settings schema (single source of truth)
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - settings schema (single source of truth)
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 
     Used by the KWin effect, the System Settings module and the settings app.
@@ -13,7 +13,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
     <kcfgfile arg="true"/>
-    <group name="Effect-infinitdesktop">
+    <group name="Effect-infinitedesktop">
 
         <!-- ===================== Navigation: mouse ===================== -->
         <entry name="DragDesktopToPan" type="Bool">
@@ -434,7 +434,7 @@
         </entry>
         <entry name="DebugLogging" type="Bool">
             <label>Debug logging</label>
-            <whatsthis>Writes detailed messages to the system journal (journalctl --user -g infinitdesktop). Only useful for bug reports.</whatsthis>
+            <whatsthis>Writes detailed messages to the system journal (journalctl --user -g infinitedesktop). Only useful for bug reports.</whatsthis>
             <default>false</default>
         </entry>
     </group>

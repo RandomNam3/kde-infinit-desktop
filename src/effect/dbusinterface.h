@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -8,26 +8,26 @@
 #include <QObject>
 #include <QString>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
-class InfinitDesktopEffect;
+class InfiniteDesktopEffect;
 
 /**
- * D-Bus interface org.kde.InfinitDesktop on /InfinitDesktop (service org.kde.KWin),
- * see src/shared/org.kde.InfinitDesktop.xml. Used by the settings app and for
+ * D-Bus interface org.kde.InfiniteDesktop on /InfiniteDesktop (service org.kde.KWin),
+ * see src/shared/org.kde.InfiniteDesktop.xml. Used by the settings app and for
  * scripting/automated tests. Navigation calls act on the screen under the pointer
  * and are applied immediately (no animation), so scripts get deterministic results.
  */
 class DBusInterface : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.InfinitDesktop")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.InfiniteDesktop")
     Q_PROPERTY(bool safeMode READ safeMode NOTIFY statusChanged)
     Q_PROPERTY(bool paused READ paused NOTIFY statusChanged)
 
 public:
-    explicit DBusInterface(InfinitDesktopEffect *effect);
+    explicit DBusInterface(InfiniteDesktopEffect *effect);
     ~DBusInterface() override;
 
     bool safeMode() const;
@@ -74,8 +74,8 @@ Q_SIGNALS:
     Q_SCRIPTABLE void notePinnedChanged(const QString &id, bool pinned, bool keepAbove);
 
 private:
-    InfinitDesktopEffect *const m_effect;
+    InfiniteDesktopEffect *const m_effect;
     bool m_registered = false;
 };
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

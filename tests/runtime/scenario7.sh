@@ -2,9 +2,9 @@
 # Notes (with the companion app), groups, areas, the map and the canvas menu.
 source /th/lib.sh
 FAILURES=0
-NOTES=$HOME/.local/share/kde-infinit-desktop/notes
+NOTES=$HOME/.local/share/kde-infinite-desktop/notes
 KEY_ESC=1 KEY_E=18 KEY_H=35 KEY_A=30 KEY_L=38 KEY_O=24 KEY_LEFTCTRL=29 KEY_LEFTMETA=125
-companion() { qdbus6 org.kde.InfinitDesktop.Companion /Companion "org.kde.InfinitDesktop.Companion.$1" "${@:2}"; }
+companion() { qdbus6 org.kde.InfiniteDesktop.Companion /Companion "org.kde.InfiniteDesktop.Companion.$1" "${@:2}"; }
 note_id() { jq -r '.notes[0].id' "$NOTES/index.json" 2>/dev/null; }
 # Popup windows (menus) KWin knows of, printed by a KWin script into its log.
 popups() {
@@ -15,8 +15,8 @@ popups() {
 input abs 800 450
 
 echo "--- notes: the companion announces its window, the canvas places it"
-kde-infinit-desktop-companion > /tmp/companion.log 2>&1 &
-for _ in $(seq 1 100); do qdbus6 org.kde.InfinitDesktop.Companion >/dev/null 2>&1 && break; sleep 0.1; done
+kde-infinite-desktop-companion > /tmp/companion.log 2>&1 &
+for _ in $(seq 1 100); do qdbus6 org.kde.InfiniteDesktop.Companion >/dev/null 2>&1 && break; sleep 0.1; done
 input abs 400 300
 dbuscall newNote
 for _ in $(seq 1 100); do state | jq -e '[.windows[] | select(.note != "")] | length > 0' >/dev/null && break; sleep 0.1; done

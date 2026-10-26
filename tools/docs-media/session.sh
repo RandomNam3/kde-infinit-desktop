@@ -1,5 +1,5 @@
 #!/bin/bash
-# KDE Infinit Desktop - records the images and animations of the documentation from a
+# KDE Infinite Desktop - records the images and animations of the documentation from a
 # real Plasma session (KWin on a virtual output, plasmashell, real applications).
 # Runs inside the demo image; started by record.ps1 / record.sh.
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -7,7 +7,7 @@ set -u
 log() { echo "[media] $*"; }
 
 # ---------------------------------------------------------------- build & install
-log "building KDE Infinit Desktop and the input helper ..."
+log "building KDE Infinite Desktop and the input helper ..."
 if ! { cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr \
             -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DBUILD_TESTING=OFF > /tmp/configure.log 2>&1 &&
         cmake --build /build > /tmp/build.log 2>&1 && cmake --install /build > /dev/null 2>&1; }; then
@@ -33,11 +33,11 @@ kwriteconfig6 --file plasma-localerc --group Formats --key LANG "$LANG"
 kwriteconfig6 --file plasma-localerc --group Translations --key LANGUAGE "$LANGUAGE"
 kwriteconfig6 --file kxkbrc --group Layout --key Use true
 kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "$KEYBOARD"
-kwriteconfig6 --file kwinrc --group Plugins --key infinitdesktopEnabled true
+kwriteconfig6 --file kwinrc --group Plugins --key infinitedesktopEnabled true
 kwriteconfig6 --file kwinrc --group Plugins --key blurEnabled false
 # Scenes move the camera step by step; animations would only blur the frames.
-kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key AnimationDuration 0
-kwriteconfig6 --file kwinrc --group Effect-infinitdesktop --key ZoomIndicator false
+kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key AnimationDuration 0
+kwriteconfig6 --file kwinrc --group Effect-infinitedesktop --key ZoomIndicator false
 
 cat > "$HOME/Notizen.md" <<'EOF'
 # Notizen
@@ -63,7 +63,7 @@ kded6 > /dev/null 2>&1 &
 sleep 1
 plasmashell > /tmp/plasmashell.log 2>&1 &
 sleep 6
-log "plugin loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitdesktop)"
+log "plugin loaded: $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded infinitedesktop)"
 
 python3 /media/scenes.py "${MEDIA_OUT:-/out}" "${MEDIA_SCENES:-all}"
 rc=$?

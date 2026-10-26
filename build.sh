@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+# SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# KDE Infinit Desktop - build script for developers and packagers.
+# KDE Infinite Desktop - build script for developers and packagers.
 #
 #   ./build.sh                       configure, build, run the unit tests
 #   ./build.sh --install             ... and install + enable (scripts/install.sh)
@@ -13,7 +13,7 @@
 #   ./build.sh --clean               remove the build directories and dist/
 #
 # Build trees live outside the source tree, in
-#   ${XDG_CACHE_HOME:-~/.cache}/kde-infinit-desktop/build/<type>
+#   ${XDG_CACHE_HOME:-~/.cache}/kde-infinite-desktop/build/<type>
 # (use --build-dir build/foo if you really want one inside it).
 #
 # End users: ./scripts/install.sh is the one-command installer.
@@ -22,7 +22,7 @@ set -eu
 set -o pipefail
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
-readonly ROOT PROJECT=kde-infinit-desktop
+readonly ROOT PROJECT=kde-infinite-desktop
 
 BUILD_TYPE=Debug
 SANITIZE=0
@@ -38,7 +38,7 @@ JOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 2)
 CMAKE_ARGS=()
 DIST_DIR=${KID_DIST_DIR:-$ROOT/dist}
 BUILD_DIR=''
-BUILD_ROOT=${KID_BUILD_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/kde-infinit-desktop/build}
+BUILD_ROOT=${KID_BUILD_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/kde-infinite-desktop/build}
 
 usage() {
     cat <<EOF
@@ -167,7 +167,7 @@ package_family() {
 }
 
 project_version() {
-    sed -n 's/^project(kde-infinit-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$ROOT/CMakeLists.txt" | head -n1
+    sed -n 's/^project(kde-infinite-desktop VERSION \([0-9][0-9.]*\).*/\1/p' "$ROOT/CMakeLists.txt" | head -n1
 }
 
 kwin_version() {
@@ -196,7 +196,7 @@ as_root() {
     fi
 }
 
-# stage_source DIR: copy the source tree (without build output) to DIR/kde-infinit-desktop-<ver>
+# stage_source DIR: copy the source tree (without build output) to DIR/kde-infinite-desktop-<ver>
 stage_source() {
     local dest
     dest="$1/$PROJECT-$(project_version)"
@@ -266,9 +266,9 @@ package_deb() {
         [ -f "$f" ] && chmod 0644 "$f"
     done
     chmod 0755 "$src/debian/rules"
-    [ "$effect" = ON ] || profiles+=(pkg.kde-infinit-desktop.noeffect)
+    [ "$effect" = ON ] || profiles+=(pkg.kde-infinite-desktop.noeffect)
     if [ "$WITH_APP" -eq 0 ] || [ ! -r "$ROOT/src/app/CMakeLists.txt" ]; then
-        profiles+=(pkg.kde-infinit-desktop.noapp)
+        profiles+=(pkg.kde-infinite-desktop.noapp)
     fi
     if [ "$effect" = ON ] && [ -n "$kwin" ]; then
         # 0.1.0-1 -> 0.1.0-1+kwin6.8.1: the package is built for exactly this KWin
@@ -345,7 +345,7 @@ package_arch() {
     local ver pkgdir="$stage/pkg" f
     ver=$(project_version)
     mkdir -p "$pkgdir"
-    cp "$ROOT/packaging/arch/PKGBUILD" "$ROOT/packaging/arch/kde-infinit-desktop.install" "$pkgdir/"
+    cp "$ROOT/packaging/arch/PKGBUILD" "$ROOT/packaging/arch/kde-infinite-desktop.install" "$pkgdir/"
     # makepkg uses a local file with the name from source=() instead of downloading
     tar -C "$stage" -czf "$pkgdir/$PROJECT-$ver.tar.gz" "$PROJECT-$ver"
     if [ "$DO_DEPS" -eq 1 ]; then
@@ -366,7 +366,7 @@ package_arch() {
         [ -e "$f" ] || continue
         case $f in *-debug-*) continue ;; esac
         local base=${f##*/}
-        # kde-infinit-desktop-0.1.0-1-x86_64.pkg.tar.zst -> ...-0.1.0+kwin6.8.1-1-x86_64...
+        # kde-infinite-desktop-0.1.0-1-x86_64.pkg.tar.zst -> ...-0.1.0+kwin6.8.1-1-x86_64...
         [ -n "$kwin" ] && base=${base/-$ver-/-$ver+kwin$kwin-}
         cp -v "$f" "$DIST_DIR/$base"
     done

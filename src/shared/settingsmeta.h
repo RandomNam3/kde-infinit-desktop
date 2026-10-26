@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #pragma once
@@ -9,11 +9,11 @@
 
 #include <QList>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 /**
- * UI metadata for the settings defined in infinitdesktop.kcfg.
+ * UI metadata for the settings defined in infinitedesktop.kcfg.
  *
  * Labels, explanations, defaults and ranges live in the kcfg file; this table
  * only adds what the kcfg format cannot express: the category an entry is
@@ -31,7 +31,7 @@ struct SettingsCategory
 
 struct SettingsEntryMeta
 {
-    /// Entry name in infinitdesktop.kcfg.
+    /// Entry name in infinitedesktop.kcfg.
     const char *key;
     const char *category;
     /// Unit shown next to numbers: "px", "px/s", "%", "ms" or nullptr.
@@ -50,4 +50,4 @@ const QList<SettingsCategory> &settingsCategories();
 const QList<SettingsEntryMeta> &settingsEntries();
 const SettingsEntryMeta *findSettingsEntry(const char *key);
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

@@ -1,6 +1,6 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "globalshortcutsmodel.h"
@@ -26,7 +26,7 @@
 
 #include <algorithm>
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -79,7 +79,7 @@ bool isOwnAction(const QString &componentId, const QString &actionId)
 
 QString displayName(const QString &actionName, bool own)
 {
-    // Our actions are called "Infinit Desktop: …" in KWin's list; the badge says that already.
+    // Our actions are called "Infinite Desktop: …" in KWin's list; the badge says that already.
     if (own) {
         const int colon = actionName.indexOf(QLatin1String(": "));
         if (colon > 0 && colon <= 24) {
@@ -753,4 +753,4 @@ bool GlobalShortcutsFilterModel::filterAcceptsRow(int sourceRow, const QModelInd
     return SearchUtil::matches(index.data(GlobalShortcutsModel::SearchTextRole).toString(), m_terms);
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop

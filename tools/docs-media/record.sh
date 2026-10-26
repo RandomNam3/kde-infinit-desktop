@@ -1,5 +1,5 @@
 #!/bin/bash
-# KDE Infinit Desktop - records the images and animations of the documentation (Linux,
+# KDE Infinite Desktop - records the images and animations of the documentation (Linux,
 # Podman or Docker). Uses the demo image (tools/demo); a running demo is not touched.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #

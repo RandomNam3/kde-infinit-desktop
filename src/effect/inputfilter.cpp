@@ -1,10 +1,10 @@
 /*
-    KDE Infinit Desktop - infinite canvas for KWin
-    SPDX-FileCopyrightText: 2026 KDE Infinit Desktop contributors
+    KDE Infinite Desktop - infinite canvas for KWin
+    SPDX-FileCopyrightText: 2026 KDE Infinite Desktop contributors
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 #include "inputfilter.h"
-#include "infinitdesktopeffect.h"
+#include "infinitedesktopeffect.h"
 #include "launcherpositioner.h"
 #include "logging.h"
 #include "organizer.h"
@@ -28,7 +28,7 @@
 
 using namespace std::chrono_literals;
 
-namespace InfinitDesktop
+namespace InfiniteDesktop
 {
 
 namespace
@@ -50,7 +50,7 @@ QRectF rectOf(const KWin::LogicalOutput *output)
 
 } // namespace
 
-CanvasInputFilter::CanvasInputFilter(InfinitDesktopEffect *effect)
+CanvasInputFilter::CanvasInputFilter(InfiniteDesktopEffect *effect)
     : KWin::InputEventFilter(KWin::InputFilterOrder::GlobalShortcut)
     , m_effect(effect)
 {
@@ -193,7 +193,7 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
         KWin::EffectWindow *w = m_forward.window;
         const std::optional<QMatrix4x4> transform = w ? m_effect->zoomedInputTransform(w) : std::nullopt;
         if (!transform) {
-            qCDebug(KWIN_INFINITDESKTOP) << "window used while zoomed out is gone, ending its input";
+            qCDebug(KWIN_INFINITEDESKTOP) << "window used while zoomed out is gone, ending its input";
             endZoomedInput();
             return false;
         }
@@ -224,14 +224,14 @@ bool CanvasInputFilter::forwardMotion(const QPointF &pos, std::chrono::microseco
 bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
 {
     if (!m_forward.buttons || m_forward.window != window.effectWindow || m_drag.kind != DragKind::None) {
-        qCDebug(KWIN_INFINITDESKTOP) << "not taking over the move: button held" << bool(m_forward.buttons) << "on"
+        qCDebug(KWIN_INFINITEDESKTOP) << "not taking over the move: button held" << bool(m_forward.buttons) << "on"
                                      << (m_forward.window ? m_forward.window->caption() : QString()) << "drag" << int(m_drag.kind);
         return false;
     }
     Canvas *canvas = m_effect->canvasByKey(window.canvasKey);
     KWin::LogicalOutput *output = canvas ? m_effect->outputOf(*canvas) : nullptr;
     if (!canvas || !canvas->navigation || !output) {
-        qCDebug(KWIN_INFINITDESKTOP) << "not taking over the move: canvas not zoomed out";
+        qCDebug(KWIN_INFINITEDESKTOP) << "not taking over the move: canvas not zoomed out";
         return false;
     }
     // Where the user holds the window. X11 clients had KWin warp the pointer onto the parked
@@ -261,7 +261,7 @@ bool CanvasInputFilter::takeOverClientMove(ManagedWindow &window)
     m_drag.takenOver = true;
     m_drag.handPos = pos;
     m_drag.grabOffset = canvas->camera.screenToCanvas(pos, rectOf(output)) - window.canvasPos;
-    qCDebug(KWIN_INFINITDESKTOP) << "taking over the move of" << window.effectWindow->caption() << "at" << pos << "(pointer at" << KWin::effects->cursorPos() << ")";
+    qCDebug(KWIN_INFINITEDESKTOP) << "taking over the move of" << window.effectWindow->caption() << "at" << pos << "(pointer at" << KWin::effects->cursorPos() << ")";
     if (KWin::effects->cursorPos() != pos) {
         // Handled by the drag above: the window stays where it is.
         KWin::input()->warpPointer(pos);
@@ -974,14 +974,14 @@ bool CanvasInputFilter::handleInteractiveMove(KWin::PointerMotionEvent *event)
     if (from && to && to != from) {
         const qreal speed = m_moveTracker.speed(event->timestamp);
         if (!settings.flingToOtherScreen || speed >= settings.flingThreshold) {
-            qCDebug(KWIN_INFINITDESKTOP) << "window flung to" << to->name() << "at" << speed << "px/s";
+            qCDebug(KWIN_INFINITEDESKTOP) << "window flung to" << to->name() << "at" << speed << "px/s";
             move->output = to;
             m_effect->setEdgePan(to, edgePanVelocity(to, pos, settings.flingToOtherScreen));
             return false;
         }
         // Too slow: the window stays on its screen, the canvas scrolls instead.
         const QPointF clamped = clampInto(pos, rectOf(from));
-        qCDebug(KWIN_INFINITDESKTOP) << "screen change blocked at" << pos << "speed" << speed << "px/s, warping to" << clamped
+        qCDebug(KWIN_INFINITEDESKTOP) << "screen change blocked at" << pos << "speed" << speed << "px/s, warping to" << clamped
                                      << "warping supported:" << KWin::input()->supportsPointerWarping();
         KWin::input()->warpPointer(clamped);
         m_effect->setEdgePan(from, edgePanVelocity(from, clamped, true));
@@ -1298,4 +1298,4 @@ bool CanvasInputFilter::touchCancel()
     return false;
 }
 
-} // namespace InfinitDesktop
+} // namespace InfiniteDesktop
